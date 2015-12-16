@@ -21,12 +21,12 @@ public class NodeManager implements NodeManagerMBean {
 	}
 
 	@Loggable
-	public void putToDealyQueue(Node node) {
+	public synchronized void putToDealyQueue(Node node) {
 		DelayedNode delayedNode = new DelayedNode(node);
 		delayQueue.put(delayedNode);
 	}
 
-	public Node take() {
+	public synchronized Node take() {
 		DelayedNode delayedNode = null;
 		try {
 			delayedNode = this.delayQueue.take();
@@ -101,7 +101,7 @@ public class NodeManager implements NodeManagerMBean {
 	}
 
 	@Loggable
-	private boolean removeFromDelayQueue(String serviceName, String instanceName) {
+	private synchronized boolean removeFromDelayQueue(String serviceName, String instanceName) {
 		Node dst = new Node(serviceName, "host", 0, 0L, instanceName);
 		DelayedNode delayedNode = new DelayedNode(dst);
 		return this.delayQueue.remove(delayedNode);
@@ -162,5 +162,39 @@ public class NodeManager implements NodeManagerMBean {
 
 	public static NodeManager getInstance() {
 		return proxy.nodeManager;
+	}
+
+	private final Map<String, DelayedNode> closedMap = new HashMap<String, DelayedNode>();
+
+	@Override
+	@Loggable
+	public synchronized String openPing(String serviceName, String instanceName) {
+		String key = serviceName + "_" + instanceName;
+		if (this.closedMap.containsKey(key)) {
+			DelayedNode delayedNode = this.closedMap.get(key);
+			/**
+			 * 减小代码复杂度，不更新putTime，重新加入后会立即ping
+			 */
+			// delayedNode.setPutTime(System.currentTimeMillis());
+			this.delayQueue.put(delayedNode);
+			return "OK !";
+		} else {
+			return "EMPTY !";
+		}
+	}
+
+	@Override
+	@Loggable
+	public synchronized String closePing(String serviceName, String instanceName) {
+		DelayedNode dst = new DelayedNode(new Node(serviceName, "host", 0, 0L, instanceName));
+		for (DelayedNode src : this.delayQueue) {
+			if (src.equals(dst)) {
+				String key = serviceName + "_" + instanceName;
+				this.delayQueue.remove(src);
+				this.closedMap.put(key, src);
+				return "OK !";
+			}
+		}
+		return "EMPTY !";
 	}
 }
