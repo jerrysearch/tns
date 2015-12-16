@@ -46,6 +46,7 @@ public class ThriftPingCommand extends HystrixCommand<Integer> {
 		TProtocol protocol = new TBinaryProtocol(transport);
 		PoolAble.Client client = new PoolAble.Client(protocol);
 		int vNodes = client.ping();
+		transport.close();
 		return vNodes;
 	}
 
