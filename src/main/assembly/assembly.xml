@@ -1,0 +1,45 @@
+<assembly
+	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+	<id>bin</id>
+
+	<formats>
+		<format>zip</format>
+	</formats>
+	<fileSets>
+		<!--打包所有 resources 目录下的文件 到config目录下 -->
+		<fileSet>
+			<directory>${project.basedir}/target/classes</directory>
+			<outputDirectory>config</outputDirectory>
+			<includes>
+				<include>*.properties</include>
+			</includes>
+		</fileSet>
+		<!--打包脚本文件 到bin 目录下 -->
+		<fileSet>
+			<directory>${project.basedir}/src/main/shell</directory>
+			<outputDirectory>bin</outputDirectory>
+			<includes>
+				<include>*.sh</include>
+			</includes>
+			<excludes>
+				<exclude>unzip.sh</exclude>
+			</excludes>
+		</fileSet>
+		<fileSet>
+			<directory>${project.basedir}/agent</directory>
+			<outputDirectory>agent</outputDirectory>
+			<includes>
+				<include>*.jar</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+	<dependencySets>
+		<dependencySet>
+			<!--应用项目运行的依赖jar -->
+			<useProjectArtifact>true</useProjectArtifact>
+			<outputDirectory>lib</outputDirectory>
+		</dependencySet>
+	</dependencySets>
+</assembly>
