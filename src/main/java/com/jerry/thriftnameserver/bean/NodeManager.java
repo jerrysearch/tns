@@ -24,6 +24,7 @@ public class NodeManager implements NodeManagerMBean {
 		delayQueue.put(delayedNode);
 	}
 
+	@Loggable
 	public Node take() {
 		DelayedNode delayedNode = null;
 		try {
@@ -49,7 +50,7 @@ public class NodeManager implements NodeManagerMBean {
 			node.setHealth(true);
 		}
 		node.setvNodes(vNodes);
-		node.setLastPintTime(System.currentTimeMillis()); // 更新最后一次健康检查的时间
+		node.setLastPingtTime(System.currentTimeMillis()); // 更新最后一次健康检查的时间
 		this.updateMap(node, this.useableMap);
 	}
 
@@ -83,18 +84,11 @@ public class NodeManager implements NodeManagerMBean {
 	@Loggable
 	public String onLine(String serviceName, String host, int port, long pingFrequency,
 			String instanceName, int vNodes) {
+		pingFrequency = Math.max(pingFrequency, 10); // 最小ping频率10秒
+		pingFrequency = Math.min(pingFrequency, 60); // 最大ping频率1分钟
 
-		if (pingFrequency < 0L) {
-			pingFrequency = 10 * 1000L; // 最小ping频率10秒
-		} else if (pingFrequency > 60 * 1000L) {
-			pingFrequency = 60 * 1000L; // 最大ping频率1分钟
-		}
-
-		if (vNodes < 0) {
-			vNodes = 1; // 最小虚拟节点数1
-		} else if (vNodes > 10) {
-			vNodes = 10; // 最大虚拟节点数10
-		}
+		vNodes = Math.max(vNodes, 1); // 最小虚拟节点数1
+		vNodes = Math.min(vNodes, 10); // 最大虚拟节点数10
 
 		Node node = new Node(serviceName, host, port, pingFrequency, instanceName);
 		node.setvNodes(vNodes);
@@ -105,9 +99,11 @@ public class NodeManager implements NodeManagerMBean {
 	@Override
 	@Loggable
 	public synchronized String offLine(String serviceName, String instanceName) {
+		log.debug("delayQueue.size = ({})", delayQueue.size());
 		Node dst = new Node(serviceName, "host", 0, 0L, instanceName);
 		DelayedNode delayedNode = new DelayedNode(dst);
 		this.delayQueue.remove(delayedNode);
+		log.debug("delayQueue.size = ({})", delayQueue.size());
 
 		Node node = null;
 		Map<String, Node> map = null;

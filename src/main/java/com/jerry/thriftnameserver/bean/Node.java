@@ -12,9 +12,9 @@ public class Node {
 	private final String instanceName; // serviceName 的唯一标识
 	private int vNodes;
 	private final long pingFrequency;
-	
+
 	private boolean health = false;
-	private long lastPintTime = System.currentTimeMillis();
+	private long lastPingtTime = System.currentTimeMillis();
 
 	public Node(String serviceName, String host, int port, long pingFrequency, String instanceName) {
 		this.serviceName = serviceName;
@@ -60,12 +60,12 @@ public class Node {
 		this.health = health;
 	}
 
-	public long getLastPintTime() {
-		return lastPintTime;
+	public long getLastPingtTime() {
+		return lastPingtTime;
 	}
 
-	public void setLastPintTime(long lastPintTime) {
-		this.lastPintTime = lastPintTime;
+	public void setLastPingtTime(long lastPingtTime) {
+		this.lastPingtTime = lastPingtTime;
 	}
 
 	@Override
@@ -103,6 +103,6 @@ public class Node {
 	public String toString() {
 		return "Node [serviceName=" + serviceName + ", host=" + host + ", port=" + port
 				+ ", instanceName=" + instanceName + ", vNodes=" + vNodes + ", pingFrequency="
-				+ pingFrequency + ", health=" + health + ", lastPintTime=" + lastPintTime + "]";
+				+ pingFrequency + ", health=" + health + ", lastPingtTime=" + lastPingtTime + "]";
 	}
 }
