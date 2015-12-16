@@ -1,6 +1,6 @@
 package com.jerry.thriftnameserver.ping;
 
-import org.apache.thrift.protocol.TCompactProtocol;
+import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
 
@@ -43,7 +43,7 @@ public class ThriftPingCommand extends HystrixCommand<Integer> {
 
 		TSocket transport = new TSocket(host, port, 1000);
 		transport.open();
-		TProtocol protocol = new TCompactProtocol(transport);
+		TProtocol protocol = new TBinaryProtocol(transport);
 		PoolAble.Client client = new PoolAble.Client(protocol);
 		int vNodes = client.ping();
 		return vNodes;
