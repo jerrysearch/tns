@@ -153,6 +153,7 @@ public class NodeManager implements NodeManagerMBean {
 	public synchronized String clearAll() {
 		this.delayQueue.clear();
 		this.useableMap.clear();
+		this.closedMap.clear();
 		return "OK !";
 	}
 
@@ -196,5 +197,24 @@ public class NodeManager implements NodeManagerMBean {
 			}
 		}
 		return "EMPTY !";
+	}
+
+	@Override
+	public String listDelayQueue() {
+		StringBuilder sb = new StringBuilder();
+		for(DelayedNode delayedNode : this.delayQueue){
+			sb.append(delayedNode.getNode().toString()).append("\n");
+		}
+		return sb.toString();
+	}
+
+	@Override
+	public String listClosedMap() {
+		Collection<DelayedNode> collection = this.closedMap.values();
+		StringBuilder sb = new StringBuilder();
+		for(DelayedNode delayedNode : collection){
+			sb.append(delayedNode.getNode().toString()).append("\n");
+		}
+		return sb.toString();
 	}
 }

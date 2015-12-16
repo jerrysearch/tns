@@ -15,5 +15,9 @@ public interface NodeManagerMBean {
 
 	String listAll();
 	
+	String listDelayQueue();
+	
+	String listClosedMap();
+	
 	String clearAll();
 }
