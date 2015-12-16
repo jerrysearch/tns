@@ -19,12 +19,12 @@ public class NodeManager implements NodeManagerMBean {
 	private NodeManager() {
 	}
 
+	@Loggable
 	public void putToDealyQueue(Node node) {
 		DelayedNode delayedNode = new DelayedNode(node);
 		delayQueue.put(delayedNode);
 	}
 
-	@Loggable
 	public Node take() {
 		DelayedNode delayedNode = null;
 		try {
@@ -92,37 +92,42 @@ public class NodeManager implements NodeManagerMBean {
 
 		Node node = new Node(serviceName, host, port, pingFrequency, instanceName);
 		node.setvNodes(vNodes);
+		this.removeFromDelayQueue(serviceName, instanceName); // 加入之前，移除相同的实例
 		this.putToDealyQueue(node);
 		return node.toString();
 	}
 
 	@Override
 	@Loggable
-	public synchronized String offLine(String serviceName, String instanceName) {
-		log.debug("delayQueue.size = ({})", delayQueue.size());
+	public String offLine(String serviceName, String instanceName) {
+		boolean a = this.removeFromDelayQueue(serviceName, instanceName);
+		boolean b = this.removeFromMap(serviceName, instanceName);
+		if (a && b) {
+			return "OK !";
+		} else if(a ^ b){
+			return "WARN !";
+		}else{
+			return "FAIL !";
+		}
+	}
+
+	@Loggable
+	private boolean removeFromDelayQueue(String serviceName, String instanceName) {
 		Node dst = new Node(serviceName, "host", 0, 0L, instanceName);
 		DelayedNode delayedNode = new DelayedNode(dst);
-		this.delayQueue.remove(delayedNode);
-		log.debug("delayQueue.size = ({})", delayQueue.size());
+		return this.delayQueue.remove(delayedNode);
+	}
 
-		Node node = null;
-		Map<String, Node> map = null;
+	@Loggable
+	private synchronized boolean removeFromMap(String serviceName, String instanceName) {
 		if (this.useableMap.containsKey(serviceName)) {
-			map = this.useableMap.get(serviceName);
+			Map<String, Node> map = this.useableMap.get(serviceName);
 			if (map.containsKey(instanceName)) {
-				node = map.remove(instanceName);
+				map.remove(instanceName);
+				return true;
 			}
 		}
-
-		if (null == node) {
-			/**
-			 * 不存在
-			 */
-			return String.format("serviceName : [%s], instanceName : [%s] unExist", serviceName,
-					instanceName);
-		} else {
-			return node.toString();
-		}
+		return false;
 	}
 
 	@Override
@@ -145,6 +150,14 @@ public class NodeManager implements NodeManagerMBean {
 	@Override
 	public synchronized String listAll() {
 		return "none";
+	}
+
+	@Loggable
+	@Override
+	public synchronized String clearAll() {
+		this.delayQueue.clear();
+		this.useableMap.clear();
+		return "OK !";
 	}
 
 	private static class proxy {

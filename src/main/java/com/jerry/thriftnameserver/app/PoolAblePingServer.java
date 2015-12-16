@@ -16,11 +16,11 @@ public class PoolAblePingServer {
 			public void run() {
 				while (true) {
 					Node node = nodeManager.take();
-					if(null == node){
+					if (null == node) {
 						continue;
 					}
 					ThriftPingCommand pingCommand = new ThriftPingCommand(node);
-					int vNodes = pingCommand.execute();
+					int vNodes = pingCommand.ping(node);
 					nodeManager.checkHealthOver(node, vNodes);
 				}
 			}

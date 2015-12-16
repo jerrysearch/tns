@@ -66,4 +66,9 @@ class DelayedNode implements Delayed {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "DelayedNode [node=" + node + ", putTime=" + putTime + "]";
+	}
 }

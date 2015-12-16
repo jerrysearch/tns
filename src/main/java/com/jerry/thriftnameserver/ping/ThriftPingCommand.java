@@ -4,6 +4,7 @@ import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
 
+import com.jcabi.aspects.Loggable;
 import com.jerry.thriftnameserver.bean.Node;
 import com.jerry.thriftnameserver.rpc.PoolAble;
 import com.netflix.hystrix.HystrixCommand;
@@ -34,6 +35,11 @@ public class ThriftPingCommand extends HystrixCommand<Integer> {
 	public ThriftPingCommand(Node node) {
 		super(setter);
 		this.node = node;
+	}
+	
+	@Loggable
+	public int ping(Node node){
+		return this.execute();
 	}
 
 	@Override

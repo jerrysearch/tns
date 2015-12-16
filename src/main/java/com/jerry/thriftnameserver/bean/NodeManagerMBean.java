@@ -13,4 +13,6 @@ public interface NodeManagerMBean {
 	String list(String serviceName);
 
 	String listAll();
+	
+	String clearAll();
 }
