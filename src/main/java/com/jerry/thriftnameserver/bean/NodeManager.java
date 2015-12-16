@@ -21,12 +21,12 @@ public class NodeManager implements NodeManagerMBean {
 	}
 
 	@Loggable
-	public synchronized void putToDealyQueue(Node node) {
+	public void putToDealyQueue(Node node) {
 		DelayedNode delayedNode = new DelayedNode(node);
 		delayQueue.put(delayedNode);
 	}
 
-	public synchronized Node take() {
+	public Node take() {
 		DelayedNode delayedNode = null;
 		try {
 			delayedNode = this.delayQueue.take();
@@ -101,7 +101,7 @@ public class NodeManager implements NodeManagerMBean {
 	}
 
 	@Loggable
-	private synchronized boolean removeFromDelayQueue(String serviceName, String instanceName) {
+	private boolean removeFromDelayQueue(String serviceName, String instanceName) {
 		Node dst = new Node(serviceName, "host", 0, 0L, instanceName);
 		DelayedNode delayedNode = new DelayedNode(dst);
 		return this.delayQueue.remove(delayedNode);
@@ -168,7 +168,7 @@ public class NodeManager implements NodeManagerMBean {
 
 	@Override
 	@Loggable
-	public synchronized String openPing(String serviceName, String instanceName) {
+	public String openPing(String serviceName, String instanceName) {
 		String key = serviceName + "_" + instanceName;
 		if (this.closedMap.containsKey(key)) {
 			DelayedNode delayedNode = this.closedMap.get(key);
@@ -185,7 +185,7 @@ public class NodeManager implements NodeManagerMBean {
 
 	@Override
 	@Loggable
-	public synchronized String closePing(String serviceName, String instanceName) {
+	public String closePing(String serviceName, String instanceName) {
 		DelayedNode dst = new DelayedNode(new Node(serviceName, "host", 0, 0L, instanceName));
 		for (DelayedNode src : this.delayQueue) {
 			if (src.equals(dst)) {
