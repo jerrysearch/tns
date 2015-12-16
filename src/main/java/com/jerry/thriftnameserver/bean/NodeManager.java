@@ -3,6 +3,7 @@ package com.jerry.thriftnameserver.bean;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.DelayQueue;
 
 import org.slf4j.Logger;
@@ -69,29 +70,17 @@ public class NodeManager implements NodeManagerMBean {
 	@Override
 	public String onLine(String serviceName, String host, int port, long pingFrequency) {
 		String instanceName = String.valueOf(System.currentTimeMillis());
-		int vNodes = 1;
-		return this.onLine(serviceName, host, port, pingFrequency, instanceName, vNodes);
-	}
-
-	@Override
-	public String onLine(String serviceName, String host, int port, long pingFrequency,
-			String instanceName) {
-		int vNodes = 1;
-		return this.onLine(serviceName, host, port, pingFrequency, instanceName, vNodes);
+		return this.onLine(serviceName, host, port, pingFrequency, instanceName);
 	}
 
 	@Override
 	@Loggable
 	public String onLine(String serviceName, String host, int port, long pingFrequency,
-			String instanceName, int vNodes) {
+			String instanceName) {
 		pingFrequency = Math.max(pingFrequency, 10); // 最小ping频率10秒
 		pingFrequency = Math.min(pingFrequency, 60); // 最大ping频率1分钟
 
-		vNodes = Math.max(vNodes, 1); // 最小虚拟节点数1
-		vNodes = Math.min(vNodes, 10); // 最大虚拟节点数10
-
 		Node node = new Node(serviceName, host, port, pingFrequency, instanceName);
-		node.setvNodes(vNodes);
 		this.removeFromDelayQueue(serviceName, instanceName); // 加入之前，移除相同的实例
 		this.putToDealyQueue(node);
 		return node.toString();
@@ -104,9 +93,9 @@ public class NodeManager implements NodeManagerMBean {
 		boolean b = this.removeFromMap(serviceName, instanceName);
 		if (a && b) {
 			return "OK !";
-		} else if(a ^ b){
+		} else if (a ^ b) {
 			return "WARN !";
-		}else{
+		} else {
 			return "FAIL !";
 		}
 	}
@@ -142,14 +131,21 @@ public class NodeManager implements NodeManagerMBean {
 		Collection<Node> nodeList = map.values();
 		StringBuilder sb = new StringBuilder();
 		for (Node node : nodeList) {
-			sb.append(node.toString()).append("\n");
+			sb.append(node.toAllString()).append("\n");
 		}
 		return sb.toString();
 	}
 
 	@Override
 	public synchronized String listAll() {
-		return "none";
+		StringBuilder sb = new StringBuilder();
+		Set<String> set = this.useableMap.keySet();
+		for (String serviceName : set) {
+			sb.append(serviceName).append(" : \n");
+			String content = this.list(serviceName);
+			sb.append(content);
+		}
+		return sb.toString();
 	}
 
 	@Loggable

@@ -102,6 +102,11 @@ public class Node {
 	@Override
 	public String toString() {
 		return "Node [serviceName=" + serviceName + ", host=" + host + ", port=" + port
+				+ ", instanceName=" + instanceName + ", pingFrequency=" + pingFrequency + "]";
+	}
+
+	public String toAllString() {
+		return "Node [serviceName=" + serviceName + ", host=" + host + ", port=" + port
 				+ ", instanceName=" + instanceName + ", vNodes=" + vNodes + ", pingFrequency="
 				+ pingFrequency + ", health=" + health + ", lastPingtTime=" + lastPingtTime + "]";
 	}
