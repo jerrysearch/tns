@@ -172,7 +172,7 @@ public class NodeManager implements NodeManagerMBean {
 	public String openPing(String serviceName, String instanceName) {
 		String key = serviceName + "_" + instanceName;
 		if (this.closedMap.containsKey(key)) {
-			DelayedNode delayedNode = this.closedMap.get(key);
+			DelayedNode delayedNode = this.closedMap.remove(key);
 			/**
 			 * 减小代码复杂度，不更新putTime，重新加入后会立即ping
 			 */
@@ -202,7 +202,7 @@ public class NodeManager implements NodeManagerMBean {
 	@Override
 	public String listDelayQueue() {
 		StringBuilder sb = new StringBuilder();
-		for(DelayedNode delayedNode : this.delayQueue){
+		for (DelayedNode delayedNode : this.delayQueue) {
 			sb.append(delayedNode.getNode().toString()).append("\n");
 		}
 		return sb.toString();
@@ -212,7 +212,7 @@ public class NodeManager implements NodeManagerMBean {
 	public String listClosedMap() {
 		Collection<DelayedNode> collection = this.closedMap.values();
 		StringBuilder sb = new StringBuilder();
-		for(DelayedNode delayedNode : collection){
+		for (DelayedNode delayedNode : collection) {
 			sb.append(delayedNode.getNode().toString()).append("\n");
 		}
 		return sb.toString();
