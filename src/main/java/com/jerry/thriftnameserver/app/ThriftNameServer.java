@@ -9,6 +9,11 @@ public class ThriftNameServer {
 		log.info("--------------------------------------");
 		log.info("ThriftNameServer start begin");
 		log.info("--------------------------------------");
+		String host = System.getProperty("HOSTNAME", "localhost");
+		int port = 8700;
+		ThriftPoolServer thriftPoolServer = new ThriftPoolServer();
+		thriftPoolServer.start(host, port);
+
 		NodeManagerMBeanServer nodeManagerMBeanServer = new NodeManagerMBeanServer();
 		nodeManagerMBeanServer.start();
 

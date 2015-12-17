@@ -1,6 +1,7 @@
 package com.jerry.thriftnameserver.bean;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +20,16 @@ public class NodeManager implements NodeManagerMBean {
 
 	private NodeManager() {
 	}
+	
+	
+	public synchronized Collection<Node> getServiceNodeList(String serviceName){
+		if(this.useableMap.containsKey(serviceName)){
+			return this.useableMap.get(serviceName).values();
+		}else{
+			return Collections.emptyList();
+		}
+	}
+	
 
 	@Loggable
 	public void putToDealyQueue(Node node) {
