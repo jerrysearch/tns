@@ -5,7 +5,13 @@ service ThriftPool {
 	/**
 	*	获取一serviceName下可用的node列表
 	*/
-	list<TNode> nodeList(1: string clientId, 2: string serviceName)
+	list<TNode> nodeList(1: string clientId, 2: string serviceName),
+	
+	
+	/**
+	*	获取一serviceName下所有(包含不可用)的node列表
+	*/
+	list<TNode> allNodeList(1: string clientId, 2: string serviceName)
 }
 
 struct TNode {
