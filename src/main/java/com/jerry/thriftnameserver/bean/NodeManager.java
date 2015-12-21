@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.DelayQueue;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,20 +18,27 @@ public class NodeManager implements NodeManagerMBean {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	private final DelayQueue<DelayedNode> delayQueue = new DelayQueue<DelayedNode>();
 
-	private final Map<String, Map<String, Node>> useableMap = new HashMap<String, Map<String, Node>>();
+	private final Map<String, Map<String, Node>> serviceMap = new HashMap<String, Map<String, Node>>();
+
+	private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+	private final Lock readLock = lock.readLock();
+	private final Lock writeLock = lock.writeLock();
 
 	private NodeManager() {
 	}
-	
-	
-	public synchronized Collection<Node> getServiceNodeList(String serviceName){
-		if(this.useableMap.containsKey(serviceName)){
-			return this.useableMap.get(serviceName).values();
-		}else{
-			return Collections.emptyList();
+
+	public Collection<Node> getServiceNodeList(String serviceName) {
+		try {
+			this.readLock.lock();
+			if (this.serviceMap.containsKey(serviceName)) {
+				return this.serviceMap.get(serviceName).values();
+			} else {
+				return Collections.emptyList();
+			}
+		} finally {
+			this.readLock.unlock();
 		}
 	}
-	
 
 	@Loggable
 	public void putToDealyQueue(Node node) {
@@ -43,8 +52,7 @@ public class NodeManager implements NodeManagerMBean {
 			delayedNode = this.delayQueue.take();
 			return delayedNode.getNode();
 		} catch (InterruptedException e) {
-			String threadName = Thread.currentThread().getName();
-			log.error("Thread [{}] catch InterruptedException", threadName);
+			log.error(" operation [{}] catch InterruptedException", "take");
 			return null;
 		} finally {
 			if (null == delayedNode) {
@@ -61,20 +69,43 @@ public class NodeManager implements NodeManagerMBean {
 		} else {
 			node.setHealth(true);
 		}
+		vNodes = Math.min(vNodes, 20); // 最大虚拟节点数20
 		node.setvNodes(vNodes);
 		node.setLastPingtTime(System.currentTimeMillis()); // 更新最后一次健康检查的时间
-		this.updateMap(node, this.useableMap);
+		this.updateServiceMap(node, this.serviceMap);
 	}
 
-	private synchronized void updateMap(Node node, Map<String, Map<String, Node>> nodeMap) {
-		String serviceName = node.getServiceName();
-		if (nodeMap.containsKey(serviceName)) {
-			Map<String, Node> map = nodeMap.get(serviceName);
-			map.put(node.getInstanceName(), node);
-		} else {
-			Map<String, Node> map = new HashMap<String, Node>();
-			map.put(node.getInstanceName(), node);
-			nodeMap.put(serviceName, map);
+	private void updateServiceMap(Node node, Map<String, Map<String, Node>> nodeMap) {
+		try {
+			this.writeLock.lock();
+			String serviceName = node.getServiceName();
+			if (nodeMap.containsKey(serviceName)) {
+				Map<String, Node> map = nodeMap.get(serviceName);
+				map.put(node.getInstanceName(), node);
+			} else {
+				Map<String, Node> map = new HashMap<String, Node>();
+				map.put(node.getInstanceName(), node);
+				nodeMap.put(serviceName, map);
+			}
+		} finally {
+			this.writeLock.unlock();
+		}
+	}
+
+	@Loggable
+	private boolean removeFromServiceMap(String serviceName, String instanceName) {
+		try {
+			this.writeLock.lock();
+			if (this.serviceMap.containsKey(serviceName)) {
+				Map<String, Node> map = this.serviceMap.get(serviceName);
+				if (map.containsKey(instanceName)) {
+					map.remove(instanceName);
+					return true;
+				}
+			}
+			return false;
+		} finally {
+			this.writeLock.unlock();
 		}
 	}
 
@@ -101,7 +132,7 @@ public class NodeManager implements NodeManagerMBean {
 	@Loggable
 	public String offLine(String serviceName, String instanceName) {
 		boolean a = this.removeFromDelayQueue(serviceName, instanceName);
-		boolean b = this.removeFromMap(serviceName, instanceName);
+		boolean b = this.removeFromServiceMap(serviceName, instanceName);
 		if (a && b) {
 			return "OK !";
 		} else if (a ^ b) {
@@ -118,39 +149,32 @@ public class NodeManager implements NodeManagerMBean {
 		return this.delayQueue.remove(delayedNode);
 	}
 
-	@Loggable
-	private synchronized boolean removeFromMap(String serviceName, String instanceName) {
-		if (this.useableMap.containsKey(serviceName)) {
-			Map<String, Node> map = this.useableMap.get(serviceName);
-			if (map.containsKey(instanceName)) {
-				map.remove(instanceName);
-				return true;
-			}
-		}
-		return false;
-	}
-
 	@Override
 	public synchronized String list(String serviceName) {
-		if (!this.useableMap.containsKey(serviceName)) {
-			return "EMPTY !";
+		try {
+			this.readLock.lock();
+			if (!this.serviceMap.containsKey(serviceName)) {
+				return "EMPTY !";
+			}
+			Map<String, Node> map = this.serviceMap.get(serviceName);
+			if (map.isEmpty()) {
+				return "EMPTY !";
+			}
+			Collection<Node> nodeList = map.values();
+			StringBuilder sb = new StringBuilder();
+			for (Node node : nodeList) {
+				sb.append(node.toAllString()).append("\n");
+			}
+			return sb.toString();
+		} finally {
+			this.readLock.unlock();
 		}
-		Map<String, Node> map = this.useableMap.get(serviceName);
-		if (map.isEmpty()) {
-			return "EMPTY !";
-		}
-		Collection<Node> nodeList = map.values();
-		StringBuilder sb = new StringBuilder();
-		for (Node node : nodeList) {
-			sb.append(node.toAllString()).append("\n");
-		}
-		return sb.toString();
 	}
 
 	@Override
-	public synchronized String listAll() {
+	public String listAll() {
 		StringBuilder sb = new StringBuilder();
-		Set<String> set = this.useableMap.keySet();
+		Set<String> set = this.serviceMap.keySet();
 		for (String serviceName : set) {
 			sb.append(serviceName).append(" : \n");
 			String content = this.list(serviceName);
@@ -163,8 +187,12 @@ public class NodeManager implements NodeManagerMBean {
 	@Override
 	public synchronized String clearAll() {
 		this.delayQueue.clear();
-		this.useableMap.clear();
-		this.closedMap.clear();
+		try {
+			this.writeLock.lock();
+			this.serviceMap.clear();
+		} finally {
+			this.writeLock.unlock();
+		}
 		return "OK !";
 	}
 
@@ -174,40 +202,6 @@ public class NodeManager implements NodeManagerMBean {
 
 	public static NodeManager getInstance() {
 		return proxy.nodeManager;
-	}
-
-	private final Map<String, DelayedNode> closedMap = new HashMap<String, DelayedNode>();
-
-	@Override
-	@Loggable
-	public String openPing(String serviceName, String instanceName) {
-		String key = serviceName + "_" + instanceName;
-		if (this.closedMap.containsKey(key)) {
-			DelayedNode delayedNode = this.closedMap.remove(key);
-			/**
-			 * 减小代码复杂度，不更新putTime，重新加入后会立即ping
-			 */
-			// delayedNode.setPutTime(System.currentTimeMillis());
-			this.delayQueue.put(delayedNode);
-			return "OK !";
-		} else {
-			return "EMPTY !";
-		}
-	}
-
-	@Override
-	@Loggable
-	public String closePing(String serviceName, String instanceName) {
-		DelayedNode dst = new DelayedNode(new Node(serviceName, "host", 0, 0L, instanceName));
-		for (DelayedNode src : this.delayQueue) {
-			if (src.equals(dst)) {
-				String key = serviceName + "_" + instanceName;
-				this.delayQueue.remove(src);
-				this.closedMap.put(key, src);
-				return "OK !";
-			}
-		}
-		return "EMPTY !";
 	}
 
 	@Override
@@ -220,12 +214,19 @@ public class NodeManager implements NodeManagerMBean {
 	}
 
 	@Override
+	@Loggable
+	public String openPing(String serviceName, String instanceName) {
+		return "none";
+	}
+
+	@Override
+	@Loggable
+	public String closePing(String serviceName, String instanceName) {
+		return "none";
+	}
+
+	@Override
 	public String listClosedMap() {
-		Collection<DelayedNode> collection = this.closedMap.values();
-		StringBuilder sb = new StringBuilder();
-		for (DelayedNode delayedNode : collection) {
-			sb.append(delayedNode.getNode().toString()).append("\n");
-		}
-		return sb.toString();
+		return "none";
 	}
 }
