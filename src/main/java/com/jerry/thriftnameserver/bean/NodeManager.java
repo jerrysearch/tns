@@ -101,7 +101,7 @@ public class NodeManager implements NodeManagerMBean {
 				if (map.containsKey(instanceName)) {
 					map.remove(instanceName);
 					if (map.isEmpty()) {
-						this.serviceMap.remove(instanceName);
+						this.serviceMap.remove(serviceName);
 					}
 					return true;
 				}
