@@ -3,6 +3,8 @@ package com.jerry.thriftnameserver.ping;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jcabi.aspects.Loggable;
 import com.jerry.thriftnameserver.bean.Node;
@@ -36,9 +38,9 @@ public class ThriftPingCommand extends HystrixCommand<Integer> {
 		super(setter);
 		this.node = node;
 	}
-	
+
 	@Loggable
-	public int ping(Node node){
+	public int ping(Node node) {
 		return this.execute();
 	}
 
@@ -56,8 +58,11 @@ public class ThriftPingCommand extends HystrixCommand<Integer> {
 		return vNodes;
 	}
 
+	private static final Logger log = LoggerFactory.getLogger(ThriftPingCommand.class);
+
 	@Override
 	protected Integer getFallback() {
+		log.error("Fallback --> {}", this.node.toAllString());
 		return -1;
 	}
 }
