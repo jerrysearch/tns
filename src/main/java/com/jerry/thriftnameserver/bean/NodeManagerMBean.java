@@ -7,9 +7,11 @@ public interface NodeManagerMBean {
 
 	String offLine(String serviceName, String instanceName);
 	
-	String openPing(String serviceName, String instanceName);
+	String offlineAll();
 	
-	String closePing(String serviceName, String instanceName);
+//	String openPing(String serviceName, String instanceName);
+	
+//	String closePing(String serviceName, String instanceName);
 
 	String list(String serviceName);
 
@@ -17,7 +19,15 @@ public interface NodeManagerMBean {
 	
 	String listDelayQueue();
 	
-	String listClosedMap();
+//	String listClosedMap();
 	
-	String clearAll();
+	/**
+	 * help 信息
+	 */
+	String helpOnLine();
+	String helpOffline();
+	String helpList();
+	String helpListAll();
+	String helpListDelayQueue();
+	String helpOfflineAll();
 }

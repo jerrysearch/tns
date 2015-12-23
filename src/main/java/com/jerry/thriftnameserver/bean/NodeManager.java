@@ -188,7 +188,7 @@ public class NodeManager implements NodeManagerMBean {
 
 	@Loggable
 	@Override
-	public synchronized String clearAll() {
+	public String offlineAll() {
 		this.delayQueue.clear();
 		try {
 			this.writeLock.lock();
@@ -216,20 +216,65 @@ public class NodeManager implements NodeManagerMBean {
 		return sb.toString();
 	}
 
+	private final String end = "\n";
+	private final String tab = "    ";
+
 	@Override
-	@Loggable
-	public String openPing(String serviceName, String instanceName) {
-		return "none";
+	public String helpOnLine() {
+		StringBuilder sb = new StringBuilder(500);
+		sb.append("SYNOPSIS").append(end);
+		sb.append(tab)
+				.append("string serviceName, string host, int port, long pingFrequency, [string instanceName]")
+				.append(end);
+		sb.append(end);
+		sb.append("OPTIONS").append(end);
+		sb.append(tab).append("serviceName : service name of this node provides").append(end);
+		sb.append(tab).append("host : the dst node's host or ip").append(end);
+		sb.append(tab).append("port : the dst node's port").append(end);
+		sb.append(tab).append("pingFrequency : the frequency of ping (s)").append(end);
+		sb.append(tab)
+				.append("[instanceName] : uniquely identifies of this node , default {System.currentTimeMillis}")
+				.append(end);
+		return sb.toString();
 	}
 
 	@Override
-	@Loggable
-	public String closePing(String serviceName, String instanceName) {
-		return "none";
+	public String helpOffline() {
+		StringBuilder sb = new StringBuilder(500);
+		sb.append("SYNOPSIS").append(end);
+		sb.append(tab).append("string serviceName, string instanceName").append(end);
+		sb.append(end);
+		sb.append("OPTIONS").append(end);
+		sb.append(tab).append("serviceName : service name").append(end);
+		sb.append(tab)
+				.append("instanceName : uniquely identifies of node , see list(String serviceName) or listAll()");
+		return sb.toString();
 	}
 
 	@Override
-	public String listClosedMap() {
-		return "none";
+	public String helpList() {
+		StringBuilder sb = new StringBuilder(500);
+		sb.append("SYNOPSIS").append(end);
+		sb.append(tab).append("string serviceName").append(end);
+		sb.append(end);
+		sb.append("OPTIONS").append(end);
+		sb.append(tab).append("serviceName : service name");
+		return sb.toString();
 	}
+
+	@Override
+	public String helpListAll() {
+		return "";
+	}
+
+	@Override
+	public String helpListDelayQueue() {
+		return "";
+	}
+
+	@Override
+	public String helpOfflineAll() {
+		return "";
+	}
+
 }
