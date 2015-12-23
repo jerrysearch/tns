@@ -114,7 +114,7 @@ public class NodeManager implements NodeManagerMBean {
 
 	@Override
 	public String onLine(String serviceName, String host, int port, long pingFrequency) {
-		String instanceName = host + "." + port;
+		String instanceName = String.valueOf(System.currentTimeMillis());
 		return this.onLine(serviceName, host, port, pingFrequency, instanceName);
 	}
 
