@@ -12,9 +12,9 @@ import org.apache.thrift.transport.TServerSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jerry.thriftnameserver.rpc.ThriftPool;
-import com.jerry.thriftnameserver.rpc.ThriftPool.Iface;
-import com.jerry.thriftnameserver.rpc.impl.ThriftPoolImpl;
+import com.jerry.thriftnameserver.rpc.TNSRpc;
+import com.jerry.thriftnameserver.rpc.TNSRpc.Iface;
+import com.jerry.thriftnameserver.rpc.impl.TNSRpcImpl;
 
 public class ThriftPoolServer {
 	private final Logger log = LoggerFactory.getLogger(getClass());
@@ -24,7 +24,7 @@ public class ThriftPoolServer {
 			@Override
 			public void run() {
 				try {
-					TProcessor tprocessor = new ThriftPool.Processor<Iface>(new ThriftPoolImpl());
+					TProcessor tprocessor = new TNSRpc.Processor<Iface>(new TNSRpcImpl());
 					InetSocketAddress address = new InetSocketAddress(host, port);
 					TServerSocket transport = new TServerSocket(address);
 					TThreadPoolServer.Args ttArgs = new TThreadPoolServer.Args(transport);
