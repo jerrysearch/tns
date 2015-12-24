@@ -30,4 +30,10 @@ public interface NodeManagerMBean {
 	String helpListAll();
 	String helpListDelayQueue();
 	String helpOfflineAll();
+	
+	
+	/**
+	 * cluster
+	 */
+	String meet(String host);
 }

@@ -3,7 +3,6 @@ package com.jerry.thriftnameserver.rpc.impl;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.thrift.TException;
 
@@ -48,12 +47,16 @@ public class TNSRpcImpl implements Iface {
 	}
 
 	@Override
-	public void onLine(String host, int port, String instanceName) throws TException {
+	@Loggable
+	public void onLine(String host, int port, String id) throws TException {
 
 	}
 
 	@Override
-	public Map<String, List<SNode>> allServiceList(String clientId) throws TException {
-		return null;
+	@Loggable(skipResult = true)
+	public List<SNode> allServiceList(String clientId) throws TException {
+		List<SNode> list = new LinkedList<SNode>();
+		nodeManager.toServiceNodeList(list);
+		return list;
 	}
 }

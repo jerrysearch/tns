@@ -9,7 +9,7 @@ public class ThriftNameServer {
 		log.info("--------------------------------------");
 		log.info("ThriftNameServer start begin");
 		log.info("--------------------------------------");
-		String host = System.getProperty("HOSTNAME", "localhost");
+		String host = System.getProperty("HOSTNAME", "127.0.0.3");
 		int port = 8700;
 		ThriftPoolServer thriftPoolServer = new ThriftPoolServer();
 		thriftPoolServer.start(host, port);

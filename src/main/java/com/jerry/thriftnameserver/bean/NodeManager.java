@@ -3,16 +3,25 @@ package com.jerry.thriftnameserver.bean;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.DelayQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.apache.thrift.protocol.TBinaryProtocol;
+import org.apache.thrift.protocol.TProtocol;
+import org.apache.thrift.transport.TSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jcabi.aspects.Loggable;
+import com.jerry.thriftnameserver.conf.Config;
+import com.jerry.thriftnameserver.rpc.Cluster;
+import com.jerry.thriftnameserver.rpc.SNode;
+import com.jerry.thriftnameserver.rpc.clusterConstants;
 
 public class NodeManager implements NodeManagerMBean {
 	private final Logger log = LoggerFactory.getLogger(getClass());
@@ -23,6 +32,8 @@ public class NodeManager implements NodeManagerMBean {
 	private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 	private final Lock readLock = lock.readLock();
 	private final Lock writeLock = lock.writeLock();
+	
+	private final String id = String.valueOf(System.currentTimeMillis());
 
 	private NodeManager() {
 	}
@@ -37,6 +48,20 @@ public class NodeManager implements NodeManagerMBean {
 			}
 		} finally {
 			this.readLock.unlock();
+		}
+	}
+
+	public void toServiceNodeList(List<SNode> dst) {
+		for(DelayedNode delayedNode : this.delayQueue){
+			Node node = delayedNode.getNode();
+			SNode snode = new SNode();
+			snode.setHost(node.getHost());
+			snode.setPort(node.getPort());
+			snode.setInstanceName(node.getInstanceName());
+			snode.setVNodes(node.getvNodes());
+			snode.setPingFrequency(node.getPingFrequency());
+			snode.setServiceName(node.getServiceName());
+			dst.add(snode);
 		}
 	}
 
@@ -72,20 +97,20 @@ public class NodeManager implements NodeManagerMBean {
 		vNodes = Math.min(vNodes, 20); // 最大虚拟节点数20
 		node.setvNodes(vNodes);
 		node.setLastPingtTime(System.currentTimeMillis()); // 更新最后一次健康检查的时间
-		this.updateServiceMap(node, this.serviceMap);
+		this.updateServiceMap(node);
 	}
 
-	private void updateServiceMap(Node node, Map<String, Map<String, Node>> nodeMap) {
+	private void updateServiceMap(Node node) {
 		try {
 			this.writeLock.lock();
 			String serviceName = node.getServiceName();
-			if (nodeMap.containsKey(serviceName)) {
-				Map<String, Node> map = nodeMap.get(serviceName);
+			if (this.serviceMap.containsKey(serviceName)) {
+				Map<String, Node> map = this.serviceMap.get(serviceName);
 				map.put(node.getInstanceName(), node);
 			} else {
 				Map<String, Node> map = new HashMap<String, Node>();
 				map.put(node.getInstanceName(), node);
-				nodeMap.put(serviceName, map);
+				this.serviceMap.put(serviceName, map);
 			}
 		} finally {
 			this.writeLock.unlock();
@@ -126,15 +151,21 @@ public class NodeManager implements NodeManagerMBean {
 		pingFrequency = Math.min(pingFrequency, 60); // 最大ping频率1分钟
 
 		Node node = new Node(serviceName, host, port, pingFrequency, instanceName);
-		this.removeFromDelayQueue(serviceName, instanceName); // 加入之前，移除相同的实例
-		this.putToDealyQueue(node);
+		this.onLine(node);
 		return node.toString();
+	}
+	
+	private void onLine(Node node){
+		this.removeFromDelayQueue(node); // 加入之前，移除相同的实例
+		this.putToDealyQueue(node); // 放到queue下
+		this.updateServiceMap(node); // 放到serviceMap下
 	}
 
 	@Override
 	@Loggable
 	public String offLine(String serviceName, String instanceName) {
-		boolean a = this.removeFromDelayQueue(serviceName, instanceName);
+		Node node = new Node(serviceName, "", 0, 0, instanceName);
+		boolean a = this.removeFromDelayQueue(node);
 		boolean b = this.removeFromServiceMap(serviceName, instanceName);
 		if (a && b) {
 			return "OK !";
@@ -146,9 +177,8 @@ public class NodeManager implements NodeManagerMBean {
 	}
 
 	@Loggable
-	private boolean removeFromDelayQueue(String serviceName, String instanceName) {
-		Node dst = new Node(serviceName, "host", 0, 0L, instanceName);
-		DelayedNode delayedNode = new DelayedNode(dst);
+	private boolean removeFromDelayQueue(Node node) {
+		DelayedNode delayedNode = new DelayedNode(node);
 		return this.delayQueue.remove(delayedNode);
 	}
 
@@ -275,6 +305,37 @@ public class NodeManager implements NodeManagerMBean {
 	@Override
 	public String helpOfflineAll() {
 		return "";
+	}
+
+	@Override
+	public String meet(String host) {
+		try {
+			TSocket transport = new TSocket(host, clusterConstants.PORT, 2000);
+			TProtocol protocol = new TBinaryProtocol(transport);
+			Cluster.Client client = new Cluster.Client(protocol);
+			transport.open();
+			List<SNode> list = client.allServiceList(this.id);
+			/**
+			 * 清空已有node
+			 */
+//			this.offlineAll();
+			
+			for(SNode snode : list){
+				String serviceName = snode.getServiceName();
+				String nHost = snode.getHost();
+				int port = snode.getPort();
+				long pingFrequency = snode.getPingFrequency();
+				String instanceName = snode.getInstanceName();
+				Node node = new Node(serviceName, nHost, port, pingFrequency, instanceName);
+				this.onLine(node);
+			}
+			String myHost = Config.hostName;
+			client.onLine(myHost, clusterConstants.PORT, this.id);
+			
+			return "OK !";
+		} catch (Exception e) {
+			return String.format("%s, Exception : %s", "FAIL", e.getMessage());
+		}
 	}
 
 }

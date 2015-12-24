@@ -7,12 +7,12 @@ service Cluster {
 	/**
 	*	TNS上线
 	*/
-	oneway void onLine(1: string host, 2: i32 port, 3: string instanceName),
+	oneway void onLine(1: string host, 2: i32 port, 3: string id),
 	
 	/**
 	*	获取所有服务列表
 	*/
-	map<string, list<SNode>> allServiceList(1: string clientId)
+	list<SNode> allServiceList(1: string clientId)
 }
 
 struct TNSNode {
@@ -26,5 +26,7 @@ struct SNode {
   1: required string host,
   2: required i32 port,
   3: required string instanceName,
-  4: required i32 vNodes
+  4: required i32 vNodes,
+  5: required i64 pingFrequency,
+  6: required string serviceName
 }
