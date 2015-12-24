@@ -41,7 +41,7 @@ public class TNSRpcServer {
 		};
 
 		Thread t = new Thread(runnable);
-		t.setName("ThriftPoolServer");
+		t.setName("TNSRpcServer");
 		t.start();
 	}
 }
