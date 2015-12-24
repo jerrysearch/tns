@@ -3,7 +3,6 @@ package com.jerry.thriftnameserver.bean;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,7 +31,7 @@ public class NodeManager implements NodeManagerMBean {
 	private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 	private final Lock readLock = lock.readLock();
 	private final Lock writeLock = lock.writeLock();
-	
+
 	private final String id = String.valueOf(System.currentTimeMillis());
 
 	private NodeManager() {
@@ -52,7 +51,7 @@ public class NodeManager implements NodeManagerMBean {
 	}
 
 	public void toServiceNodeList(List<SNode> dst) {
-		for(DelayedNode delayedNode : this.delayQueue){
+		for (DelayedNode delayedNode : this.delayQueue) {
 			Node node = delayedNode.getNode();
 			SNode snode = new SNode();
 			snode.setHost(node.getHost());
@@ -154,8 +153,8 @@ public class NodeManager implements NodeManagerMBean {
 		this.onLine(node);
 		return node.toString();
 	}
-	
-	private void onLine(Node node){
+
+	private void onLine(Node node) {
 		this.removeFromDelayQueue(node); // 加入之前，移除相同的实例
 		this.putToDealyQueue(node); // 放到queue下
 		this.updateServiceMap(node); // 放到serviceMap下
@@ -318,9 +317,9 @@ public class NodeManager implements NodeManagerMBean {
 			/**
 			 * 清空已有node
 			 */
-//			this.offlineAll();
-			
-			for(SNode snode : list){
+			// this.offlineAll();
+
+			for (SNode snode : list) {
 				String serviceName = snode.getServiceName();
 				String nHost = snode.getHost();
 				int port = snode.getPort();
@@ -331,7 +330,7 @@ public class NodeManager implements NodeManagerMBean {
 			}
 			String myHost = Config.hostName;
 			client.onLine(myHost, clusterConstants.PORT, this.id);
-			
+
 			return "OK !";
 		} catch (Exception e) {
 			return String.format("%s, Exception : %s", "FAIL", e.getMessage());

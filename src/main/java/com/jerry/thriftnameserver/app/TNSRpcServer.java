@@ -16,7 +16,7 @@ import com.jerry.thriftnameserver.rpc.TNSRpc;
 import com.jerry.thriftnameserver.rpc.TNSRpc.Iface;
 import com.jerry.thriftnameserver.rpc.impl.TNSRpcImpl;
 
-public class ThriftPoolServer {
+public class TNSRpcServer {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	public void start(final String host, final int port) {
