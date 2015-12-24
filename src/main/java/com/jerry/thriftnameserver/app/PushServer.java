@@ -20,7 +20,7 @@ public class PushServer {
 
 		ScheduledExecutorService service = Executors.newScheduledThreadPool(2);
 		service.scheduleWithFixedDelay(task_1, 10, 10, TimeUnit.SECONDS);
-		service.scheduleWithFixedDelay(task_2, 10, 20, TimeUnit.SECONDS);
+		service.scheduleWithFixedDelay(task_2, 10, 10, TimeUnit.SECONDS);
 	}
 
 	/**

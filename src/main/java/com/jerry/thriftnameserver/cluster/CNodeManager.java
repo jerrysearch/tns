@@ -25,7 +25,7 @@ public class CNodeManager implements CNodeManagerMBean {
 	private final Lock readLock = lock.readLock();
 	private final Lock writeLock = lock.writeLock();
 
-	private final long clearMills = 60000; // 1分钟
+	private final long clearMills = 600000; // 10分钟
 
 	private final TCNode me = new TCNode();
 
@@ -60,7 +60,6 @@ public class CNodeManager implements CNodeManagerMBean {
 		return new LinkedList<TCNode>(this.cMap.values());
 	}
 
-	@Loggable
 	private TCNode getOne(Long id) {
 		Long key = this.cMap.higherKey(id);
 		if (null == key) {
@@ -93,6 +92,7 @@ public class CNodeManager implements CNodeManagerMBean {
 	}
 
 	@Override
+	@Loggable
 	public String meet(String host) {
 		TSocket transport = new TSocket(host, clusterConstants.PORT, 2000);
 		TProtocol protocol = new TBinaryProtocol(transport);
@@ -117,13 +117,20 @@ public class CNodeManager implements CNodeManagerMBean {
 	 */
 	public void up(TCNode tcnode) {
 		Long key = tcnode.getId();
-		this.cMap.put(key, tcnode);
+		try {
+			this.writeLock.lock();
+			this.cMap.put(key, tcnode);
+		} finally {
+			this.writeLock.unlock();
+		}
+
 	}
 
 	private final String format = "    %-20s%-20s%-20s%-20s\n";
 	private final String headLine = String.format(format, "STATE", "HOST", "ID", "TIMESTAMP");
 
 	@Override
+	@Loggable
 	public String clusterStatus() {
 		try {
 			StringBuilder sb = new StringBuilder(500);
@@ -172,6 +179,7 @@ public class CNodeManager implements CNodeManagerMBean {
 	}
 
 	@Override
+	@Loggable
 	public String tombstone(long id) {
 		try {
 			this.writeLock.lock();
