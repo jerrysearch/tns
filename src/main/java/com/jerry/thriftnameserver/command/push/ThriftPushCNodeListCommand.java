@@ -12,15 +12,10 @@ import com.jerry.thriftnameserver.rpc.Cluster;
 import com.jerry.thriftnameserver.rpc.STATE;
 import com.jerry.thriftnameserver.rpc.TCNode;
 
-public class ThriftPushCNodeListCommand extends BaseThriftPushCommand<STATE> {
-
-	private final TCNode tcnode;
-	private final List<TCNode> list;
+public class ThriftPushCNodeListCommand extends BaseThriftPushCommand<STATE, TCNode> {
 
 	public ThriftPushCNodeListCommand(TCNode tcnode, List<TCNode> list) {
-		super(setter);
-		this.tcnode = tcnode;
-		this.list = list;
+		super(tcnode, list);
 	}
 
 	@Override
@@ -32,7 +27,7 @@ public class ThriftPushCNodeListCommand extends BaseThriftPushCommand<STATE> {
 		TProtocol protocol = new TBinaryProtocol(transport);
 		Cluster.Client client = new Cluster.Client(protocol);
 		transport.open();
-		client.pushClusterList(list);
+		client.pushClusterList(this.list);
 		transport.close();
 		return STATE.UP;
 	}

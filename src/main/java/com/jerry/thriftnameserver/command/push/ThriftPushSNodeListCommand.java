@@ -9,18 +9,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jerry.thriftnameserver.rpc.Cluster;
+import com.jerry.thriftnameserver.rpc.SNode;
 import com.jerry.thriftnameserver.rpc.STATE;
 import com.jerry.thriftnameserver.rpc.TCNode;
 
-public class ThriftPushSNodeListCommand extends BaseThriftPushCommand<STATE> {
+public class ThriftPushSNodeListCommand extends BaseThriftPushCommand<STATE, SNode> {
 
-	private final TCNode tcnode;
-	private final List<TCNode> list;
-
-	public ThriftPushSNodeListCommand(TCNode tcnode, List<TCNode> list) {
-		super(setter);
-		this.tcnode = tcnode;
-		this.list = list;
+	public ThriftPushSNodeListCommand(TCNode tcnode, List<SNode> list) {
+		super(tcnode, list);
 	}
 
 	@Override
@@ -32,7 +28,7 @@ public class ThriftPushSNodeListCommand extends BaseThriftPushCommand<STATE> {
 		TProtocol protocol = new TBinaryProtocol(transport);
 		Cluster.Client client = new Cluster.Client(protocol);
 		transport.open();
-		client.pushClusterList(list);
+		client.pushServiceList(this.list);
 		transport.close();
 		return STATE.UP;
 	}

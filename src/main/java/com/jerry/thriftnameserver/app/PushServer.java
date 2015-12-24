@@ -54,7 +54,7 @@ public class PushServer {
 				}
 				List<TCNode> list = cNodeManager.getList();
 				ThriftPushCNodeListCommand command = new ThriftPushCNodeListCommand(tcnode, list);
-				STATE state = command.execute();
+				STATE state = command.push();
 				/**
 				 * 更新节点tcnode状态
 				 */

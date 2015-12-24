@@ -1,5 +1,9 @@
 package com.jerry.thriftnameserver.command.push;
 
+import java.util.List;
+
+import com.jcabi.aspects.Loggable;
+import com.jerry.thriftnameserver.rpc.TCNode;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
@@ -7,10 +11,16 @@ import com.netflix.hystrix.HystrixCommandProperties;
 import com.netflix.hystrix.HystrixThreadPoolKey;
 import com.netflix.hystrix.HystrixThreadPoolProperties;
 
-public abstract class BaseThriftPushCommand<T> extends HystrixCommand<T> {
-	protected BaseThriftPushCommand(com.netflix.hystrix.HystrixCommand.Setter setter) {
+public abstract class BaseThriftPushCommand<T, K> extends HystrixCommand<T> {
+	protected final TCNode tcnode;
+	protected final List<K> list;
+	
+	protected BaseThriftPushCommand(TCNode tcnode, List<K> list){
 		super(setter);
+		this.tcnode = tcnode;
+		this.list = list;
 	}
+	
 	private static final HystrixCommandGroupKey groupKey = HystrixCommandGroupKey.Factory
 			.asKey("PushGroup");
 	private static final HystrixCommandKey commandKey = HystrixCommandKey.Factory.asKey("node");
@@ -25,4 +35,17 @@ public abstract class BaseThriftPushCommand<T> extends HystrixCommand<T> {
 			.withGroupKey(groupKey).andCommandKey(commandKey).andThreadPoolKey(threadPoolKey)
 			.andCommandPropertiesDefaults(commandProperties)
 			.andThreadPoolPropertiesDefaults(threadPoolProperties);
+	
+	
+	public T push(){
+		this.logPush(tcnode);
+		return this.execute();
+	}
+	
+	@Loggable
+	private void logPush(TCNode tcnode){
+		/**
+		 * just log
+		 */
+	}
 }
