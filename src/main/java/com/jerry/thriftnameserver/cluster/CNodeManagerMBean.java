@@ -14,8 +14,8 @@ public interface CNodeManagerMBean {
 	 */
 	public String clusterStatus();
 	/**
-	 * 埋葬自己
+	 * 埋葬某个节点
 	 * @return
 	 */
-	public String tombstone();
+	public String tombstone(long id);
 }

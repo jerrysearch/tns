@@ -11,6 +11,7 @@ import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
 
+import com.jcabi.aspects.Loggable;
 import com.jerry.thriftnameserver.conf.Config;
 import com.jerry.thriftnameserver.rpc.Cluster;
 import com.jerry.thriftnameserver.rpc.STATE;
@@ -20,13 +21,11 @@ import com.jerry.thriftnameserver.rpc.clusterConstants;
 public class CNodeManager implements CNodeManagerMBean {
 
 	private final TreeMap<Long, TCNode> cMap = new TreeMap<Long, TCNode>();
-	// private final NodeManager nodeManager = NodeManager.getInstance();
-
 	private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 	private final Lock readLock = lock.readLock();
 	private final Lock writeLock = lock.writeLock();
 
-	private final long clearMills = 600000; // 10分钟
+	private final long clearMills = 60000; // 1分钟
 
 	private final TCNode me = new TCNode();
 
@@ -55,15 +54,16 @@ public class CNodeManager implements CNodeManagerMBean {
 		return new LinkedList<TCNode>(this.cMap.values());
 	}
 
+	@Loggable
 	private TCNode getOne(Long id) {
 		Long key = this.cMap.higherKey(id);
 		if (null == key) {
 			key = this.cMap.firstKey();
 		}
 		/**
-		 * 跳过自己
+		 * 选择到自己，终止
 		 */
-		if (key.longValue() == id.longValue()) {
+		if (key.longValue() == this.me.getId()) {
 			return null;
 		}
 		TCNode tcnode = this.cMap.get(key);
@@ -163,10 +163,20 @@ public class CNodeManager implements CNodeManagerMBean {
 	}
 
 	@Override
-	public String tombstone() {
-		this.me.setState(STATE.Tombstone);
-		this.me.setTimestamp(System.currentTimeMillis());
-		return "OK !";
+	public String tombstone(long id) {
+		try {
+			this.writeLock.lock();
+			if (this.cMap.containsKey(id)) {
+				TCNode tcnode = this.cMap.get(id);
+				tcnode.setState(STATE.Tombstone);
+				tcnode.setTimestamp(System.currentTimeMillis());
+				return "OK !";
+			} else {
+				return "FAIL !";
+			}
+		} finally {
+			this.writeLock.unlock();
+		}
 	}
 
 	private static class proxy {
