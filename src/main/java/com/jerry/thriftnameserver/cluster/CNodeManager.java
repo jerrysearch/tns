@@ -116,7 +116,7 @@ public class CNodeManager implements CNodeManagerMBean {
 		this.cMap.put(key, tcnode);
 	}
 
-	private final String format = "    %-10s%-10s%-20s%-20s\n";
+	private final String format = "    %-10s%-20s%-20s%-20s\n";
 	private final String headLine = String.format(format, "STATE", "HOST", "ID", "TIMESTAMP");
 
 	@Override
