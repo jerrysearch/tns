@@ -11,6 +11,7 @@ import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
 
+import com.jcabi.aspects.Loggable;
 import com.jerry.thriftnameserver.conf.Config;
 import com.jerry.thriftnameserver.rpc.Cluster;
 import com.jerry.thriftnameserver.rpc.STATE;
@@ -55,6 +56,7 @@ public class CNodeManager implements CNodeManagerMBean {
 		return new LinkedList<TCNode>(this.cMap.values());
 	}
 
+	@Loggable
 	private TCNode getOne(Long id) {
 		Long key = this.cMap.higherKey(id);
 		if (null == key) {
