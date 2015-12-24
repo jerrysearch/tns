@@ -19,8 +19,8 @@ public class PushServer {
 		Runnable task_2 = this.getPushTnsTask();
 
 		ScheduledExecutorService service = Executors.newScheduledThreadPool(2);
-		service.scheduleWithFixedDelay(task_1, 30, 30, TimeUnit.SECONDS);
-		service.scheduleWithFixedDelay(task_2, 60, 60, TimeUnit.SECONDS);
+		service.scheduleWithFixedDelay(task_1, 10, 10, TimeUnit.SECONDS);
+		service.scheduleWithFixedDelay(task_2, 10, 20, TimeUnit.SECONDS);
 	}
 
 	/**

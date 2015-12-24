@@ -1,5 +1,11 @@
 package com.jerry.thriftnameserver.cluster;
 
+/**
+ * 没用了
+ * @author jerry
+ *
+ */
+@Deprecated
 public class CNode {
 	private String host;
 	private int port;

@@ -47,7 +47,13 @@ public class CNodeManager implements CNodeManagerMBean {
 	 * @return
 	 */
 	public TCNode getOne() {
-		return this.getOne(this.me.getId());
+		try {
+			this.readLock.lock();
+			return this.getOne(this.me.getId());
+		} finally {
+			this.readLock.unlock();
+		}
+
 	}
 
 	public List<TCNode> getList() {
@@ -114,7 +120,7 @@ public class CNodeManager implements CNodeManagerMBean {
 		this.cMap.put(key, tcnode);
 	}
 
-	private final String format = "    %-10s%-20s%-20s%-20s\n";
+	private final String format = "    %-20s%-20s%-20s%-20s\n";
 	private final String headLine = String.format(format, "STATE", "HOST", "ID", "TIMESTAMP");
 
 	@Override
@@ -142,6 +148,9 @@ public class CNodeManager implements CNodeManagerMBean {
 				long id = tcnode.getId();
 				if (this.cMap.containsKey(id)) {
 					TCNode tmp = this.cMap.get(id);
+					if (tmp.getState() == STATE.Tombstone) { // 墓碑是不可恢复的，一个完整周期后，墓碑会传播到所有节点
+						continue;
+					}
 					switch (tcnode.getState()) {
 					case UP:
 					case DOWN:
