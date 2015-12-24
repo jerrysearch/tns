@@ -9,23 +9,20 @@ import org.apache.thrift.TException;
 import com.jcabi.aspects.Loggable;
 import com.jerry.thriftnameserver.bean.Node;
 import com.jerry.thriftnameserver.bean.NodeManager;
+import com.jerry.thriftnameserver.cluster.CNodeManager;
 import com.jerry.thriftnameserver.rpc.SNode;
+import com.jerry.thriftnameserver.rpc.TCNode;
 import com.jerry.thriftnameserver.rpc.TNSRpc.Iface;
 
 public class TNSRpcImpl implements Iface {
 
 	private final NodeManager nodeManager = NodeManager.getInstance();
+	private final CNodeManager cNodeManager = CNodeManager.getInstance();
 
 	@Override
 	@Loggable(skipResult = true)
 	public List<SNode> nodeList(String clientId, String serviceName) throws TException {
 		return this.nodeList(serviceName, true);
-	}
-
-	@Override
-	@Loggable(skipResult = true)
-	public List<SNode> allNodeList(String clientId, String serviceName) throws TException {
-		return this.nodeList(serviceName, false);
 	}
 
 	private List<SNode> nodeList(String serviceName, boolean check) {
@@ -48,15 +45,19 @@ public class TNSRpcImpl implements Iface {
 
 	@Override
 	@Loggable
-	public void onLine(String host, int port, String id) throws TException {
-
+	public void up(TCNode tcnode) throws TException {
+		this.cNodeManager.up(tcnode);
 	}
 
 	@Override
-	@Loggable(skipResult = true)
-	public List<SNode> allServiceList(String clientId) throws TException {
-		List<SNode> list = new LinkedList<SNode>();
-		nodeManager.toServiceNodeList(list);
-		return list;
+	@Loggable
+	public void pushServiceList(List<SNode> sList) throws TException {
+		this.nodeManager.pushServiceList(sList);
+	}
+
+	@Override
+	@Loggable
+	public void pushClusterList(List<TCNode> cList) throws TException {
+		this.cNodeManager.pushClusterList(cList);
 	}
 }

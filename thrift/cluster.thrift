@@ -7,19 +7,31 @@ service Cluster {
 	/**
 	*	TNS上线
 	*/
-	oneway void onLine(1: string host, 2: i32 port, 3: string id),
+	oneway void up(1: TCNode cnode),
 	
 	/**
-	*	获取所有服务列表
+	*	推送服务节点列表
 	*/
-	list<SNode> allServiceList(1: string clientId)
+	oneway void pushServiceList(1: list<SNode> sList),
+	
+	/**
+	*	推送tns节点列表
+	*/
+	oneway void pushClusterList(1: list<TCNode> cList)
 }
 
-struct TNSNode {
-  1: required string host,
-  2: required i32 port,
-  3: required string instanceName,
-  4: required i32 vNodes
+enum STATE {
+ UP = 1,
+ DOWN = 2,
+ Tombstone = 3
+}
+
+struct TCNode {
+  1: string host,
+  2: i32 port,
+  3: i64 id,
+  4: STATE state,
+  5: i64 timestamp
 }
 
 struct SNode {

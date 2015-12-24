@@ -8,18 +8,17 @@ import javax.management.ObjectName;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jerry.thriftnameserver.bean.NodeManager;
-import com.jerry.thriftnameserver.bean.NodeManagerMBean;
+import com.jerry.thriftnameserver.cluster.CNodeManager;
 
-public class NodeManagerMBeanServer {
+public class CNodeManagerMBeanServer {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	public void start() {
 		MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-		NodeManagerMBean nodeManagerMBean = NodeManager.getInstance();
+		CNodeManager cNodeManagerMBean = CNodeManager.getInstance();
 		try {
-			mbs.registerMBean(nodeManagerMBean, new ObjectName(
-					"NodeManagerMBean:name=nodeManagerMBean"));
+			mbs.registerMBean(cNodeManagerMBean, new ObjectName(
+					"CNodeManagerMBean:name=cNodeManagerMBean"));
 		} catch (Exception e) {
 			log.error("start fail !", e);
 		}

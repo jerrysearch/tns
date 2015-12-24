@@ -10,17 +10,11 @@ import java.util.concurrent.DelayQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import org.apache.thrift.protocol.TBinaryProtocol;
-import org.apache.thrift.protocol.TProtocol;
-import org.apache.thrift.transport.TSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jcabi.aspects.Loggable;
-import com.jerry.thriftnameserver.conf.Config;
-import com.jerry.thriftnameserver.rpc.Cluster;
 import com.jerry.thriftnameserver.rpc.SNode;
-import com.jerry.thriftnameserver.rpc.clusterConstants;
 
 public class NodeManager implements NodeManagerMBean {
 	private final Logger log = LoggerFactory.getLogger(getClass());
@@ -31,8 +25,6 @@ public class NodeManager implements NodeManagerMBean {
 	private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 	private final Lock readLock = lock.readLock();
 	private final Lock writeLock = lock.writeLock();
-
-	private final String id = String.valueOf(System.currentTimeMillis());
 
 	private NodeManager() {
 	}
@@ -154,7 +146,7 @@ public class NodeManager implements NodeManagerMBean {
 		return node.toString();
 	}
 
-	private void onLine(Node node) {
+	public void onLine(Node node) {
 		this.removeFromDelayQueue(node); // 加入之前，移除相同的实例
 		this.putToDealyQueue(node); // 放到queue下
 		this.updateServiceMap(node); // 放到serviceMap下
@@ -305,36 +297,8 @@ public class NodeManager implements NodeManagerMBean {
 	public String helpOfflineAll() {
 		return "";
 	}
-
-	@Override
-	public String meet(String host) {
-		try {
-			TSocket transport = new TSocket(host, clusterConstants.PORT, 2000);
-			TProtocol protocol = new TBinaryProtocol(transport);
-			Cluster.Client client = new Cluster.Client(protocol);
-			transport.open();
-			List<SNode> list = client.allServiceList(this.id);
-			/**
-			 * 清空已有node
-			 */
-			// this.offlineAll();
-
-			for (SNode snode : list) {
-				String serviceName = snode.getServiceName();
-				String nHost = snode.getHost();
-				int port = snode.getPort();
-				long pingFrequency = snode.getPingFrequency();
-				String instanceName = snode.getInstanceName();
-				Node node = new Node(serviceName, nHost, port, pingFrequency, instanceName);
-				this.onLine(node);
-			}
-			String myHost = Config.hostName;
-			client.onLine(myHost, clusterConstants.PORT, this.id);
-
-			return "OK !";
-		} catch (Exception e) {
-			return String.format("%s, Exception : %s", "FAIL", e.getMessage());
-		}
+	
+	public void pushServiceList(List<SNode> list){
+		
 	}
-
 }

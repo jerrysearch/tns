@@ -1,4 +1,4 @@
-package com.jerry.thriftnameserver.ping;
+package com.jerry.thriftnameserver.command.ping;
 
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;

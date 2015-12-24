@@ -12,7 +12,7 @@ public class ThriftNameServer {
 		log.info("--------------------------------------");
 		log.info("ThriftNameServer start begin");
 		log.info("--------------------------------------");
-		String host = Config.hostName;
+		String host = Config.HOSTNAME;
 		int port = clusterConstants.PORT;
 		TNSRpcServer tnsRpcServer = new TNSRpcServer();
 		tnsRpcServer.start(host, port);
@@ -20,8 +20,14 @@ public class ThriftNameServer {
 		NodeManagerMBeanServer nodeManagerMBeanServer = new NodeManagerMBeanServer();
 		nodeManagerMBeanServer.start();
 
+		CNodeManagerMBeanServer cNodeManagerMBeanServer = new CNodeManagerMBeanServer();
+		cNodeManagerMBeanServer.start();
+
 		PoolAblePingServer poolAblePingServer = new PoolAblePingServer();
 		poolAblePingServer.start();
+
+		PushServer pushServer = new PushServer();
+		pushServer.start();
 
 		log.info("--------------------------------------");
 		log.info("ThriftNameServer start end");

@@ -42,26 +42,33 @@ public class Cluster {
     /**
      * TNS上线
      * 
-     * @param host
-     * @param port
-     * @param id
+     * @param cnode
      */
-    public void onLine(String host, int port, String id) throws org.apache.thrift.TException;
+    public void up(TCNode cnode) throws org.apache.thrift.TException;
 
     /**
-     * 获取所有服务列表
+     * 推送服务节点列表
      * 
-     * @param clientId
+     * @param sList
      */
-    public List<SNode> allServiceList(String clientId) throws org.apache.thrift.TException;
+    public void pushServiceList(List<SNode> sList) throws org.apache.thrift.TException;
+
+    /**
+     * 推送tns节点列表
+     * 
+     * @param cList
+     */
+    public void pushClusterList(List<TCNode> cList) throws org.apache.thrift.TException;
 
   }
 
   public interface AsyncIface {
 
-    public void onLine(String host, int port, String id, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void up(TCNode cnode, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
-    public void allServiceList(String clientId, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+    public void pushServiceList(List<SNode> sList, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
+
+    public void pushClusterList(List<TCNode> cList, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException;
 
   }
 
@@ -85,41 +92,40 @@ public class Cluster {
       super(iprot, oprot);
     }
 
-    public void onLine(String host, int port, String id) throws org.apache.thrift.TException
+    public void up(TCNode cnode) throws org.apache.thrift.TException
     {
-      send_onLine(host, port, id);
+      send_up(cnode);
     }
 
-    public void send_onLine(String host, int port, String id) throws org.apache.thrift.TException
+    public void send_up(TCNode cnode) throws org.apache.thrift.TException
     {
-      onLine_args args = new onLine_args();
-      args.setHost(host);
-      args.setPort(port);
-      args.setId(id);
-      sendBase("onLine", args);
+      up_args args = new up_args();
+      args.setCnode(cnode);
+      sendBase("up", args);
     }
 
-    public List<SNode> allServiceList(String clientId) throws org.apache.thrift.TException
+    public void pushServiceList(List<SNode> sList) throws org.apache.thrift.TException
     {
-      send_allServiceList(clientId);
-      return recv_allServiceList();
+      send_pushServiceList(sList);
     }
 
-    public void send_allServiceList(String clientId) throws org.apache.thrift.TException
+    public void send_pushServiceList(List<SNode> sList) throws org.apache.thrift.TException
     {
-      allServiceList_args args = new allServiceList_args();
-      args.setClientId(clientId);
-      sendBase("allServiceList", args);
+      pushServiceList_args args = new pushServiceList_args();
+      args.setSList(sList);
+      sendBase("pushServiceList", args);
     }
 
-    public List<SNode> recv_allServiceList() throws org.apache.thrift.TException
+    public void pushClusterList(List<TCNode> cList) throws org.apache.thrift.TException
     {
-      allServiceList_result result = new allServiceList_result();
-      receiveBase(result, "allServiceList");
-      if (result.isSetSuccess()) {
-        return result.success;
-      }
-      throw new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.MISSING_RESULT, "allServiceList failed: unknown result");
+      send_pushClusterList(cList);
+    }
+
+    public void send_pushClusterList(List<TCNode> cList) throws org.apache.thrift.TException
+    {
+      pushClusterList_args args = new pushClusterList_args();
+      args.setCList(cList);
+      sendBase("pushClusterList", args);
     }
 
   }
@@ -140,30 +146,24 @@ public class Cluster {
       super(protocolFactory, clientManager, transport);
     }
 
-    public void onLine(String host, int port, String id, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void up(TCNode cnode, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      onLine_call method_call = new onLine_call(host, port, id, resultHandler, this, ___protocolFactory, ___transport);
+      up_call method_call = new up_call(cnode, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class onLine_call extends org.apache.thrift.async.TAsyncMethodCall {
-      private String host;
-      private int port;
-      private String id;
-      public onLine_call(String host, int port, String id, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+    public static class up_call extends org.apache.thrift.async.TAsyncMethodCall {
+      private TCNode cnode;
+      public up_call(TCNode cnode, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
         super(client, protocolFactory, transport, resultHandler, true);
-        this.host = host;
-        this.port = port;
-        this.id = id;
+        this.cnode = cnode;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("onLine", org.apache.thrift.protocol.TMessageType.ONEWAY, 0));
-        onLine_args args = new onLine_args();
-        args.setHost(host);
-        args.setPort(port);
-        args.setId(id);
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("up", org.apache.thrift.protocol.TMessageType.ONEWAY, 0));
+        up_args args = new up_args();
+        args.setCnode(cnode);
         args.write(prot);
         prot.writeMessageEnd();
       }
@@ -177,35 +177,65 @@ public class Cluster {
       }
     }
 
-    public void allServiceList(String clientId, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+    public void pushServiceList(List<SNode> sList, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
       checkReady();
-      allServiceList_call method_call = new allServiceList_call(clientId, resultHandler, this, ___protocolFactory, ___transport);
+      pushServiceList_call method_call = new pushServiceList_call(sList, resultHandler, this, ___protocolFactory, ___transport);
       this.___currentMethod = method_call;
       ___manager.call(method_call);
     }
 
-    public static class allServiceList_call extends org.apache.thrift.async.TAsyncMethodCall {
-      private String clientId;
-      public allServiceList_call(String clientId, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
-        super(client, protocolFactory, transport, resultHandler, false);
-        this.clientId = clientId;
+    public static class pushServiceList_call extends org.apache.thrift.async.TAsyncMethodCall {
+      private List<SNode> sList;
+      public pushServiceList_call(List<SNode> sList, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, true);
+        this.sList = sList;
       }
 
       public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
-        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("allServiceList", org.apache.thrift.protocol.TMessageType.CALL, 0));
-        allServiceList_args args = new allServiceList_args();
-        args.setClientId(clientId);
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("pushServiceList", org.apache.thrift.protocol.TMessageType.ONEWAY, 0));
+        pushServiceList_args args = new pushServiceList_args();
+        args.setSList(sList);
         args.write(prot);
         prot.writeMessageEnd();
       }
 
-      public List<SNode> getResult() throws org.apache.thrift.TException {
+      public void getResult() throws org.apache.thrift.TException {
         if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
           throw new IllegalStateException("Method call not finished!");
         }
         org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
         org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
-        return (new Client(prot)).recv_allServiceList();
+      }
+    }
+
+    public void pushClusterList(List<TCNode> cList, org.apache.thrift.async.AsyncMethodCallback resultHandler) throws org.apache.thrift.TException {
+      checkReady();
+      pushClusterList_call method_call = new pushClusterList_call(cList, resultHandler, this, ___protocolFactory, ___transport);
+      this.___currentMethod = method_call;
+      ___manager.call(method_call);
+    }
+
+    public static class pushClusterList_call extends org.apache.thrift.async.TAsyncMethodCall {
+      private List<TCNode> cList;
+      public pushClusterList_call(List<TCNode> cList, org.apache.thrift.async.AsyncMethodCallback resultHandler, org.apache.thrift.async.TAsyncClient client, org.apache.thrift.protocol.TProtocolFactory protocolFactory, org.apache.thrift.transport.TNonblockingTransport transport) throws org.apache.thrift.TException {
+        super(client, protocolFactory, transport, resultHandler, true);
+        this.cList = cList;
+      }
+
+      public void write_args(org.apache.thrift.protocol.TProtocol prot) throws org.apache.thrift.TException {
+        prot.writeMessageBegin(new org.apache.thrift.protocol.TMessage("pushClusterList", org.apache.thrift.protocol.TMessageType.ONEWAY, 0));
+        pushClusterList_args args = new pushClusterList_args();
+        args.setCList(cList);
+        args.write(prot);
+        prot.writeMessageEnd();
+      }
+
+      public void getResult() throws org.apache.thrift.TException {
+        if (getState() != org.apache.thrift.async.TAsyncMethodCall.State.RESPONSE_READ) {
+          throw new IllegalStateException("Method call not finished!");
+        }
+        org.apache.thrift.transport.TMemoryInputTransport memoryTransport = new org.apache.thrift.transport.TMemoryInputTransport(getFrameBuffer().array());
+        org.apache.thrift.protocol.TProtocol prot = client.getProtocolFactory().getProtocol(memoryTransport);
       }
     }
 
@@ -222,47 +252,66 @@ public class Cluster {
     }
 
     private static <I extends Iface> Map<String,  org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> getProcessMap(Map<String,  org.apache.thrift.ProcessFunction<I, ? extends  org.apache.thrift.TBase>> processMap) {
-      processMap.put("onLine", new onLine());
-      processMap.put("allServiceList", new allServiceList());
+      processMap.put("up", new up());
+      processMap.put("pushServiceList", new pushServiceList());
+      processMap.put("pushClusterList", new pushClusterList());
       return processMap;
     }
 
-    public static class onLine<I extends Iface> extends org.apache.thrift.ProcessFunction<I, onLine_args> {
-      public onLine() {
-        super("onLine");
+    public static class up<I extends Iface> extends org.apache.thrift.ProcessFunction<I, up_args> {
+      public up() {
+        super("up");
       }
 
-      public onLine_args getEmptyArgsInstance() {
-        return new onLine_args();
+      public up_args getEmptyArgsInstance() {
+        return new up_args();
       }
 
       protected boolean isOneway() {
         return true;
       }
 
-      public org.apache.thrift.TBase getResult(I iface, onLine_args args) throws org.apache.thrift.TException {
-        iface.onLine(args.host, args.port, args.id);
+      public org.apache.thrift.TBase getResult(I iface, up_args args) throws org.apache.thrift.TException {
+        iface.up(args.cnode);
         return null;
       }
     }
 
-    public static class allServiceList<I extends Iface> extends org.apache.thrift.ProcessFunction<I, allServiceList_args> {
-      public allServiceList() {
-        super("allServiceList");
+    public static class pushServiceList<I extends Iface> extends org.apache.thrift.ProcessFunction<I, pushServiceList_args> {
+      public pushServiceList() {
+        super("pushServiceList");
       }
 
-      public allServiceList_args getEmptyArgsInstance() {
-        return new allServiceList_args();
+      public pushServiceList_args getEmptyArgsInstance() {
+        return new pushServiceList_args();
       }
 
       protected boolean isOneway() {
-        return false;
+        return true;
       }
 
-      public allServiceList_result getResult(I iface, allServiceList_args args) throws org.apache.thrift.TException {
-        allServiceList_result result = new allServiceList_result();
-        result.success = iface.allServiceList(args.clientId);
-        return result;
+      public org.apache.thrift.TBase getResult(I iface, pushServiceList_args args) throws org.apache.thrift.TException {
+        iface.pushServiceList(args.sList);
+        return null;
+      }
+    }
+
+    public static class pushClusterList<I extends Iface> extends org.apache.thrift.ProcessFunction<I, pushClusterList_args> {
+      public pushClusterList() {
+        super("pushClusterList");
+      }
+
+      public pushClusterList_args getEmptyArgsInstance() {
+        return new pushClusterList_args();
+      }
+
+      protected boolean isOneway() {
+        return true;
+      }
+
+      public org.apache.thrift.TBase getResult(I iface, pushClusterList_args args) throws org.apache.thrift.TException {
+        iface.pushClusterList(args.cList);
+        return null;
       }
     }
 
@@ -279,18 +328,19 @@ public class Cluster {
     }
 
     private static <I extends AsyncIface> Map<String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase,?>> getProcessMap(Map<String,  org.apache.thrift.AsyncProcessFunction<I, ? extends  org.apache.thrift.TBase, ?>> processMap) {
-      processMap.put("onLine", new onLine());
-      processMap.put("allServiceList", new allServiceList());
+      processMap.put("up", new up());
+      processMap.put("pushServiceList", new pushServiceList());
+      processMap.put("pushClusterList", new pushClusterList());
       return processMap;
     }
 
-    public static class onLine<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, onLine_args, Void> {
-      public onLine() {
-        super("onLine");
+    public static class up<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, up_args, Void> {
+      public up() {
+        super("up");
       }
 
-      public onLine_args getEmptyArgsInstance() {
-        return new onLine_args();
+      public up_args getEmptyArgsInstance() {
+        return new up_args();
       }
 
       public AsyncMethodCallback<Void> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
@@ -307,86 +357,85 @@ public class Cluster {
         return true;
       }
 
-      public void start(I iface, onLine_args args, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws TException {
-        iface.onLine(args.host, args.port, args.id,resultHandler);
+      public void start(I iface, up_args args, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws TException {
+        iface.up(args.cnode,resultHandler);
       }
     }
 
-    public static class allServiceList<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, allServiceList_args, List<SNode>> {
-      public allServiceList() {
-        super("allServiceList");
+    public static class pushServiceList<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, pushServiceList_args, Void> {
+      public pushServiceList() {
+        super("pushServiceList");
       }
 
-      public allServiceList_args getEmptyArgsInstance() {
-        return new allServiceList_args();
+      public pushServiceList_args getEmptyArgsInstance() {
+        return new pushServiceList_args();
       }
 
-      public AsyncMethodCallback<List<SNode>> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
+      public AsyncMethodCallback<Void> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
         final org.apache.thrift.AsyncProcessFunction fcall = this;
-        return new AsyncMethodCallback<List<SNode>>() { 
-          public void onComplete(List<SNode> o) {
-            allServiceList_result result = new allServiceList_result();
-            result.success = o;
-            try {
-              fcall.sendResponse(fb,result, org.apache.thrift.protocol.TMessageType.REPLY,seqid);
-              return;
-            } catch (Exception e) {
-              LOGGER.error("Exception writing to internal frame buffer", e);
-            }
-            fb.close();
+        return new AsyncMethodCallback<Void>() { 
+          public void onComplete(Void o) {
           }
           public void onError(Exception e) {
-            byte msgType = org.apache.thrift.protocol.TMessageType.REPLY;
-            org.apache.thrift.TBase msg;
-            allServiceList_result result = new allServiceList_result();
-            {
-              msgType = org.apache.thrift.protocol.TMessageType.EXCEPTION;
-              msg = (org.apache.thrift.TBase)new org.apache.thrift.TApplicationException(org.apache.thrift.TApplicationException.INTERNAL_ERROR, e.getMessage());
-            }
-            try {
-              fcall.sendResponse(fb,msg,msgType,seqid);
-              return;
-            } catch (Exception ex) {
-              LOGGER.error("Exception writing to internal frame buffer", ex);
-            }
-            fb.close();
           }
         };
       }
 
       protected boolean isOneway() {
-        return false;
+        return true;
       }
 
-      public void start(I iface, allServiceList_args args, org.apache.thrift.async.AsyncMethodCallback<List<SNode>> resultHandler) throws TException {
-        iface.allServiceList(args.clientId,resultHandler);
+      public void start(I iface, pushServiceList_args args, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws TException {
+        iface.pushServiceList(args.sList,resultHandler);
+      }
+    }
+
+    public static class pushClusterList<I extends AsyncIface> extends org.apache.thrift.AsyncProcessFunction<I, pushClusterList_args, Void> {
+      public pushClusterList() {
+        super("pushClusterList");
+      }
+
+      public pushClusterList_args getEmptyArgsInstance() {
+        return new pushClusterList_args();
+      }
+
+      public AsyncMethodCallback<Void> getResultHandler(final AsyncFrameBuffer fb, final int seqid) {
+        final org.apache.thrift.AsyncProcessFunction fcall = this;
+        return new AsyncMethodCallback<Void>() { 
+          public void onComplete(Void o) {
+          }
+          public void onError(Exception e) {
+          }
+        };
+      }
+
+      protected boolean isOneway() {
+        return true;
+      }
+
+      public void start(I iface, pushClusterList_args args, org.apache.thrift.async.AsyncMethodCallback<Void> resultHandler) throws TException {
+        iface.pushClusterList(args.cList,resultHandler);
       }
     }
 
   }
 
-  public static class onLine_args implements org.apache.thrift.TBase<onLine_args, onLine_args._Fields>, java.io.Serializable, Cloneable, Comparable<onLine_args>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("onLine_args");
+  public static class up_args implements org.apache.thrift.TBase<up_args, up_args._Fields>, java.io.Serializable, Cloneable, Comparable<up_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("up_args");
 
-    private static final org.apache.thrift.protocol.TField HOST_FIELD_DESC = new org.apache.thrift.protocol.TField("host", org.apache.thrift.protocol.TType.STRING, (short)1);
-    private static final org.apache.thrift.protocol.TField PORT_FIELD_DESC = new org.apache.thrift.protocol.TField("port", org.apache.thrift.protocol.TType.I32, (short)2);
-    private static final org.apache.thrift.protocol.TField ID_FIELD_DESC = new org.apache.thrift.protocol.TField("id", org.apache.thrift.protocol.TType.STRING, (short)3);
+    private static final org.apache.thrift.protocol.TField CNODE_FIELD_DESC = new org.apache.thrift.protocol.TField("cnode", org.apache.thrift.protocol.TType.STRUCT, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new onLine_argsStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new onLine_argsTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new up_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new up_argsTupleSchemeFactory());
     }
 
-    public String host; // required
-    public int port; // required
-    public String id; // required
+    public TCNode cnode; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      HOST((short)1, "host"),
-      PORT((short)2, "port"),
-      ID((short)3, "id");
+      CNODE((short)1, "cnode");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -401,571 +450,8 @@ public class Cluster {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
-          case 1: // HOST
-            return HOST;
-          case 2: // PORT
-            return PORT;
-          case 3: // ID
-            return ID;
-          default:
-            return null;
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, throwing an exception
-       * if it is not found.
-       */
-      public static _Fields findByThriftIdOrThrow(int fieldId) {
-        _Fields fields = findByThriftId(fieldId);
-        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
-        return fields;
-      }
-
-      /**
-       * Find the _Fields constant that matches name, or null if its not found.
-       */
-      public static _Fields findByName(String name) {
-        return byName.get(name);
-      }
-
-      private final short _thriftId;
-      private final String _fieldName;
-
-      _Fields(short thriftId, String fieldName) {
-        _thriftId = thriftId;
-        _fieldName = fieldName;
-      }
-
-      public short getThriftFieldId() {
-        return _thriftId;
-      }
-
-      public String getFieldName() {
-        return _fieldName;
-      }
-    }
-
-    // isset id assignments
-    private static final int __PORT_ISSET_ID = 0;
-    private byte __isset_bitfield = 0;
-    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
-    static {
-      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.HOST, new org.apache.thrift.meta_data.FieldMetaData("host", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-      tmpMap.put(_Fields.PORT, new org.apache.thrift.meta_data.FieldMetaData("port", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I32)));
-      tmpMap.put(_Fields.ID, new org.apache.thrift.meta_data.FieldMetaData("id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
-      metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(onLine_args.class, metaDataMap);
-    }
-
-    public onLine_args() {
-    }
-
-    public onLine_args(
-      String host,
-      int port,
-      String id)
-    {
-      this();
-      this.host = host;
-      this.port = port;
-      setPortIsSet(true);
-      this.id = id;
-    }
-
-    /**
-     * Performs a deep copy on <i>other</i>.
-     */
-    public onLine_args(onLine_args other) {
-      __isset_bitfield = other.__isset_bitfield;
-      if (other.isSetHost()) {
-        this.host = other.host;
-      }
-      this.port = other.port;
-      if (other.isSetId()) {
-        this.id = other.id;
-      }
-    }
-
-    public onLine_args deepCopy() {
-      return new onLine_args(this);
-    }
-
-    @Override
-    public void clear() {
-      this.host = null;
-      setPortIsSet(false);
-      this.port = 0;
-      this.id = null;
-    }
-
-    public String getHost() {
-      return this.host;
-    }
-
-    public onLine_args setHost(String host) {
-      this.host = host;
-      return this;
-    }
-
-    public void unsetHost() {
-      this.host = null;
-    }
-
-    /** Returns true if field host is set (has been assigned a value) and false otherwise */
-    public boolean isSetHost() {
-      return this.host != null;
-    }
-
-    public void setHostIsSet(boolean value) {
-      if (!value) {
-        this.host = null;
-      }
-    }
-
-    public int getPort() {
-      return this.port;
-    }
-
-    public onLine_args setPort(int port) {
-      this.port = port;
-      setPortIsSet(true);
-      return this;
-    }
-
-    public void unsetPort() {
-      __isset_bitfield = EncodingUtils.clearBit(__isset_bitfield, __PORT_ISSET_ID);
-    }
-
-    /** Returns true if field port is set (has been assigned a value) and false otherwise */
-    public boolean isSetPort() {
-      return EncodingUtils.testBit(__isset_bitfield, __PORT_ISSET_ID);
-    }
-
-    public void setPortIsSet(boolean value) {
-      __isset_bitfield = EncodingUtils.setBit(__isset_bitfield, __PORT_ISSET_ID, value);
-    }
-
-    public String getId() {
-      return this.id;
-    }
-
-    public onLine_args setId(String id) {
-      this.id = id;
-      return this;
-    }
-
-    public void unsetId() {
-      this.id = null;
-    }
-
-    /** Returns true if field id is set (has been assigned a value) and false otherwise */
-    public boolean isSetId() {
-      return this.id != null;
-    }
-
-    public void setIdIsSet(boolean value) {
-      if (!value) {
-        this.id = null;
-      }
-    }
-
-    public void setFieldValue(_Fields field, Object value) {
-      switch (field) {
-      case HOST:
-        if (value == null) {
-          unsetHost();
-        } else {
-          setHost((String)value);
-        }
-        break;
-
-      case PORT:
-        if (value == null) {
-          unsetPort();
-        } else {
-          setPort((Integer)value);
-        }
-        break;
-
-      case ID:
-        if (value == null) {
-          unsetId();
-        } else {
-          setId((String)value);
-        }
-        break;
-
-      }
-    }
-
-    public Object getFieldValue(_Fields field) {
-      switch (field) {
-      case HOST:
-        return getHost();
-
-      case PORT:
-        return Integer.valueOf(getPort());
-
-      case ID:
-        return getId();
-
-      }
-      throw new IllegalStateException();
-    }
-
-    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
-    public boolean isSet(_Fields field) {
-      if (field == null) {
-        throw new IllegalArgumentException();
-      }
-
-      switch (field) {
-      case HOST:
-        return isSetHost();
-      case PORT:
-        return isSetPort();
-      case ID:
-        return isSetId();
-      }
-      throw new IllegalStateException();
-    }
-
-    @Override
-    public boolean equals(Object that) {
-      if (that == null)
-        return false;
-      if (that instanceof onLine_args)
-        return this.equals((onLine_args)that);
-      return false;
-    }
-
-    public boolean equals(onLine_args that) {
-      if (that == null)
-        return false;
-
-      boolean this_present_host = true && this.isSetHost();
-      boolean that_present_host = true && that.isSetHost();
-      if (this_present_host || that_present_host) {
-        if (!(this_present_host && that_present_host))
-          return false;
-        if (!this.host.equals(that.host))
-          return false;
-      }
-
-      boolean this_present_port = true;
-      boolean that_present_port = true;
-      if (this_present_port || that_present_port) {
-        if (!(this_present_port && that_present_port))
-          return false;
-        if (this.port != that.port)
-          return false;
-      }
-
-      boolean this_present_id = true && this.isSetId();
-      boolean that_present_id = true && that.isSetId();
-      if (this_present_id || that_present_id) {
-        if (!(this_present_id && that_present_id))
-          return false;
-        if (!this.id.equals(that.id))
-          return false;
-      }
-
-      return true;
-    }
-
-    @Override
-    public int hashCode() {
-      List<Object> list = new ArrayList<Object>();
-
-      boolean present_host = true && (isSetHost());
-      list.add(present_host);
-      if (present_host)
-        list.add(host);
-
-      boolean present_port = true;
-      list.add(present_port);
-      if (present_port)
-        list.add(port);
-
-      boolean present_id = true && (isSetId());
-      list.add(present_id);
-      if (present_id)
-        list.add(id);
-
-      return list.hashCode();
-    }
-
-    @Override
-    public int compareTo(onLine_args other) {
-      if (!getClass().equals(other.getClass())) {
-        return getClass().getName().compareTo(other.getClass().getName());
-      }
-
-      int lastComparison = 0;
-
-      lastComparison = Boolean.valueOf(isSetHost()).compareTo(other.isSetHost());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetHost()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.host, other.host);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      lastComparison = Boolean.valueOf(isSetPort()).compareTo(other.isSetPort());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetPort()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.port, other.port);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      lastComparison = Boolean.valueOf(isSetId()).compareTo(other.isSetId());
-      if (lastComparison != 0) {
-        return lastComparison;
-      }
-      if (isSetId()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.id, other.id);
-        if (lastComparison != 0) {
-          return lastComparison;
-        }
-      }
-      return 0;
-    }
-
-    public _Fields fieldForId(int fieldId) {
-      return _Fields.findByThriftId(fieldId);
-    }
-
-    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
-      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
-    }
-
-    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
-      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
-    }
-
-    @Override
-    public String toString() {
-      StringBuilder sb = new StringBuilder("onLine_args(");
-      boolean first = true;
-
-      sb.append("host:");
-      if (this.host == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.host);
-      }
-      first = false;
-      if (!first) sb.append(", ");
-      sb.append("port:");
-      sb.append(this.port);
-      first = false;
-      if (!first) sb.append(", ");
-      sb.append("id:");
-      if (this.id == null) {
-        sb.append("null");
-      } else {
-        sb.append(this.id);
-      }
-      first = false;
-      sb.append(")");
-      return sb.toString();
-    }
-
-    public void validate() throws org.apache.thrift.TException {
-      // check for required fields
-      // check for sub-struct validity
-    }
-
-    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
-      try {
-        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
-      try {
-        // it doesn't seem like you should have to do this, but java serialization is wacky, and doesn't call the default constructor.
-        __isset_bitfield = 0;
-        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
-      } catch (org.apache.thrift.TException te) {
-        throw new java.io.IOException(te);
-      }
-    }
-
-    private static class onLine_argsStandardSchemeFactory implements SchemeFactory {
-      public onLine_argsStandardScheme getScheme() {
-        return new onLine_argsStandardScheme();
-      }
-    }
-
-    private static class onLine_argsStandardScheme extends StandardScheme<onLine_args> {
-
-      public void read(org.apache.thrift.protocol.TProtocol iprot, onLine_args struct) throws org.apache.thrift.TException {
-        org.apache.thrift.protocol.TField schemeField;
-        iprot.readStructBegin();
-        while (true)
-        {
-          schemeField = iprot.readFieldBegin();
-          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
-            break;
-          }
-          switch (schemeField.id) {
-            case 1: // HOST
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-                struct.host = iprot.readString();
-                struct.setHostIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            case 2: // PORT
-              if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-                struct.port = iprot.readI32();
-                struct.setPortIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            case 3: // ID
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-                struct.id = iprot.readString();
-                struct.setIdIsSet(true);
-              } else { 
-                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-              }
-              break;
-            default:
-              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
-          }
-          iprot.readFieldEnd();
-        }
-        iprot.readStructEnd();
-
-        // check for required fields of primitive type, which can't be checked in the validate method
-        struct.validate();
-      }
-
-      public void write(org.apache.thrift.protocol.TProtocol oprot, onLine_args struct) throws org.apache.thrift.TException {
-        struct.validate();
-
-        oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.host != null) {
-          oprot.writeFieldBegin(HOST_FIELD_DESC);
-          oprot.writeString(struct.host);
-          oprot.writeFieldEnd();
-        }
-        oprot.writeFieldBegin(PORT_FIELD_DESC);
-        oprot.writeI32(struct.port);
-        oprot.writeFieldEnd();
-        if (struct.id != null) {
-          oprot.writeFieldBegin(ID_FIELD_DESC);
-          oprot.writeString(struct.id);
-          oprot.writeFieldEnd();
-        }
-        oprot.writeFieldStop();
-        oprot.writeStructEnd();
-      }
-
-    }
-
-    private static class onLine_argsTupleSchemeFactory implements SchemeFactory {
-      public onLine_argsTupleScheme getScheme() {
-        return new onLine_argsTupleScheme();
-      }
-    }
-
-    private static class onLine_argsTupleScheme extends TupleScheme<onLine_args> {
-
-      @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, onLine_args struct) throws org.apache.thrift.TException {
-        TTupleProtocol oprot = (TTupleProtocol) prot;
-        BitSet optionals = new BitSet();
-        if (struct.isSetHost()) {
-          optionals.set(0);
-        }
-        if (struct.isSetPort()) {
-          optionals.set(1);
-        }
-        if (struct.isSetId()) {
-          optionals.set(2);
-        }
-        oprot.writeBitSet(optionals, 3);
-        if (struct.isSetHost()) {
-          oprot.writeString(struct.host);
-        }
-        if (struct.isSetPort()) {
-          oprot.writeI32(struct.port);
-        }
-        if (struct.isSetId()) {
-          oprot.writeString(struct.id);
-        }
-      }
-
-      @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, onLine_args struct) throws org.apache.thrift.TException {
-        TTupleProtocol iprot = (TTupleProtocol) prot;
-        BitSet incoming = iprot.readBitSet(3);
-        if (incoming.get(0)) {
-          struct.host = iprot.readString();
-          struct.setHostIsSet(true);
-        }
-        if (incoming.get(1)) {
-          struct.port = iprot.readI32();
-          struct.setPortIsSet(true);
-        }
-        if (incoming.get(2)) {
-          struct.id = iprot.readString();
-          struct.setIdIsSet(true);
-        }
-      }
-    }
-
-  }
-
-  public static class allServiceList_args implements org.apache.thrift.TBase<allServiceList_args, allServiceList_args._Fields>, java.io.Serializable, Cloneable, Comparable<allServiceList_args>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("allServiceList_args");
-
-    private static final org.apache.thrift.protocol.TField CLIENT_ID_FIELD_DESC = new org.apache.thrift.protocol.TField("clientId", org.apache.thrift.protocol.TType.STRING, (short)1);
-
-    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
-    static {
-      schemes.put(StandardScheme.class, new allServiceList_argsStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new allServiceList_argsTupleSchemeFactory());
-    }
-
-    public String clientId; // required
-
-    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
-    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      CLIENT_ID((short)1, "clientId");
-
-      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
-
-      static {
-        for (_Fields field : EnumSet.allOf(_Fields.class)) {
-          byName.put(field.getFieldName(), field);
-        }
-      }
-
-      /**
-       * Find the _Fields constant that matches fieldId, or null if its not found.
-       */
-      public static _Fields findByThriftId(int fieldId) {
-        switch(fieldId) {
-          case 1: // CLIENT_ID
-            return CLIENT_ID;
+          case 1: // CNODE
+            return CNODE;
           default:
             return null;
         }
@@ -1009,71 +495,71 @@ public class Cluster {
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.CLIENT_ID, new org.apache.thrift.meta_data.FieldMetaData("clientId", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRING)));
+      tmpMap.put(_Fields.CNODE, new org.apache.thrift.meta_data.FieldMetaData("cnode", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT          , "TCNode")));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(allServiceList_args.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(up_args.class, metaDataMap);
     }
 
-    public allServiceList_args() {
+    public up_args() {
     }
 
-    public allServiceList_args(
-      String clientId)
+    public up_args(
+      TCNode cnode)
     {
       this();
-      this.clientId = clientId;
+      this.cnode = cnode;
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public allServiceList_args(allServiceList_args other) {
-      if (other.isSetClientId()) {
-        this.clientId = other.clientId;
+    public up_args(up_args other) {
+      if (other.isSetCnode()) {
+        this.cnode = other.cnode;
       }
     }
 
-    public allServiceList_args deepCopy() {
-      return new allServiceList_args(this);
+    public up_args deepCopy() {
+      return new up_args(this);
     }
 
     @Override
     public void clear() {
-      this.clientId = null;
+      this.cnode = null;
     }
 
-    public String getClientId() {
-      return this.clientId;
+    public TCNode getCnode() {
+      return this.cnode;
     }
 
-    public allServiceList_args setClientId(String clientId) {
-      this.clientId = clientId;
+    public up_args setCnode(TCNode cnode) {
+      this.cnode = cnode;
       return this;
     }
 
-    public void unsetClientId() {
-      this.clientId = null;
+    public void unsetCnode() {
+      this.cnode = null;
     }
 
-    /** Returns true if field clientId is set (has been assigned a value) and false otherwise */
-    public boolean isSetClientId() {
-      return this.clientId != null;
+    /** Returns true if field cnode is set (has been assigned a value) and false otherwise */
+    public boolean isSetCnode() {
+      return this.cnode != null;
     }
 
-    public void setClientIdIsSet(boolean value) {
+    public void setCnodeIsSet(boolean value) {
       if (!value) {
-        this.clientId = null;
+        this.cnode = null;
       }
     }
 
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
-      case CLIENT_ID:
+      case CNODE:
         if (value == null) {
-          unsetClientId();
+          unsetCnode();
         } else {
-          setClientId((String)value);
+          setCnode((TCNode)value);
         }
         break;
 
@@ -1082,8 +568,8 @@ public class Cluster {
 
     public Object getFieldValue(_Fields field) {
       switch (field) {
-      case CLIENT_ID:
-        return getClientId();
+      case CNODE:
+        return getCnode();
 
       }
       throw new IllegalStateException();
@@ -1096,8 +582,8 @@ public class Cluster {
       }
 
       switch (field) {
-      case CLIENT_ID:
-        return isSetClientId();
+      case CNODE:
+        return isSetCnode();
       }
       throw new IllegalStateException();
     }
@@ -1106,21 +592,21 @@ public class Cluster {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof allServiceList_args)
-        return this.equals((allServiceList_args)that);
+      if (that instanceof up_args)
+        return this.equals((up_args)that);
       return false;
     }
 
-    public boolean equals(allServiceList_args that) {
+    public boolean equals(up_args that) {
       if (that == null)
         return false;
 
-      boolean this_present_clientId = true && this.isSetClientId();
-      boolean that_present_clientId = true && that.isSetClientId();
-      if (this_present_clientId || that_present_clientId) {
-        if (!(this_present_clientId && that_present_clientId))
+      boolean this_present_cnode = true && this.isSetCnode();
+      boolean that_present_cnode = true && that.isSetCnode();
+      if (this_present_cnode || that_present_cnode) {
+        if (!(this_present_cnode && that_present_cnode))
           return false;
-        if (!this.clientId.equals(that.clientId))
+        if (!this.cnode.equals(that.cnode))
           return false;
       }
 
@@ -1131,28 +617,28 @@ public class Cluster {
     public int hashCode() {
       List<Object> list = new ArrayList<Object>();
 
-      boolean present_clientId = true && (isSetClientId());
-      list.add(present_clientId);
-      if (present_clientId)
-        list.add(clientId);
+      boolean present_cnode = true && (isSetCnode());
+      list.add(present_cnode);
+      if (present_cnode)
+        list.add(cnode);
 
       return list.hashCode();
     }
 
     @Override
-    public int compareTo(allServiceList_args other) {
+    public int compareTo(up_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetClientId()).compareTo(other.isSetClientId());
+      lastComparison = Boolean.valueOf(isSetCnode()).compareTo(other.isSetCnode());
       if (lastComparison != 0) {
         return lastComparison;
       }
-      if (isSetClientId()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.clientId, other.clientId);
+      if (isSetCnode()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.cnode, other.cnode);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -1174,14 +660,14 @@ public class Cluster {
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("allServiceList_args(");
+      StringBuilder sb = new StringBuilder("up_args(");
       boolean first = true;
 
-      sb.append("clientId:");
-      if (this.clientId == null) {
+      sb.append("cnode:");
+      if (this.cnode == null) {
         sb.append("null");
       } else {
-        sb.append(this.clientId);
+        sb.append(this.cnode);
       }
       first = false;
       sb.append(")");
@@ -1209,15 +695,15 @@ public class Cluster {
       }
     }
 
-    private static class allServiceList_argsStandardSchemeFactory implements SchemeFactory {
-      public allServiceList_argsStandardScheme getScheme() {
-        return new allServiceList_argsStandardScheme();
+    private static class up_argsStandardSchemeFactory implements SchemeFactory {
+      public up_argsStandardScheme getScheme() {
+        return new up_argsStandardScheme();
       }
     }
 
-    private static class allServiceList_argsStandardScheme extends StandardScheme<allServiceList_args> {
+    private static class up_argsStandardScheme extends StandardScheme<up_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, allServiceList_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, up_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -1227,10 +713,11 @@ public class Cluster {
             break;
           }
           switch (schemeField.id) {
-            case 1: // CLIENT_ID
-              if (schemeField.type == org.apache.thrift.protocol.TType.STRING) {
-                struct.clientId = iprot.readString();
-                struct.setClientIdIsSet(true);
+            case 1: // CNODE
+              if (schemeField.type == org.apache.thrift.protocol.TType.STRUCT) {
+                struct.cnode = new TCNode();
+                struct.cnode.read(iprot);
+                struct.setCnodeIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
@@ -1246,13 +733,13 @@ public class Cluster {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, allServiceList_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, up_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.clientId != null) {
-          oprot.writeFieldBegin(CLIENT_ID_FIELD_DESC);
-          oprot.writeString(struct.clientId);
+        if (struct.cnode != null) {
+          oprot.writeFieldBegin(CNODE_FIELD_DESC);
+          struct.cnode.write(oprot);
           oprot.writeFieldEnd();
         }
         oprot.writeFieldStop();
@@ -1261,56 +748,57 @@ public class Cluster {
 
     }
 
-    private static class allServiceList_argsTupleSchemeFactory implements SchemeFactory {
-      public allServiceList_argsTupleScheme getScheme() {
-        return new allServiceList_argsTupleScheme();
+    private static class up_argsTupleSchemeFactory implements SchemeFactory {
+      public up_argsTupleScheme getScheme() {
+        return new up_argsTupleScheme();
       }
     }
 
-    private static class allServiceList_argsTupleScheme extends TupleScheme<allServiceList_args> {
+    private static class up_argsTupleScheme extends TupleScheme<up_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, allServiceList_args struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, up_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
-        if (struct.isSetClientId()) {
+        if (struct.isSetCnode()) {
           optionals.set(0);
         }
         oprot.writeBitSet(optionals, 1);
-        if (struct.isSetClientId()) {
-          oprot.writeString(struct.clientId);
+        if (struct.isSetCnode()) {
+          struct.cnode.write(oprot);
         }
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, allServiceList_args struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, up_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
-          struct.clientId = iprot.readString();
-          struct.setClientIdIsSet(true);
+          struct.cnode = new TCNode();
+          struct.cnode.read(iprot);
+          struct.setCnodeIsSet(true);
         }
       }
     }
 
   }
 
-  public static class allServiceList_result implements org.apache.thrift.TBase<allServiceList_result, allServiceList_result._Fields>, java.io.Serializable, Cloneable, Comparable<allServiceList_result>   {
-    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("allServiceList_result");
+  public static class pushServiceList_args implements org.apache.thrift.TBase<pushServiceList_args, pushServiceList_args._Fields>, java.io.Serializable, Cloneable, Comparable<pushServiceList_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("pushServiceList_args");
 
-    private static final org.apache.thrift.protocol.TField SUCCESS_FIELD_DESC = new org.apache.thrift.protocol.TField("success", org.apache.thrift.protocol.TType.LIST, (short)0);
+    private static final org.apache.thrift.protocol.TField S_LIST_FIELD_DESC = new org.apache.thrift.protocol.TField("sList", org.apache.thrift.protocol.TType.LIST, (short)1);
 
     private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
     static {
-      schemes.put(StandardScheme.class, new allServiceList_resultStandardSchemeFactory());
-      schemes.put(TupleScheme.class, new allServiceList_resultTupleSchemeFactory());
+      schemes.put(StandardScheme.class, new pushServiceList_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new pushServiceList_argsTupleSchemeFactory());
     }
 
-    public List<SNode> success; // required
+    public List<SNode> sList; // required
 
     /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
     public enum _Fields implements org.apache.thrift.TFieldIdEnum {
-      SUCCESS((short)0, "success");
+      S_LIST((short)1, "sList");
 
       private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
 
@@ -1325,8 +813,8 @@ public class Cluster {
        */
       public static _Fields findByThriftId(int fieldId) {
         switch(fieldId) {
-          case 0: // SUCCESS
-            return SUCCESS;
+          case 1: // S_LIST
+            return S_LIST;
           default:
             return null;
         }
@@ -1370,91 +858,91 @@ public class Cluster {
     public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
     static {
       Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
-      tmpMap.put(_Fields.SUCCESS, new org.apache.thrift.meta_data.FieldMetaData("success", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+      tmpMap.put(_Fields.S_LIST, new org.apache.thrift.meta_data.FieldMetaData("sList", org.apache.thrift.TFieldRequirementType.DEFAULT, 
           new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
               new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT              , "SNode"))));
       metaDataMap = Collections.unmodifiableMap(tmpMap);
-      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(allServiceList_result.class, metaDataMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(pushServiceList_args.class, metaDataMap);
     }
 
-    public allServiceList_result() {
+    public pushServiceList_args() {
     }
 
-    public allServiceList_result(
-      List<SNode> success)
+    public pushServiceList_args(
+      List<SNode> sList)
     {
       this();
-      this.success = success;
+      this.sList = sList;
     }
 
     /**
      * Performs a deep copy on <i>other</i>.
      */
-    public allServiceList_result(allServiceList_result other) {
-      if (other.isSetSuccess()) {
-        List<SNode> __this__success = new ArrayList<SNode>(other.success.size());
-        for (SNode other_element : other.success) {
-          __this__success.add(other_element);
+    public pushServiceList_args(pushServiceList_args other) {
+      if (other.isSetSList()) {
+        List<SNode> __this__sList = new ArrayList<SNode>(other.sList.size());
+        for (SNode other_element : other.sList) {
+          __this__sList.add(other_element);
         }
-        this.success = __this__success;
+        this.sList = __this__sList;
       }
     }
 
-    public allServiceList_result deepCopy() {
-      return new allServiceList_result(this);
+    public pushServiceList_args deepCopy() {
+      return new pushServiceList_args(this);
     }
 
     @Override
     public void clear() {
-      this.success = null;
+      this.sList = null;
     }
 
-    public int getSuccessSize() {
-      return (this.success == null) ? 0 : this.success.size();
+    public int getSListSize() {
+      return (this.sList == null) ? 0 : this.sList.size();
     }
 
-    public java.util.Iterator<SNode> getSuccessIterator() {
-      return (this.success == null) ? null : this.success.iterator();
+    public java.util.Iterator<SNode> getSListIterator() {
+      return (this.sList == null) ? null : this.sList.iterator();
     }
 
-    public void addToSuccess(SNode elem) {
-      if (this.success == null) {
-        this.success = new ArrayList<SNode>();
+    public void addToSList(SNode elem) {
+      if (this.sList == null) {
+        this.sList = new ArrayList<SNode>();
       }
-      this.success.add(elem);
+      this.sList.add(elem);
     }
 
-    public List<SNode> getSuccess() {
-      return this.success;
+    public List<SNode> getSList() {
+      return this.sList;
     }
 
-    public allServiceList_result setSuccess(List<SNode> success) {
-      this.success = success;
+    public pushServiceList_args setSList(List<SNode> sList) {
+      this.sList = sList;
       return this;
     }
 
-    public void unsetSuccess() {
-      this.success = null;
+    public void unsetSList() {
+      this.sList = null;
     }
 
-    /** Returns true if field success is set (has been assigned a value) and false otherwise */
-    public boolean isSetSuccess() {
-      return this.success != null;
+    /** Returns true if field sList is set (has been assigned a value) and false otherwise */
+    public boolean isSetSList() {
+      return this.sList != null;
     }
 
-    public void setSuccessIsSet(boolean value) {
+    public void setSListIsSet(boolean value) {
       if (!value) {
-        this.success = null;
+        this.sList = null;
       }
     }
 
     public void setFieldValue(_Fields field, Object value) {
       switch (field) {
-      case SUCCESS:
+      case S_LIST:
         if (value == null) {
-          unsetSuccess();
+          unsetSList();
         } else {
-          setSuccess((List<SNode>)value);
+          setSList((List<SNode>)value);
         }
         break;
 
@@ -1463,8 +951,8 @@ public class Cluster {
 
     public Object getFieldValue(_Fields field) {
       switch (field) {
-      case SUCCESS:
-        return getSuccess();
+      case S_LIST:
+        return getSList();
 
       }
       throw new IllegalStateException();
@@ -1477,8 +965,8 @@ public class Cluster {
       }
 
       switch (field) {
-      case SUCCESS:
-        return isSetSuccess();
+      case S_LIST:
+        return isSetSList();
       }
       throw new IllegalStateException();
     }
@@ -1487,21 +975,21 @@ public class Cluster {
     public boolean equals(Object that) {
       if (that == null)
         return false;
-      if (that instanceof allServiceList_result)
-        return this.equals((allServiceList_result)that);
+      if (that instanceof pushServiceList_args)
+        return this.equals((pushServiceList_args)that);
       return false;
     }
 
-    public boolean equals(allServiceList_result that) {
+    public boolean equals(pushServiceList_args that) {
       if (that == null)
         return false;
 
-      boolean this_present_success = true && this.isSetSuccess();
-      boolean that_present_success = true && that.isSetSuccess();
-      if (this_present_success || that_present_success) {
-        if (!(this_present_success && that_present_success))
+      boolean this_present_sList = true && this.isSetSList();
+      boolean that_present_sList = true && that.isSetSList();
+      if (this_present_sList || that_present_sList) {
+        if (!(this_present_sList && that_present_sList))
           return false;
-        if (!this.success.equals(that.success))
+        if (!this.sList.equals(that.sList))
           return false;
       }
 
@@ -1512,28 +1000,28 @@ public class Cluster {
     public int hashCode() {
       List<Object> list = new ArrayList<Object>();
 
-      boolean present_success = true && (isSetSuccess());
-      list.add(present_success);
-      if (present_success)
-        list.add(success);
+      boolean present_sList = true && (isSetSList());
+      list.add(present_sList);
+      if (present_sList)
+        list.add(sList);
 
       return list.hashCode();
     }
 
     @Override
-    public int compareTo(allServiceList_result other) {
+    public int compareTo(pushServiceList_args other) {
       if (!getClass().equals(other.getClass())) {
         return getClass().getName().compareTo(other.getClass().getName());
       }
 
       int lastComparison = 0;
 
-      lastComparison = Boolean.valueOf(isSetSuccess()).compareTo(other.isSetSuccess());
+      lastComparison = Boolean.valueOf(isSetSList()).compareTo(other.isSetSList());
       if (lastComparison != 0) {
         return lastComparison;
       }
-      if (isSetSuccess()) {
-        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.success, other.success);
+      if (isSetSList()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.sList, other.sList);
         if (lastComparison != 0) {
           return lastComparison;
         }
@@ -1551,18 +1039,18 @@ public class Cluster {
 
     public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
       schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
-      }
+    }
 
     @Override
     public String toString() {
-      StringBuilder sb = new StringBuilder("allServiceList_result(");
+      StringBuilder sb = new StringBuilder("pushServiceList_args(");
       boolean first = true;
 
-      sb.append("success:");
-      if (this.success == null) {
+      sb.append("sList:");
+      if (this.sList == null) {
         sb.append("null");
       } else {
-        sb.append(this.success);
+        sb.append(this.sList);
       }
       first = false;
       sb.append(")");
@@ -1590,15 +1078,15 @@ public class Cluster {
       }
     }
 
-    private static class allServiceList_resultStandardSchemeFactory implements SchemeFactory {
-      public allServiceList_resultStandardScheme getScheme() {
-        return new allServiceList_resultStandardScheme();
+    private static class pushServiceList_argsStandardSchemeFactory implements SchemeFactory {
+      public pushServiceList_argsStandardScheme getScheme() {
+        return new pushServiceList_argsStandardScheme();
       }
     }
 
-    private static class allServiceList_resultStandardScheme extends StandardScheme<allServiceList_result> {
+    private static class pushServiceList_argsStandardScheme extends StandardScheme<pushServiceList_args> {
 
-      public void read(org.apache.thrift.protocol.TProtocol iprot, allServiceList_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol iprot, pushServiceList_args struct) throws org.apache.thrift.TException {
         org.apache.thrift.protocol.TField schemeField;
         iprot.readStructBegin();
         while (true)
@@ -1608,21 +1096,21 @@ public class Cluster {
             break;
           }
           switch (schemeField.id) {
-            case 0: // SUCCESS
+            case 1: // S_LIST
               if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
                 {
                   org.apache.thrift.protocol.TList _list0 = iprot.readListBegin();
-                  struct.success = new ArrayList<SNode>(_list0.size);
+                  struct.sList = new ArrayList<SNode>(_list0.size);
                   SNode _elem1;
                   for (int _i2 = 0; _i2 < _list0.size; ++_i2)
                   {
                     _elem1 = new SNode();
                     _elem1.read(iprot);
-                    struct.success.add(_elem1);
+                    struct.sList.add(_elem1);
                   }
                   iprot.readListEnd();
                 }
-                struct.setSuccessIsSet(true);
+                struct.setSListIsSet(true);
               } else { 
                 org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
               }
@@ -1638,15 +1126,15 @@ public class Cluster {
         struct.validate();
       }
 
-      public void write(org.apache.thrift.protocol.TProtocol oprot, allServiceList_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol oprot, pushServiceList_args struct) throws org.apache.thrift.TException {
         struct.validate();
 
         oprot.writeStructBegin(STRUCT_DESC);
-        if (struct.success != null) {
-          oprot.writeFieldBegin(SUCCESS_FIELD_DESC);
+        if (struct.sList != null) {
+          oprot.writeFieldBegin(S_LIST_FIELD_DESC);
           {
-            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.success.size()));
-            for (SNode _iter3 : struct.success)
+            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.sList.size()));
+            for (SNode _iter3 : struct.sList)
             {
               _iter3.write(oprot);
             }
@@ -1660,26 +1148,26 @@ public class Cluster {
 
     }
 
-    private static class allServiceList_resultTupleSchemeFactory implements SchemeFactory {
-      public allServiceList_resultTupleScheme getScheme() {
-        return new allServiceList_resultTupleScheme();
+    private static class pushServiceList_argsTupleSchemeFactory implements SchemeFactory {
+      public pushServiceList_argsTupleScheme getScheme() {
+        return new pushServiceList_argsTupleScheme();
       }
     }
 
-    private static class allServiceList_resultTupleScheme extends TupleScheme<allServiceList_result> {
+    private static class pushServiceList_argsTupleScheme extends TupleScheme<pushServiceList_args> {
 
       @Override
-      public void write(org.apache.thrift.protocol.TProtocol prot, allServiceList_result struct) throws org.apache.thrift.TException {
+      public void write(org.apache.thrift.protocol.TProtocol prot, pushServiceList_args struct) throws org.apache.thrift.TException {
         TTupleProtocol oprot = (TTupleProtocol) prot;
         BitSet optionals = new BitSet();
-        if (struct.isSetSuccess()) {
+        if (struct.isSetSList()) {
           optionals.set(0);
         }
         oprot.writeBitSet(optionals, 1);
-        if (struct.isSetSuccess()) {
+        if (struct.isSetSList()) {
           {
-            oprot.writeI32(struct.success.size());
-            for (SNode _iter4 : struct.success)
+            oprot.writeI32(struct.sList.size());
+            for (SNode _iter4 : struct.sList)
             {
               _iter4.write(oprot);
             }
@@ -1688,22 +1176,437 @@ public class Cluster {
       }
 
       @Override
-      public void read(org.apache.thrift.protocol.TProtocol prot, allServiceList_result struct) throws org.apache.thrift.TException {
+      public void read(org.apache.thrift.protocol.TProtocol prot, pushServiceList_args struct) throws org.apache.thrift.TException {
         TTupleProtocol iprot = (TTupleProtocol) prot;
         BitSet incoming = iprot.readBitSet(1);
         if (incoming.get(0)) {
           {
             org.apache.thrift.protocol.TList _list5 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
-            struct.success = new ArrayList<SNode>(_list5.size);
+            struct.sList = new ArrayList<SNode>(_list5.size);
             SNode _elem6;
             for (int _i7 = 0; _i7 < _list5.size; ++_i7)
             {
               _elem6 = new SNode();
               _elem6.read(iprot);
-              struct.success.add(_elem6);
+              struct.sList.add(_elem6);
             }
           }
-          struct.setSuccessIsSet(true);
+          struct.setSListIsSet(true);
+        }
+      }
+    }
+
+  }
+
+  public static class pushClusterList_args implements org.apache.thrift.TBase<pushClusterList_args, pushClusterList_args._Fields>, java.io.Serializable, Cloneable, Comparable<pushClusterList_args>   {
+    private static final org.apache.thrift.protocol.TStruct STRUCT_DESC = new org.apache.thrift.protocol.TStruct("pushClusterList_args");
+
+    private static final org.apache.thrift.protocol.TField C_LIST_FIELD_DESC = new org.apache.thrift.protocol.TField("cList", org.apache.thrift.protocol.TType.LIST, (short)1);
+
+    private static final Map<Class<? extends IScheme>, SchemeFactory> schemes = new HashMap<Class<? extends IScheme>, SchemeFactory>();
+    static {
+      schemes.put(StandardScheme.class, new pushClusterList_argsStandardSchemeFactory());
+      schemes.put(TupleScheme.class, new pushClusterList_argsTupleSchemeFactory());
+    }
+
+    public List<TCNode> cList; // required
+
+    /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
+    public enum _Fields implements org.apache.thrift.TFieldIdEnum {
+      C_LIST((short)1, "cList");
+
+      private static final Map<String, _Fields> byName = new HashMap<String, _Fields>();
+
+      static {
+        for (_Fields field : EnumSet.allOf(_Fields.class)) {
+          byName.put(field.getFieldName(), field);
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, or null if its not found.
+       */
+      public static _Fields findByThriftId(int fieldId) {
+        switch(fieldId) {
+          case 1: // C_LIST
+            return C_LIST;
+          default:
+            return null;
+        }
+      }
+
+      /**
+       * Find the _Fields constant that matches fieldId, throwing an exception
+       * if it is not found.
+       */
+      public static _Fields findByThriftIdOrThrow(int fieldId) {
+        _Fields fields = findByThriftId(fieldId);
+        if (fields == null) throw new IllegalArgumentException("Field " + fieldId + " doesn't exist!");
+        return fields;
+      }
+
+      /**
+       * Find the _Fields constant that matches name, or null if its not found.
+       */
+      public static _Fields findByName(String name) {
+        return byName.get(name);
+      }
+
+      private final short _thriftId;
+      private final String _fieldName;
+
+      _Fields(short thriftId, String fieldName) {
+        _thriftId = thriftId;
+        _fieldName = fieldName;
+      }
+
+      public short getThriftFieldId() {
+        return _thriftId;
+      }
+
+      public String getFieldName() {
+        return _fieldName;
+      }
+    }
+
+    // isset id assignments
+    public static final Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> metaDataMap;
+    static {
+      Map<_Fields, org.apache.thrift.meta_data.FieldMetaData> tmpMap = new EnumMap<_Fields, org.apache.thrift.meta_data.FieldMetaData>(_Fields.class);
+      tmpMap.put(_Fields.C_LIST, new org.apache.thrift.meta_data.FieldMetaData("cList", org.apache.thrift.TFieldRequirementType.DEFAULT, 
+          new org.apache.thrift.meta_data.ListMetaData(org.apache.thrift.protocol.TType.LIST, 
+              new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.STRUCT              , "TCNode"))));
+      metaDataMap = Collections.unmodifiableMap(tmpMap);
+      org.apache.thrift.meta_data.FieldMetaData.addStructMetaDataMap(pushClusterList_args.class, metaDataMap);
+    }
+
+    public pushClusterList_args() {
+    }
+
+    public pushClusterList_args(
+      List<TCNode> cList)
+    {
+      this();
+      this.cList = cList;
+    }
+
+    /**
+     * Performs a deep copy on <i>other</i>.
+     */
+    public pushClusterList_args(pushClusterList_args other) {
+      if (other.isSetCList()) {
+        List<TCNode> __this__cList = new ArrayList<TCNode>(other.cList.size());
+        for (TCNode other_element : other.cList) {
+          __this__cList.add(other_element);
+        }
+        this.cList = __this__cList;
+      }
+    }
+
+    public pushClusterList_args deepCopy() {
+      return new pushClusterList_args(this);
+    }
+
+    @Override
+    public void clear() {
+      this.cList = null;
+    }
+
+    public int getCListSize() {
+      return (this.cList == null) ? 0 : this.cList.size();
+    }
+
+    public java.util.Iterator<TCNode> getCListIterator() {
+      return (this.cList == null) ? null : this.cList.iterator();
+    }
+
+    public void addToCList(TCNode elem) {
+      if (this.cList == null) {
+        this.cList = new ArrayList<TCNode>();
+      }
+      this.cList.add(elem);
+    }
+
+    public List<TCNode> getCList() {
+      return this.cList;
+    }
+
+    public pushClusterList_args setCList(List<TCNode> cList) {
+      this.cList = cList;
+      return this;
+    }
+
+    public void unsetCList() {
+      this.cList = null;
+    }
+
+    /** Returns true if field cList is set (has been assigned a value) and false otherwise */
+    public boolean isSetCList() {
+      return this.cList != null;
+    }
+
+    public void setCListIsSet(boolean value) {
+      if (!value) {
+        this.cList = null;
+      }
+    }
+
+    public void setFieldValue(_Fields field, Object value) {
+      switch (field) {
+      case C_LIST:
+        if (value == null) {
+          unsetCList();
+        } else {
+          setCList((List<TCNode>)value);
+        }
+        break;
+
+      }
+    }
+
+    public Object getFieldValue(_Fields field) {
+      switch (field) {
+      case C_LIST:
+        return getCList();
+
+      }
+      throw new IllegalStateException();
+    }
+
+    /** Returns true if field corresponding to fieldID is set (has been assigned a value) and false otherwise */
+    public boolean isSet(_Fields field) {
+      if (field == null) {
+        throw new IllegalArgumentException();
+      }
+
+      switch (field) {
+      case C_LIST:
+        return isSetCList();
+      }
+      throw new IllegalStateException();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      if (that == null)
+        return false;
+      if (that instanceof pushClusterList_args)
+        return this.equals((pushClusterList_args)that);
+      return false;
+    }
+
+    public boolean equals(pushClusterList_args that) {
+      if (that == null)
+        return false;
+
+      boolean this_present_cList = true && this.isSetCList();
+      boolean that_present_cList = true && that.isSetCList();
+      if (this_present_cList || that_present_cList) {
+        if (!(this_present_cList && that_present_cList))
+          return false;
+        if (!this.cList.equals(that.cList))
+          return false;
+      }
+
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      List<Object> list = new ArrayList<Object>();
+
+      boolean present_cList = true && (isSetCList());
+      list.add(present_cList);
+      if (present_cList)
+        list.add(cList);
+
+      return list.hashCode();
+    }
+
+    @Override
+    public int compareTo(pushClusterList_args other) {
+      if (!getClass().equals(other.getClass())) {
+        return getClass().getName().compareTo(other.getClass().getName());
+      }
+
+      int lastComparison = 0;
+
+      lastComparison = Boolean.valueOf(isSetCList()).compareTo(other.isSetCList());
+      if (lastComparison != 0) {
+        return lastComparison;
+      }
+      if (isSetCList()) {
+        lastComparison = org.apache.thrift.TBaseHelper.compareTo(this.cList, other.cList);
+        if (lastComparison != 0) {
+          return lastComparison;
+        }
+      }
+      return 0;
+    }
+
+    public _Fields fieldForId(int fieldId) {
+      return _Fields.findByThriftId(fieldId);
+    }
+
+    public void read(org.apache.thrift.protocol.TProtocol iprot) throws org.apache.thrift.TException {
+      schemes.get(iprot.getScheme()).getScheme().read(iprot, this);
+    }
+
+    public void write(org.apache.thrift.protocol.TProtocol oprot) throws org.apache.thrift.TException {
+      schemes.get(oprot.getScheme()).getScheme().write(oprot, this);
+    }
+
+    @Override
+    public String toString() {
+      StringBuilder sb = new StringBuilder("pushClusterList_args(");
+      boolean first = true;
+
+      sb.append("cList:");
+      if (this.cList == null) {
+        sb.append("null");
+      } else {
+        sb.append(this.cList);
+      }
+      first = false;
+      sb.append(")");
+      return sb.toString();
+    }
+
+    public void validate() throws org.apache.thrift.TException {
+      // check for required fields
+      // check for sub-struct validity
+    }
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+      try {
+        write(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(out)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException {
+      try {
+        read(new org.apache.thrift.protocol.TCompactProtocol(new org.apache.thrift.transport.TIOStreamTransport(in)));
+      } catch (org.apache.thrift.TException te) {
+        throw new java.io.IOException(te);
+      }
+    }
+
+    private static class pushClusterList_argsStandardSchemeFactory implements SchemeFactory {
+      public pushClusterList_argsStandardScheme getScheme() {
+        return new pushClusterList_argsStandardScheme();
+      }
+    }
+
+    private static class pushClusterList_argsStandardScheme extends StandardScheme<pushClusterList_args> {
+
+      public void read(org.apache.thrift.protocol.TProtocol iprot, pushClusterList_args struct) throws org.apache.thrift.TException {
+        org.apache.thrift.protocol.TField schemeField;
+        iprot.readStructBegin();
+        while (true)
+        {
+          schemeField = iprot.readFieldBegin();
+          if (schemeField.type == org.apache.thrift.protocol.TType.STOP) { 
+            break;
+          }
+          switch (schemeField.id) {
+            case 1: // C_LIST
+              if (schemeField.type == org.apache.thrift.protocol.TType.LIST) {
+                {
+                  org.apache.thrift.protocol.TList _list8 = iprot.readListBegin();
+                  struct.cList = new ArrayList<TCNode>(_list8.size);
+                  TCNode _elem9;
+                  for (int _i10 = 0; _i10 < _list8.size; ++_i10)
+                  {
+                    _elem9 = new TCNode();
+                    _elem9.read(iprot);
+                    struct.cList.add(_elem9);
+                  }
+                  iprot.readListEnd();
+                }
+                struct.setCListIsSet(true);
+              } else { 
+                org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+              }
+              break;
+            default:
+              org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
+          }
+          iprot.readFieldEnd();
+        }
+        iprot.readStructEnd();
+
+        // check for required fields of primitive type, which can't be checked in the validate method
+        struct.validate();
+      }
+
+      public void write(org.apache.thrift.protocol.TProtocol oprot, pushClusterList_args struct) throws org.apache.thrift.TException {
+        struct.validate();
+
+        oprot.writeStructBegin(STRUCT_DESC);
+        if (struct.cList != null) {
+          oprot.writeFieldBegin(C_LIST_FIELD_DESC);
+          {
+            oprot.writeListBegin(new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, struct.cList.size()));
+            for (TCNode _iter11 : struct.cList)
+            {
+              _iter11.write(oprot);
+            }
+            oprot.writeListEnd();
+          }
+          oprot.writeFieldEnd();
+        }
+        oprot.writeFieldStop();
+        oprot.writeStructEnd();
+      }
+
+    }
+
+    private static class pushClusterList_argsTupleSchemeFactory implements SchemeFactory {
+      public pushClusterList_argsTupleScheme getScheme() {
+        return new pushClusterList_argsTupleScheme();
+      }
+    }
+
+    private static class pushClusterList_argsTupleScheme extends TupleScheme<pushClusterList_args> {
+
+      @Override
+      public void write(org.apache.thrift.protocol.TProtocol prot, pushClusterList_args struct) throws org.apache.thrift.TException {
+        TTupleProtocol oprot = (TTupleProtocol) prot;
+        BitSet optionals = new BitSet();
+        if (struct.isSetCList()) {
+          optionals.set(0);
+        }
+        oprot.writeBitSet(optionals, 1);
+        if (struct.isSetCList()) {
+          {
+            oprot.writeI32(struct.cList.size());
+            for (TCNode _iter12 : struct.cList)
+            {
+              _iter12.write(oprot);
+            }
+          }
+        }
+      }
+
+      @Override
+      public void read(org.apache.thrift.protocol.TProtocol prot, pushClusterList_args struct) throws org.apache.thrift.TException {
+        TTupleProtocol iprot = (TTupleProtocol) prot;
+        BitSet incoming = iprot.readBitSet(1);
+        if (incoming.get(0)) {
+          {
+            org.apache.thrift.protocol.TList _list13 = new org.apache.thrift.protocol.TList(org.apache.thrift.protocol.TType.STRUCT, iprot.readI32());
+            struct.cList = new ArrayList<TCNode>(_list13.size);
+            TCNode _elem14;
+            for (int _i15 = 0; _i15 < _list13.size; ++_i15)
+            {
+              _elem14 = new TCNode();
+              _elem14.read(iprot);
+              struct.cList.add(_elem14);
+            }
+          }
+          struct.setCListIsSet(true);
         }
       }
     }

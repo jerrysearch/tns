@@ -2,7 +2,7 @@ package com.jerry.thriftnameserver.app;
 
 import com.jerry.thriftnameserver.bean.Node;
 import com.jerry.thriftnameserver.bean.NodeManager;
-import com.jerry.thriftnameserver.ping.ThriftPingCommand;
+import com.jerry.thriftnameserver.command.ping.ThriftPingCommand;
 
 public class PoolAblePingServer {
 
