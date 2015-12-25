@@ -100,6 +100,7 @@ public class SNodeManager implements SNodeManagerMBean {
 			} else {
 				Map<Long, TSNode> map = new HashMap<Long, TSNode>();
 				map.put(id, tsnode);
+				this.serviceMap.put(serviceName, map);
 			}
 		} finally {
 			this.writeLock.unlock();
