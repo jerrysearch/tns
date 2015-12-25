@@ -7,8 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jcabi.aspects.Loggable;
-import com.jerry.thriftnameserver.bean.Node;
 import com.jerry.thriftnameserver.rpc.PoolAble;
+import com.jerry.thriftnameserver.rpc.TSNode;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
@@ -32,22 +32,26 @@ public class ThriftPingCommand extends HystrixCommand<Integer> {
 			.andCommandPropertiesDefaults(commandProperties)
 			.andThreadPoolPropertiesDefaults(threadPoolProperties);
 
-	private final Node node;
+	private final TSNode tsnode;
 
-	public ThriftPingCommand(Node node) {
+	public ThriftPingCommand(TSNode tsnode) {
 		super(setter);
-		this.node = node;
+		this.tsnode = tsnode;
 	}
 
 	@Loggable
-	public int ping(Node node) {
+	public int ping(TSNode tsnode) {
 		return this.execute();
+	}
+
+	public int ping() {
+		return this.ping(this.tsnode);
 	}
 
 	@Override
 	protected Integer run() throws Exception {
-		String host = node.getHost();
-		int port = node.getPort();
+		String host = this.tsnode.getHost();
+		int port = this.tsnode.getPort();
 
 		TSocket transport = new TSocket(host, port, 1000);
 		transport.open();
@@ -62,7 +66,7 @@ public class ThriftPingCommand extends HystrixCommand<Integer> {
 
 	@Override
 	protected Integer getFallback() {
-		log.error("Fallback --> {}", this.node.toAllString());
+		log.error("Fallback --> {}", this.tsnode.toString());
 		return -1;
 	}
 }

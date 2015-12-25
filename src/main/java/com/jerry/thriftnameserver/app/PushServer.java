@@ -1,5 +1,6 @@
 package com.jerry.thriftnameserver.app;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -7,20 +8,24 @@ import java.util.concurrent.TimeUnit;
 
 import com.jerry.thriftnameserver.cluster.CNodeManager;
 import com.jerry.thriftnameserver.command.push.ThriftPushCNodeListCommand;
+import com.jerry.thriftnameserver.command.push.ThriftPushSNodeListCommand;
 import com.jerry.thriftnameserver.rpc.STATE;
 import com.jerry.thriftnameserver.rpc.TCNode;
+import com.jerry.thriftnameserver.rpc.TSNode;
+import com.jerry.thriftnameserver.service.SNodeManager;
 
 public class PushServer {
 
 	private final CNodeManager cNodeManager = CNodeManager.getInstance();
+	private final SNodeManager sNodeManager = SNodeManager.getInstance();
 
 	public void start() {
 		Runnable task_1 = this.getPushServiceTask();
 		Runnable task_2 = this.getPushTnsTask();
 
 		ScheduledExecutorService service = Executors.newScheduledThreadPool(2);
-		service.scheduleWithFixedDelay(task_1, 10, 10, TimeUnit.SECONDS);
-		service.scheduleWithFixedDelay(task_2, 10, 10, TimeUnit.SECONDS);
+		service.scheduleWithFixedDelay(task_1, 10, 20, TimeUnit.SECONDS);
+		service.scheduleWithFixedDelay(task_2, 15, 20, TimeUnit.SECONDS);
 	}
 
 	/**
@@ -33,6 +38,22 @@ public class PushServer {
 
 			@Override
 			public void run() {
+				TCNode tcnode = cNodeManager.getOne();
+				if (null == tcnode) {
+					return;
+				}
+				List<TSNode> list = new LinkedList<TSNode>();
+				sNodeManager.toAllServiceNodeList(list);
+				if (list.isEmpty()) {
+					return;
+				}
+				ThriftPushSNodeListCommand command = new ThriftPushSNodeListCommand(tcnode, list);
+				STATE state = command.push();
+				/**
+				 * 更新节点tcnode状态
+				 */
+				tcnode.setState(state);
+				tcnode.setTimestamp(System.currentTimeMillis());
 			}
 		};
 		return task;

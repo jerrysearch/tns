@@ -7,5 +7,5 @@ service TNSRpc extends cluster.Cluster{
 	/**
 	*	获取一serviceName下可用的node列表
 	*/
-	list<cluster.SNode> nodeList(1: string clientId, 2: string serviceName),
+	list<cluster.TSNode> nodeList(1: string clientId, 2: string serviceName),
 }

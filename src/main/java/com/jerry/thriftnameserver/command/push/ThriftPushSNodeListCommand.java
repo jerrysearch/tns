@@ -10,13 +10,13 @@ import org.slf4j.LoggerFactory;
 
 import com.jcabi.aspects.Loggable;
 import com.jerry.thriftnameserver.rpc.Cluster;
-import com.jerry.thriftnameserver.rpc.SNode;
 import com.jerry.thriftnameserver.rpc.STATE;
 import com.jerry.thriftnameserver.rpc.TCNode;
+import com.jerry.thriftnameserver.rpc.TSNode;
 
-public class ThriftPushSNodeListCommand extends BaseThriftPushCommand<STATE, SNode> {
+public class ThriftPushSNodeListCommand extends BaseThriftPushCommand<STATE, TSNode> {
 
-	public ThriftPushSNodeListCommand(TCNode tcnode, List<SNode> list) {
+	public ThriftPushSNodeListCommand(TCNode tcnode, List<TSNode> list) {
 		super(tcnode, list);
 	}
 

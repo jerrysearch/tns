@@ -17,14 +17,11 @@ public class ThriftNameServer {
 		TNSRpcServer tnsRpcServer = new TNSRpcServer();
 		tnsRpcServer.start(host, port);
 
-		NodeManagerMBeanServer nodeManagerMBeanServer = new NodeManagerMBeanServer();
+		SNodeManagerMBeanServer nodeManagerMBeanServer = new SNodeManagerMBeanServer();
 		nodeManagerMBeanServer.start();
 
 		CNodeManagerMBeanServer cNodeManagerMBeanServer = new CNodeManagerMBeanServer();
 		cNodeManagerMBeanServer.start();
-
-		PoolAblePingServer poolAblePingServer = new PoolAblePingServer();
-		poolAblePingServer.start();
 
 		PushServer pushServer = new PushServer();
 		pushServer.start();

@@ -12,7 +12,7 @@ service Cluster {
 	/**
 	*	推送服务节点列表
 	*/
-	oneway void pushServiceList(1: list<SNode> sList),
+	oneway void pushServiceList(1: list<TSNode> sList),
 	
 	/**
 	*	推送tns节点列表
@@ -34,11 +34,13 @@ struct TCNode {
   5: i64 timestamp
 }
 
-struct SNode {
-  1: required string host,
-  2: required i32 port,
-  3: required string instanceName,
-  4: required i32 vNodes,
-  5: required i64 pingFrequency,
-  6: required string serviceName
+struct TSNode {
+  1: string host,
+  2: i32 port,
+  3: i64 id,
+  4: i32 vNodes,
+  5: i32 pingFrequency,
+  6: string serviceName,
+  7: STATE state,
+  8: i64 timestamp
 }
