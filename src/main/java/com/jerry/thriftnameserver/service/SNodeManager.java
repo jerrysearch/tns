@@ -112,8 +112,8 @@ public class SNodeManager implements SNodeManagerMBean {
 			this.readLock.lock();
 			String serviceName = tsnode.getServiceName();
 			long id = tsnode.getId();
-			return this.serviceMap.containsKey(serviceName)
-					&& this.serviceMap.get(serviceName).containsKey(id);
+			return !(this.serviceMap.containsKey(serviceName) && this.serviceMap.get(serviceName)
+					.containsKey(id));
 		} finally {
 			this.readLock.unlock();
 		}

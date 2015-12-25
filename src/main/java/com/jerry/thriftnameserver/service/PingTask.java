@@ -33,6 +33,7 @@ public class PingTask implements Runnable {
 			}
 			vNodes = Math.min(vNodes, 20); // 最大虚拟节点个数20,太大会增加客户端所有的成本
 			this.tsnode.setVNodes(vNodes);
+			this.tsnode.setTimestamp(System.currentTimeMillis());
 			break;
 		case Tombstone:
 			this.future.cancel(true);
