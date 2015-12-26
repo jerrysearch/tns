@@ -213,8 +213,7 @@ public class SNodeManager implements SNodeManagerMBean {
 	public String helpOnLine() {
 		StringBuilder sb = new StringBuilder(500);
 		sb.append("SYNOPSIS").append(end);
-		sb.append(tab)
-				.append("string serviceName, string host, int port, long pingFrequency, [string instanceName]")
+		sb.append(tab).append("string serviceName, string host, int port, long pingFrequency")
 				.append(end);
 		sb.append(end);
 		sb.append("OPTIONS").append(end);
