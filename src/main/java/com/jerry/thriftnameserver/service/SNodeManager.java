@@ -85,22 +85,58 @@ public class SNodeManager implements SNodeManagerMBean {
 	}
 
 	private void add(TSNode tsnode) {
-		this.putToServiceMap(tsnode);
+		this.putOrTombstoneServiceMap(tsnode);
 		this.pingTaskManager.submit(tsnode);
 	}
 
+	/**
+	 * 新增一个节点
+	 * 
+	 * @param tsnode
+	 */
 	private void putToServiceMap(TSNode tsnode) {
+		String serviceName = tsnode.getServiceName();
+		long id = tsnode.getId();
+		if (this.serviceMap.containsKey(serviceName)) {
+			Map<Long, TSNode> map = this.serviceMap.get(serviceName);
+			map.put(id, tsnode);
+		} else {
+			Map<Long, TSNode> map = new HashMap<Long, TSNode>();
+			map.put(id, tsnode);
+			this.serviceMap.put(serviceName, map);
+		}
+	}
+
+	/**
+	 * 删除一个节点
+	 * 
+	 * @param tsnode
+	 */
+	private void tombstoneToServiceMap(String serviceName, long id, long timestamp) {
+		TSNode tsnode = this.serviceMap.get(serviceName).get(id);
+		tsnode.setState(STATE.Tombstone);
+		tsnode.setTimestamp(timestamp);
+	}
+
+	/**
+	 * 新增、删除更新
+	 * 
+	 * @param tsnodes
+	 */
+	private void putOrTombstoneServiceMap(TSNode... tsnodes) {
 		try {
 			this.writeLock.lock();
-			String serviceName = tsnode.getServiceName();
-			long id = tsnode.getId();
-			if (this.serviceMap.containsKey(serviceName)) {
-				Map<Long, TSNode> map = this.serviceMap.get(serviceName);
-				map.put(id, tsnode);
-			} else {
-				Map<Long, TSNode> map = new HashMap<Long, TSNode>();
-				map.put(id, tsnode);
-				this.serviceMap.put(serviceName, map);
+			for (TSNode tsnode : tsnodes) {
+				if (this.isNew(tsnode)) { // add
+					this.putToServiceMap(tsnode);
+				} else {
+					if (tsnode.getState() == STATE.Tombstone) { // delete
+						String serviceName = tsnode.getServiceName();
+						long id = tsnode.getId();
+						long timestamp = tsnode.getTimestamp();
+						this.tombstoneToServiceMap(serviceName, id, timestamp);
+					}
+				}
 			}
 		} finally {
 			this.writeLock.unlock();
@@ -108,45 +144,44 @@ public class SNodeManager implements SNodeManagerMBean {
 	}
 
 	private boolean isNew(TSNode tsnode) {
-		try {
-			this.readLock.lock();
-			String serviceName = tsnode.getServiceName();
-			long id = tsnode.getId();
-			return !(this.serviceMap.containsKey(serviceName) && this.serviceMap.get(serviceName)
-					.containsKey(id));
-		} finally {
-			this.readLock.unlock();
-		}
+		String serviceName = tsnode.getServiceName();
+		long id = tsnode.getId();
+		return !(this.serviceMap.containsKey(serviceName) && this.serviceMap.get(serviceName)
+				.containsKey(id));
+	}
+
+	public void pushServiceList(List<TSNode> list) {
+		this.putOrTombstoneServiceMap(list.toArray(new TSNode[list.size()]));
 	}
 
 	@Override
 	public String serviceStatus() {
-		StringBuilder sb = new StringBuilder();
-		Set<String> set = this.serviceMap.keySet();
-		for (String serviceName : set) {
-			sb.append(serviceName).append(" : \n");
-			String content = this.statusService(serviceName);
-			sb.append(content);
-		}
-		return sb.toString();
-	}
-
-	private String statusService(String serviceName) {
 		try {
 			this.readLock.lock();
-			Map<Long, TSNode> map = this.serviceMap.get(serviceName);
-			if (map.isEmpty()) {
-				return "EMPTY !";
-			}
-			Collection<TSNode> tsnodeList = map.values();
 			StringBuilder sb = new StringBuilder();
-			for (TSNode tsnode : tsnodeList) {
-				sb.append(tsnode.toString()).append("\n");
+			Set<String> set = this.serviceMap.keySet();
+			for (String serviceName : set) {
+				sb.append(serviceName).append(" : \n");
+				String content = this.statusService(serviceName);
+				sb.append(content);
 			}
 			return sb.toString();
 		} finally {
 			this.readLock.unlock();
 		}
+	}
+
+	private String statusService(String serviceName) {
+		Map<Long, TSNode> map = this.serviceMap.get(serviceName);
+		if (map.isEmpty()) {
+			return "EMPTY !";
+		}
+		Collection<TSNode> tsnodeList = map.values();
+		StringBuilder sb = new StringBuilder();
+		for (TSNode tsnode : tsnodeList) {
+			sb.append(tsnode.toString()).append("\n");
+		}
+		return sb.toString();
 	}
 
 	@Loggable
@@ -157,39 +192,13 @@ public class SNodeManager implements SNodeManagerMBean {
 			if (this.serviceMap.containsKey(serviceName)) {
 				Map<Long, TSNode> map = this.serviceMap.get(serviceName);
 				if (map.containsKey(id)) {
-					TSNode tsnode = map.get(id);
-					tsnode.setState(STATE.Tombstone);
-					tsnode.setTimestamp(System.currentTimeMillis());
+					this.tombstoneToServiceMap(serviceName, id, System.currentTimeMillis());
 					return "OK !";
 				}
 			}
 			return "FAIL !";
 		} finally {
 			this.writeLock.unlock();
-		}
-	}
-
-	private void updateExist(TSNode tsnode) {
-		String serviceName = tsnode.getServiceName();
-		long id = tsnode.getId();
-		TSNode tmp = this.serviceMap.get(serviceName).get(id);
-		if (tmp.getState() == tsnode.getState()) {
-			return;
-		} else {
-			tmp.setState(tsnode.getState());
-			tmp.setTimestamp(tsnode.getTimestamp());
-		}
-	}
-
-	public void pushServiceList(List<TSNode> list) {
-		for (TSNode tsnode : list) {
-			if (this.isNew(tsnode)) {
-				this.add(tsnode);
-			} else {
-				if (tsnode.getState() == STATE.Tombstone) {
-					this.updateExist(tsnode);
-				}
-			}
 		}
 	}
 

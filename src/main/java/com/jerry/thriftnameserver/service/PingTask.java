@@ -2,6 +2,9 @@ package com.jerry.thriftnameserver.service;
 
 import java.util.concurrent.ScheduledFuture;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jerry.thriftnameserver.command.ping.ThriftPingCommand;
 import com.jerry.thriftnameserver.rpc.STATE;
 import com.jerry.thriftnameserver.rpc.TSNode;
@@ -10,6 +13,7 @@ public class PingTask implements Runnable {
 
 	private TSNode tsnode;
 	private ScheduledFuture<?> future;
+	private static final Logger log = LoggerFactory.getLogger(PingTask.class);
 
 	public void setFuture(ScheduledFuture<?> future) {
 		this.future = future;
@@ -23,7 +27,7 @@ public class PingTask implements Runnable {
 	public void run() {
 		switch (tsnode.getState()) {
 		case UP:
-		case DOWN:
+		case DOWN: // down的节点仍执行ping，万一恢复了呢
 			ThriftPingCommand command = new ThriftPingCommand(this.tsnode);
 			int vNodes = command.ping();
 			if (vNodes < 1) {
@@ -35,9 +39,10 @@ public class PingTask implements Runnable {
 			this.tsnode.setVNodes(vNodes);
 			this.tsnode.setTimestamp(System.currentTimeMillis());
 			break;
-		case Tombstone:
-			this.future.cancel(true);
+		case Tombstone: // 死亡节点，本实例不会再ping，直接移除
+			boolean isCancel = this.future.cancel(true);
+			log.warn("calcel -> [{}] : {}", this.tsnode.toString(), Boolean.valueOf(isCancel)
+					.toString());
 		}
 	}
-
 }
