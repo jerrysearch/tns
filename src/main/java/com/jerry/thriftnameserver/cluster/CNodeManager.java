@@ -189,6 +189,9 @@ public class CNodeManager implements CNodeManagerMBean {
 			this.writeLock.lock();
 			if (this.cMap.containsKey(id)) {
 				TCNode tcnode = this.cMap.get(id);
+				if(tcnode.getState() != STATE.DOWN){
+					return "SORRY ! you can just Tombstone node which status is down !";
+				}
 				tcnode.setState(STATE.Tombstone);
 				tcnode.setTimestamp(System.currentTimeMillis());
 				return "OK !";
