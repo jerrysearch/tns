@@ -80,13 +80,8 @@ public class SNodeManager implements SNodeManagerMBean {
 		tsnode.setId(id);
 		tsnode.setState(STATE.DOWN);
 		tsnode.setTimestamp(System.currentTimeMillis());
-		this.add(tsnode);
+		this.addOrTombstone(tsnode);
 		return tsnode.toString();
-	}
-
-	private void add(TSNode tsnode) {
-		this.putOrTombstoneServiceMap(tsnode);
-		this.pingTaskManager.submit(tsnode);
 	}
 
 	/**
@@ -123,12 +118,13 @@ public class SNodeManager implements SNodeManagerMBean {
 	 * 
 	 * @param tsnodes
 	 */
-	private void putOrTombstoneServiceMap(TSNode... tsnodes) {
+	private void addOrTombstone(TSNode... tsnodes) {
 		try {
 			this.writeLock.lock();
 			for (TSNode tsnode : tsnodes) {
 				if (this.isNew(tsnode)) { // add
 					this.putToServiceMap(tsnode);
+					this.pingTaskManager.submit(tsnode);
 				} else {
 					if (tsnode.getState() == STATE.Tombstone) { // delete
 						String serviceName = tsnode.getServiceName();
@@ -151,7 +147,7 @@ public class SNodeManager implements SNodeManagerMBean {
 	}
 
 	public void pushServiceList(List<TSNode> list) {
-		this.putOrTombstoneServiceMap(list.toArray(new TSNode[list.size()]));
+		this.addOrTombstone(list.toArray(new TSNode[list.size()]));
 	}
 
 	@Override
