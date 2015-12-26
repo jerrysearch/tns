@@ -1,7 +1,6 @@
 package com.jerry.thriftnameserver.cluster;
 
 import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.locks.Lock;
@@ -48,16 +47,21 @@ public class CNodeManager implements CNodeManagerMBean {
 	 */
 	public TCNode getOne() {
 		try {
-			this.readLock.lock();
+			this.writeLock.lock();
 			return this.getOne(this.me.getId());
 		} finally {
-			this.readLock.unlock();
+			this.writeLock.unlock();
 		}
 
 	}
 
-	public List<TCNode> getList() {
-		return new LinkedList<TCNode>(this.cMap.values());
+	public void copyClusterList(List<TCNode> list) {
+		try {
+			this.readLock.lock();
+			list.addAll(this.cMap.values());
+		} finally {
+			this.readLock.unlock();
+		}
 	}
 
 	private TCNode getOne(Long id) {
@@ -84,7 +88,7 @@ public class CNodeManager implements CNodeManagerMBean {
 				this.cMap.remove(key);
 			}
 			return this.getOne(key);
-		case DOWN:
+		case DOWN: // 一次失败即为down
 			return this.getOne(key);
 		default:
 			return null;
