@@ -40,7 +40,7 @@
 			<outputDirectory>tools</outputDirectory>
 			<includes>
 				<include>*.jar</include>
-				<include>loadservice.perl</include>
+				<include>*.perl</include>
 			</includes>
 		</fileSet>
 	</fileSets>
