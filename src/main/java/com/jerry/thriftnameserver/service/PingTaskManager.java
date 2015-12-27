@@ -18,7 +18,7 @@ public class PingTaskManager {
 	public void submit(TSNode tsnode) {
 		PingTask task = new PingTask(tsnode);
 		int pingFrequency = tsnode.getPingFrequency();
-		ScheduledFuture<?> future = this.pool.scheduleWithFixedDelay(task, pingFrequency,
+		ScheduledFuture<?> future = this.pool.scheduleWithFixedDelay(task, 0,
 				pingFrequency, TimeUnit.SECONDS);
 		task.setFuture(future);
 	}
