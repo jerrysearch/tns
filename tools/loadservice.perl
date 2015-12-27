@@ -3,7 +3,7 @@
 # $jar stands for path of jmxterm jar file
 use strict;
 
-my $file = "../config/service.cfg";
+my $file = "service.cfg";
 
 open (my $fh, "<", $file) or die "Can't open the file $file: ";
 close $file;
