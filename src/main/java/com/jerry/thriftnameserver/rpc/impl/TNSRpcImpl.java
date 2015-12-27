@@ -19,9 +19,17 @@ public class TNSRpcImpl implements Iface {
 
 	@Override
 	@Loggable(skipResult = true)
-	public List<TSNode> nodeList(String clientId, String serviceName) throws TException {
+	public List<TSNode> serviceList(String clientId, String serviceName) throws TException {
 		List<TSNode> list = new LinkedList<TSNode>();
 		this.nodeManager.toUpServiceNodeList(serviceName, list);
+		return list;
+	}
+
+	@Override
+	@Loggable(skipResult = true)
+	public List<TCNode> clusterList(String clientId) throws TException {
+		List<TCNode> list = new LinkedList<TCNode>();
+		this.cNodeManager.toUpClusterNodeList(list);
 		return list;
 	}
 

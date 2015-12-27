@@ -74,7 +74,7 @@ public class PushServer {
 					return;
 				}
 				List<TCNode> list = new LinkedList<TCNode>();
-				cNodeManager.copyClusterList(list);
+				cNodeManager.toAllClusterNodeList(list);
 				ThriftPushCNodeListCommand command = new ThriftPushCNodeListCommand(tcnode, list);
 				STATE state = command.push();
 				/**

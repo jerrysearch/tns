@@ -52,14 +52,36 @@ public class CNodeManager implements CNodeManagerMBean {
 		} finally {
 			this.writeLock.unlock();
 		}
-
 	}
 
-	public void copyClusterList(List<TCNode> list) {
+	/**
+	 * 可用的cluster列表
+	 * 
+	 * @param list
+	 */
+	public void toUpClusterNodeList(List<TCNode> list) {
 		try {
 			this.readLock.lock();
-			list.addAll(this.cMap.values());
+			Collection<TCNode> collection = this.cMap.values();
+			for (TCNode tcnode : collection) {
+				if (tcnode.getState() == STATE.UP) {
+					list.add(tcnode);
+				}
+			}
 		} finally {
+			this.readLock.unlock();
+		}
+	}
+	
+	/**
+	 * 完整的cluster列表
+	 * @param list
+	 */
+	public void toAllClusterNodeList(List<TCNode> list){
+		try{
+			this.readLock.lock();
+			list.addAll(this.cMap.values());
+		}finally{
 			this.readLock.unlock();
 		}
 	}
@@ -189,7 +211,7 @@ public class CNodeManager implements CNodeManagerMBean {
 			this.writeLock.lock();
 			if (this.cMap.containsKey(id)) {
 				TCNode tcnode = this.cMap.get(id);
-				if(tcnode.getState() != STATE.DOWN){
+				if (tcnode.getState() != STATE.DOWN) {
 					return "SORRY ! you can just Tombstone node which status is down !";
 				}
 				tcnode.setState(STATE.Tombstone);
