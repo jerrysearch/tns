@@ -3,22 +3,28 @@ package com.jerry.thriftnameserver.app;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jerry.thriftnameserver.conf.Config;
+import com.jerry.thriftnameserver.rpc.clusterConstants;
+
 public class ThriftNameServer {
 	public static void main(String[] args) {
 		Logger log = LoggerFactory.getLogger(ThriftNameServer.class);
 		log.info("--------------------------------------");
 		log.info("ThriftNameServer start begin");
 		log.info("--------------------------------------");
-		String host = System.getProperty("HOSTNAME", "localhost");
-		int port = 8700;
-		ThriftPoolServer thriftPoolServer = new ThriftPoolServer();
-		thriftPoolServer.start(host, port);
+		String host = Config.HOSTNAME;
+		int port = clusterConstants.PORT;
+		TNSRpcServer tnsRpcServer = new TNSRpcServer();
+		tnsRpcServer.start(host, port);
 
-		NodeManagerMBeanServer nodeManagerMBeanServer = new NodeManagerMBeanServer();
+		SNodeManagerMBeanServer nodeManagerMBeanServer = new SNodeManagerMBeanServer();
 		nodeManagerMBeanServer.start();
 
-		PoolAblePingServer poolAblePingServer = new PoolAblePingServer();
-		poolAblePingServer.start();
+		CNodeManagerMBeanServer cNodeManagerMBeanServer = new CNodeManagerMBeanServer();
+		cNodeManagerMBeanServer.start();
+
+		PushServer pushServer = new PushServer();
+		pushServer.start();
 
 		log.info("--------------------------------------");
 		log.info("ThriftNameServer start end");

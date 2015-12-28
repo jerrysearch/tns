@@ -39,6 +39,8 @@
 			<outputDirectory>tools</outputDirectory>
 			<includes>
 				<include>*.jar</include>
+				<include>*.perl</include>
+				<include>*.cfg</include>
 			</includes>
 		</fileSet>
 	</fileSets>
