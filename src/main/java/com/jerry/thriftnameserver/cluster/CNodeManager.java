@@ -24,8 +24,6 @@ public class CNodeManager implements CNodeManagerMBean {
 	private final Lock readLock = lock.readLock();
 	private final Lock writeLock = lock.writeLock();
 
-	private final long clearMills = 600000; // 10分钟
-
 	private final TCNode me = new TCNode();
 
 	private CNodeManager() {
@@ -47,10 +45,10 @@ public class CNodeManager implements CNodeManagerMBean {
 	 */
 	public TCNode getOne() {
 		try {
-			this.writeLock.lock();
+			this.readLock.lock();
 			return this.getOne(this.me.getId());
 		} finally {
-			this.writeLock.unlock();
+			this.readLock.unlock();
 		}
 	}
 
@@ -72,16 +70,17 @@ public class CNodeManager implements CNodeManagerMBean {
 			this.readLock.unlock();
 		}
 	}
-	
+
 	/**
 	 * 完整的cluster列表
+	 * 
 	 * @param list
 	 */
-	public void toAllClusterNodeList(List<TCNode> list){
-		try{
+	public void toAllClusterNodeList(List<TCNode> list) {
+		try {
 			this.readLock.lock();
 			list.addAll(this.cMap.values());
-		}finally{
+		} finally {
 			this.readLock.unlock();
 		}
 	}
@@ -99,17 +98,12 @@ public class CNodeManager implements CNodeManagerMBean {
 		}
 		TCNode tcnode = this.cMap.get(key);
 		/**
-		 * 跳过不健康的节点 并对墓碑进行清除
+		 * 跳过不健康的节点
 		 */
 		switch (tcnode.getState()) {
 		case UP:
 			return tcnode;
 		case Tombstone:
-			long time = System.currentTimeMillis() - tcnode.getTimestamp();
-			if (time > this.clearMills) {
-				this.cMap.remove(key);
-			}
-			return this.getOne(key);
 		case DOWN: // 一次失败即为down
 			return this.getOne(key);
 		default:
