@@ -57,17 +57,6 @@
 	</dependencies>
 
 	<build>
-		<!--过滤器 根据环境自动选择配置文件的配置内容,灵活切换配置 -->
-		<filters>
-			<filter>${project.basedir}/src/main/filter/filter-${target-env}.properties</filter>
-		</filters>
-		<resources>
-			<resource>
-				<directory>${project.basedir}/src/main/resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
-
 		<plugins>
 			<plugin>
 				<groupId>com.jcabi</groupId>

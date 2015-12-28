@@ -10,7 +10,7 @@
 	<fileSets>
 		<!--打包所有 resources 目录下的文件 到config目录下 -->
 		<fileSet>
-			<directory>${project.basedir}/target/classes</directory>
+			<directory>${project.basedir}/src/main/resources</directory>
 			<outputDirectory>config</outputDirectory>
 			<includes>
 				<include>*.properties</include>
