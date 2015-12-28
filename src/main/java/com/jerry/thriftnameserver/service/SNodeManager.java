@@ -150,14 +150,20 @@ public class SNodeManager implements SNodeManagerMBean {
 		this.addOrTombstone(list.toArray(new TSNode[list.size()]));
 	}
 
+	private final String format = "%-20s%-20s%-20s%-20s%-20s%-20s%-20s%-20s\n";
+	private final String headLine = String.format(format, "", "STATE", "HOST", "PORT", "ID",
+			"VNODES", "PINGFREQUENCY", "TIMESTAMP");
+
 	@Override
 	public String serviceStatus() {
 		try {
 			this.readLock.lock();
 			StringBuilder sb = new StringBuilder();
+			sb.append(this.headLine);
 			Set<String> set = this.serviceMap.keySet();
 			for (String serviceName : set) {
-				sb.append(serviceName).append(" : \n");
+				sb.append("\n");
+				sb.append(String.format("%-20s\n", serviceName.toUpperCase()));
 				String content = this.statusService(serviceName);
 				sb.append(content);
 			}
@@ -175,7 +181,10 @@ public class SNodeManager implements SNodeManagerMBean {
 		Collection<TSNode> tsnodeList = map.values();
 		StringBuilder sb = new StringBuilder();
 		for (TSNode tsnode : tsnodeList) {
-			sb.append(tsnode.toString()).append("\n");
+			String s = String.format(this.format, "", tsnode.getState(), tsnode.getHost(),
+					tsnode.getPort(), tsnode.getId(), tsnode.getVNodes(),
+					tsnode.getPingFrequency(), tsnode.getTimestamp());
+			sb.append(s);
 		}
 		return sb.toString();
 	}
