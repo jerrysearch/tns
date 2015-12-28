@@ -150,10 +150,9 @@ public class SNodeManager implements SNodeManagerMBean {
 		this.addOrTombstone(list.toArray(new TSNode[list.size()]));
 	}
 
-	private final String format = "%-15s%-16s%-15s%-15s%-15s%-15s%-15s\n";
-	private final String headLine = String.format(format, "STATE", "HOST", "PORT", "ID", "VNODES",
-			"PINGFREQUENCY", "TIMESTAMP");
-	private final String _Temp = "----";
+	private final String format = "%-15s%-15s%-16s%-15s%-15s%-15s%-15s%-15s\n";
+	private final String headLine = String.format(format, "STATE", "SERVICENAME", "HOST", "PORT",
+			"ID", "VNODES", "PINGFREQUENCY", "TIMESTAMP");
 
 	@Override
 	public String serviceStatus() {
@@ -164,8 +163,6 @@ public class SNodeManager implements SNodeManagerMBean {
 			Set<String> set = this.serviceMap.keySet();
 			for (String serviceName : set) {
 				sb.append("\n");
-				sb.append(String.format(this.format, "", "", this._Temp, serviceName.toUpperCase(),
-						this._Temp, "", ""));
 				String content = this.statusService(serviceName);
 				sb.append(content);
 			}
@@ -178,13 +175,13 @@ public class SNodeManager implements SNodeManagerMBean {
 	private String statusService(String serviceName) {
 		Map<Long, TSNode> map = this.serviceMap.get(serviceName);
 		if (map.isEmpty()) {
-			return "EMPTY !";
+			return serviceName + " EMPTY !\n";
 		}
 		Collection<TSNode> tsnodeList = map.values();
 		StringBuilder sb = new StringBuilder();
 		for (TSNode tsnode : tsnodeList) {
-			String s = String.format(this.format, tsnode.getState(), tsnode.getHost(),
-					tsnode.getPort(), tsnode.getId(), tsnode.getVNodes(),
+			String s = String.format(this.format, tsnode.getState(), tsnode.getServiceName(),
+					tsnode.getHost(), tsnode.getPort(), tsnode.getId(), tsnode.getVNodes(),
 					tsnode.getPingFrequency(), tsnode.getTimestamp());
 			sb.append(s);
 		}
