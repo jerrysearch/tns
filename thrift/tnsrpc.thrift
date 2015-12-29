@@ -1,4 +1,4 @@
-namespace java com.jerry.thriftnameserver.rpc
+namespace java com.qibike.thriftnameserver.rpc
 
 include "cluster.thrift"
 

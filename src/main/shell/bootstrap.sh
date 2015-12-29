@@ -13,7 +13,7 @@ CONF_DIR="$HOME/config"
 AGENT_DIR="$HOME/agent"
 
 #server startup class
-MAIN_CLASS=com.jerry.thriftnameserver.app.ThriftNameServer
+MAIN_CLASS=com.qibike.thriftnameserver.app.ThriftNameServer
 
 # set log config
 LOG_FILE="$CONF_DIR/log4j.properties"
