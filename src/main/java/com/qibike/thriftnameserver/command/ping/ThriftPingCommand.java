@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jcabi.aspects.Loggable;
+import com.jcabi.aspects.RetryOnFailure;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
@@ -24,7 +25,7 @@ public class ThriftPingCommand extends HystrixCommand<Integer> {
 			.asKey("T-ThriftPingGroup");
 
 	private static final HystrixCommandProperties.Setter commandProperties = HystrixCommandProperties
-			.Setter().withExecutionTimeoutInMilliseconds(2000).withFallbackEnabled(true);
+			.Setter().withExecutionTimeoutInMilliseconds(5000).withFallbackEnabled(true);
 	private static final HystrixThreadPoolProperties.Setter threadPoolProperties = HystrixThreadPoolProperties
 			.Setter().withCoreSize(4).withMaxQueueSize(10);
 	private static final HystrixCommand.Setter setter = HystrixCommand.Setter
@@ -49,16 +50,24 @@ public class ThriftPingCommand extends HystrixCommand<Integer> {
 	}
 
 	@Override
+	@RetryOnFailure(attempts = 3, delay = 0)
+	// 异常立即重试
 	protected Integer run() throws Exception {
 		String host = this.tsnode.getHost();
 		int port = this.tsnode.getPort();
 
 		TSocket transport = new TSocket(host, port, 1000);
-		transport.open();
 		TProtocol protocol = new TBinaryProtocol(transport);
 		PoolAble.Client client = new PoolAble.Client(protocol);
-		int vNodes = client.ping();
-		transport.close();
+		transport.open();
+		int vNodes = -1;
+		try {
+			vNodes = client.ping();
+		} finally {
+			if (transport.isOpen()) {
+				transport.close();
+			}
+		}
 		return vNodes;
 	}
 

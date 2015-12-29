@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jcabi.aspects.Loggable;
+import com.jcabi.aspects.RetryOnFailure;
 import com.qibike.thriftnameserver.rpc.Cluster;
 import com.qibike.thriftnameserver.rpc.STATE;
 import com.qibike.thriftnameserver.rpc.TCNode;
@@ -20,16 +21,22 @@ public class ThriftPushCNodeListCommand extends BaseThriftPushCommand<STATE, TCN
 	}
 
 	@Override
+	@RetryOnFailure(attempts = 3, delay = 0)
 	protected STATE run() throws Exception {
 		String host = tcnode.getHost();
 		int port = tcnode.getPort();
 
-		TSocket transport = new TSocket(host, port, 2000);
+		TSocket transport = new TSocket(host, port, 1000);
 		TProtocol protocol = new TBinaryProtocol(transport);
 		Cluster.Client client = new Cluster.Client(protocol);
 		transport.open();
-		client.pushClusterList(this.list);
-		transport.close();
+		try {
+			client.pushClusterList(this.list);
+		} finally {
+			if (transport.isOpen()) {
+				transport.close();
+			}
+		}
 		return STATE.UP;
 	}
 
