@@ -14,7 +14,7 @@ import com.qibike.thriftnameserver.rpc.TCNode;
 import com.qibike.thriftnameserver.rpc.TSNode;
 import com.qibike.thriftnameserver.service.SNodeManager;
 
-public class PushServer {
+public class ClusterServer {
 
 	private final CNodeManager cNodeManager = CNodeManager.getInstance();
 	private final SNodeManager sNodeManager = SNodeManager.getInstance();
@@ -23,9 +23,29 @@ public class PushServer {
 		Runnable task_1 = this.getPushServiceTask();
 		Runnable task_2 = this.getPushTnsTask();
 
-		ScheduledExecutorService service = Executors.newScheduledThreadPool(2);
-		service.scheduleWithFixedDelay(task_1, 10, 20, TimeUnit.SECONDS);
-		service.scheduleWithFixedDelay(task_2, 15, 20, TimeUnit.SECONDS);
+		Runnable task_3 = this.getCheckAndRemoveServiceTombstoneTask();
+
+		ScheduledExecutorService pool = Executors.newScheduledThreadPool(2);
+		pool.scheduleWithFixedDelay(task_1, 10, 20, TimeUnit.SECONDS);
+		pool.scheduleWithFixedDelay(task_2, 15, 20, TimeUnit.SECONDS);
+
+		pool.scheduleWithFixedDelay(task_3, 1, 1, TimeUnit.MINUTES);
+	}
+
+	/**
+	 * 检查节点下线，并移除墓碑任务
+	 * 
+	 * @return
+	 */
+	private Runnable getCheckAndRemoveServiceTombstoneTask() {
+		Runnable task = new Runnable() {
+
+			@Override
+			public void run() {
+				sNodeManager.CheckAndRemoveTombstone();
+			}
+		};
+		return task;
 	}
 
 	/**

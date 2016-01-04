@@ -23,7 +23,9 @@ service Cluster {
 enum STATE {
  UP = 1,
  DOWN = 2,
- Tombstone = 3
+ Tombstone = 3,
+ Joining = 4,
+ Leaving = 5
 }
 
 struct TCNode {

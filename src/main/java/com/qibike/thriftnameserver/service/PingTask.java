@@ -27,6 +27,7 @@ public class PingTask implements Runnable {
 	public void run() {
 		switch (tsnode.getState()) {
 		case UP:
+		case Joining:
 		case DOWN: // down的节点仍执行ping，万一恢复了呢
 			ThriftPingCommand command = new ThriftPingCommand(this.tsnode);
 			int vNodes = command.ping();
@@ -39,6 +40,7 @@ public class PingTask implements Runnable {
 			this.tsnode.setVNodes(vNodes);
 			this.tsnode.setTimestamp(System.currentTimeMillis());
 			break;
+		case Leaving:
 		case Tombstone: // 死亡节点，本实例不会再ping，直接移除
 			boolean isCancel = this.future.cancel(true);
 			log.warn("calcel -> [{}] : {}", this.tsnode.toString(), Boolean.valueOf(isCancel)

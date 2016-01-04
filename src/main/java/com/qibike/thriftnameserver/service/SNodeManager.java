@@ -5,10 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.jcabi.aspects.Loggable;
+import com.qibike.thriftnameserver.conf.Config;
 import com.qibike.thriftnameserver.rpc.STATE;
 import com.qibike.thriftnameserver.rpc.TSNode;
 
@@ -54,7 +56,14 @@ public class SNodeManager implements SNodeManagerMBean {
 		try {
 			this.readLock.lock();
 			for (Map<Long, TSNode> map : this.serviceMap.values()) {
-				list.addAll(map.values());
+				Collection<TSNode> collection = map.values();
+				for (TSNode tsnode : collection) {
+					if (tsnode.getState() == STATE.Tombstone) {
+						// 墓碑不同步,等待墓碑存活时间会被清除
+					} else {
+						list.add(tsnode);
+					}
+				}
 			}
 		} finally {
 			this.readLock.unlock();
@@ -78,9 +87,9 @@ public class SNodeManager implements SNodeManagerMBean {
 		tsnode.setPort(port);
 		tsnode.setPingFrequency(pingFrequency);
 		tsnode.setId(id);
-		tsnode.setState(STATE.DOWN);
+		tsnode.setState(STATE.Joining);
 		tsnode.setTimestamp(System.currentTimeMillis());
-		this.addOrTombstone(tsnode);
+		this.addOrLeaving(tsnode);
 		return tsnode.toString();
 	}
 
@@ -107,9 +116,9 @@ public class SNodeManager implements SNodeManagerMBean {
 	 * 
 	 * @param tsnode
 	 */
-	private void tombstoneToServiceMap(String serviceName, long id, long timestamp) {
+	private void leavingToServiceMap(String serviceName, long id, long timestamp) {
 		TSNode tsnode = this.serviceMap.get(serviceName).get(id);
-		tsnode.setState(STATE.Tombstone);
+		tsnode.setState(STATE.Leaving);
 		tsnode.setTimestamp(timestamp);
 	}
 
@@ -118,7 +127,7 @@ public class SNodeManager implements SNodeManagerMBean {
 	 * 
 	 * @param tsnodes
 	 */
-	private void addOrTombstone(TSNode... tsnodes) {
+	private void addOrLeaving(TSNode... tsnodes) {
 		try {
 			this.writeLock.lock();
 			for (TSNode tsnode : tsnodes) {
@@ -126,11 +135,13 @@ public class SNodeManager implements SNodeManagerMBean {
 					this.putToServiceMap(tsnode);
 					this.pingTaskManager.submit(tsnode);
 				} else {
-					if (tsnode.getState() == STATE.Tombstone) { // delete
-						String serviceName = tsnode.getServiceName();
-						long id = tsnode.getId();
+					String serviceName = tsnode.getServiceName();
+					long id = tsnode.getId();
+					TSNode dst = this.serviceMap.get(serviceName).get(id);
+					if (tsnode.getState() == STATE.Leaving && dst.getState() != STATE.Leaving
+							&& dst.getState() != STATE.Tombstone) { // leaving
 						long timestamp = tsnode.getTimestamp();
-						this.tombstoneToServiceMap(serviceName, id, timestamp);
+						this.leavingToServiceMap(serviceName, id, timestamp);
 					}
 				}
 			}
@@ -147,7 +158,7 @@ public class SNodeManager implements SNodeManagerMBean {
 	}
 
 	public void pushServiceList(List<TSNode> list) {
-		this.addOrTombstone(list.toArray(new TSNode[list.size()]));
+		this.addOrLeaving(list.toArray(new TSNode[list.size()]));
 	}
 
 	private final String format = "%-15s%-15s%-16s%-15s%-15s%-15s%-15s%-15s\n";
@@ -193,14 +204,48 @@ public class SNodeManager implements SNodeManagerMBean {
 	public String offLine(String serviceName, long id) {
 		try {
 			this.writeLock.lock();
-			if (this.serviceMap.containsKey(serviceName)) {
-				Map<Long, TSNode> map = this.serviceMap.get(serviceName);
-				if (map.containsKey(id)) {
-					this.tombstoneToServiceMap(serviceName, id, System.currentTimeMillis());
-					return "OK !";
-				}
+			if (this.serviceMap.containsKey(serviceName)
+					&& this.serviceMap.get(serviceName).containsKey(id)) {
+				this.leavingToServiceMap(serviceName, id, System.currentTimeMillis());
+				return "OK !";
 			}
 			return "FAIL !";
+		} finally {
+			this.writeLock.unlock();
+		}
+	}
+
+	/**
+	 * 检查下线的节点，并移除墓碑
+	 */
+	public void CheckAndRemoveTombstone() {
+		try {
+			this.writeLock.lock();
+			for (Map.Entry<String, Map<Long, TSNode>> entry1 : this.serviceMap.entrySet()) {
+				Map<Long, TSNode> map = entry1.getValue();
+				for (Map.Entry<Long, TSNode> entry2 : map.entrySet()) {
+					TSNode tsnode = entry2.getValue();
+					long tmp = TimeUnit.SECONDS.convert(
+							System.currentTimeMillis() - tsnode.getTimestamp(),
+							TimeUnit.MILLISECONDS);
+					switch (tsnode.getState()) {
+					case Leaving:
+						if (tmp > Config.serviceRemoveSeconds) {
+							tsnode.setState(STATE.Tombstone);
+							tsnode.setTimestamp(System.currentTimeMillis());
+						}
+						break;
+					case Tombstone:
+						if (tmp > Config.serviceRemoveSeconds) {
+							map.remove(entry2.getKey());
+							if (map.isEmpty()) {
+								this.serviceMap.remove(entry1.getKey());
+							}
+						}
+					default:
+					}
+				}
+			}
 		} finally {
 			this.writeLock.unlock();
 		}

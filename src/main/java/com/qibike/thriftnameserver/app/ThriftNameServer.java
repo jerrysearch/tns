@@ -23,7 +23,7 @@ public class ThriftNameServer {
 		CNodeManagerMBeanServer cNodeManagerMBeanServer = new CNodeManagerMBeanServer();
 		cNodeManagerMBeanServer.start();
 
-		PushServer pushServer = new PushServer();
+		ClusterServer pushServer = new ClusterServer();
 		pushServer.start();
 
 		log.info("--------------------------------------");
