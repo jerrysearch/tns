@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jcabi.aspects.Loggable;
-import com.jcabi.aspects.RetryOnFailure;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
@@ -50,8 +49,6 @@ public class ThriftPingCommand extends HystrixCommand<Integer> {
 	}
 
 	@Override
-	@RetryOnFailure(attempts = 3, delay = 0)
-	// 异常立即重试
 	protected Integer run() throws Exception {
 		String host = this.tsnode.getHost();
 		int port = this.tsnode.getPort();

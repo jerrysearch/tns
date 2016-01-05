@@ -179,12 +179,14 @@ public class CNodeManager implements CNodeManagerMBean {
 						continue;
 					}
 					switch (tcnode.getState()) {
+					case Joining:
 					case UP:
 					case DOWN:
 						if (tcnode.getTimestamp() > tmp.getTimestamp()) {
 							this.cMap.put(id, tcnode); // 更新
 						}
 						break;
+					case Leaving:
 					case Tombstone:
 						this.cMap.put(id, tcnode); // 更新
 						break;

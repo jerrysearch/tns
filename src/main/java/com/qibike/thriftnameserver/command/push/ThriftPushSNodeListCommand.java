@@ -9,7 +9,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jcabi.aspects.Loggable;
-import com.jcabi.aspects.RetryOnFailure;
 import com.qibike.thriftnameserver.rpc.Cluster;
 import com.qibike.thriftnameserver.rpc.STATE;
 import com.qibike.thriftnameserver.rpc.TCNode;
@@ -22,7 +21,6 @@ public class ThriftPushSNodeListCommand extends BaseThriftPushCommand<STATE, TSN
 	}
 
 	@Override
-	@RetryOnFailure(attempts = 3, delay = 0)
 	protected STATE run() throws Exception {
 		String host = tcnode.getHost();
 		int port = tcnode.getPort();
