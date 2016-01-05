@@ -150,7 +150,6 @@ public class CNodeManager implements CNodeManagerMBean {
 	private final String headLine = String.format(format, "STATE", "HOST", "ID", "TIMESTAMP");
 
 	@Override
-	@Loggable
 	public String clusterStatus() {
 		try {
 			StringBuilder sb = new StringBuilder(500);
