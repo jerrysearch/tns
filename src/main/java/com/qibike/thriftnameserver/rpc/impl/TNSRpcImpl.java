@@ -8,8 +8,8 @@ import org.apache.thrift.TException;
 import com.jcabi.aspects.Loggable;
 import com.qibike.thriftnameserver.cluster.CNodeManager;
 import com.qibike.thriftnameserver.rpc.TCNode;
-import com.qibike.thriftnameserver.rpc.TSNode;
 import com.qibike.thriftnameserver.rpc.TNSRpc.Iface;
+import com.qibike.thriftnameserver.rpc.TSNode;
 import com.qibike.thriftnameserver.service.SNodeManager;
 
 public class TNSRpcImpl implements Iface {
@@ -40,13 +40,11 @@ public class TNSRpcImpl implements Iface {
 	}
 
 	@Override
-	@Loggable
 	public void pushServiceList(List<TSNode> sList) throws TException {
 		this.nodeManager.pushServiceList(sList);
 	}
 
 	@Override
-	@Loggable
 	public void pushClusterList(List<TCNode> cList) throws TException {
 		this.cNodeManager.pushClusterList(cList);
 	}

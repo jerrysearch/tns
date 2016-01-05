@@ -8,7 +8,6 @@ import org.apache.thrift.transport.TSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jcabi.aspects.Loggable;
 import com.qibike.thriftnameserver.rpc.Cluster;
 import com.qibike.thriftnameserver.rpc.STATE;
 import com.qibike.thriftnameserver.rpc.TCNode;
@@ -48,7 +47,6 @@ public class ThriftPushSNodeListCommand extends BaseThriftPushCommand<STATE, TSN
 	}
 
 	@Override
-	@Loggable
 	protected void logPush(TCNode tcnode) {
 		/**
 		 * just log
