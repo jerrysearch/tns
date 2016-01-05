@@ -2,6 +2,7 @@ package com.qibike.thriftnameserver.service;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -221,10 +222,18 @@ public class SNodeManager implements SNodeManagerMBean {
 	public void CheckAndRemoveTombstone() {
 		try {
 			this.writeLock.lock();
-			for (Map.Entry<String, Map<Long, TSNode>> entry1 : this.serviceMap.entrySet()) {
+			Iterator<Map.Entry<String, Map<Long, TSNode>>> iterator1 = this.serviceMap.entrySet()
+					.iterator();
+			while (iterator1.hasNext()) {
+				Map.Entry<String, Map<Long, TSNode>> entry1 = iterator1.next();
+
 				Map<Long, TSNode> map = entry1.getValue();
-				for (Map.Entry<Long, TSNode> entry2 : map.entrySet()) {
+				Iterator<Map.Entry<Long, TSNode>> iterator2 = map.entrySet().iterator();
+
+				while (iterator2.hasNext()) {
+					Map.Entry<Long, TSNode> entry2 = iterator2.next();
 					TSNode tsnode = entry2.getValue();
+
 					long tmp = TimeUnit.SECONDS.convert(
 							System.currentTimeMillis() - tsnode.getTimestamp(),
 							TimeUnit.MILLISECONDS);
@@ -237,12 +246,14 @@ public class SNodeManager implements SNodeManagerMBean {
 						break;
 					case Tombstone:
 						if (tmp > Config.serviceRemoveSeconds) {
-							map.remove(entry2.getKey());
+							iterator2.remove();
 							if (map.isEmpty()) {
-								this.serviceMap.remove(entry1.getKey());
+								iterator1.remove();
 							}
 						}
+						break;
 					default:
+						break;
 					}
 				}
 			}
