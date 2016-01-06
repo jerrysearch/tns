@@ -1,4 +1,4 @@
-namespace java com.qibike.thriftnameserver.rpc
+namespace java com.qibaike.thriftnameserver.rpc
 
 const i32 PORT = 8700
 
