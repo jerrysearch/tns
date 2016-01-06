@@ -41,6 +41,7 @@
 				<include>*.jar</include>
 				<include>*.pl</include>
 				<include>*.cfg</include>
+				<include>nodetool</include>
 			</includes>
 		</fileSet>
 	</fileSets>
