@@ -9,17 +9,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.qibaike.thriftnameserver.rpc.Cluster;
-import com.qibaike.thriftnameserver.rpc.STATE;
+import com.qibaike.thriftnameserver.rpc.State;
 import com.qibaike.thriftnameserver.rpc.TCNode;
 
-public class ThriftPushCNodeListCommand extends BaseThriftPushCommand<STATE, TCNode> {
+public class ThriftPushCNodeListCommand extends BaseThriftPushCommand<State, TCNode> {
 
 	public ThriftPushCNodeListCommand(TCNode tcnode, List<TCNode> list) {
 		super(tcnode, list);
 	}
 
 	@Override
-	protected STATE run() throws Exception {
+	protected State run() throws Exception {
 		String host = tcnode.getHost();
 		int port = tcnode.getPort();
 
@@ -34,15 +34,15 @@ public class ThriftPushCNodeListCommand extends BaseThriftPushCommand<STATE, TCN
 				transport.close();
 			}
 		}
-		return STATE.UP;
+		return State.UP;
 	}
 
 	private static final Logger log = LoggerFactory.getLogger(ThriftPushCNodeListCommand.class);
 
 	@Override
-	protected STATE getFallback() {
+	protected State getFallback() {
 		log.warn("Fallback --> {}", this.tcnode.toString());
-		return STATE.DOWN;
+		return State.DOWN;
 	}
 
 	@Override

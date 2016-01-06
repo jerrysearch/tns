@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.HashMap;
 import org.apache.thrift.TEnum;
 
-public enum STATE implements org.apache.thrift.TEnum {
+public enum State implements org.apache.thrift.TEnum {
   UP(1),
   DOWN(2),
   Tombstone(3),
@@ -20,7 +20,7 @@ public enum STATE implements org.apache.thrift.TEnum {
 
   private final int value;
 
-  private STATE(int value) {
+  private State(int value) {
     this.value = value;
   }
 
@@ -35,7 +35,7 @@ public enum STATE implements org.apache.thrift.TEnum {
    * Find a the enum type by its integer value, as defined in the Thrift IDL.
    * @return null if the value is not found.
    */
-  public static STATE findByValue(int value) { 
+  public static State findByValue(int value) { 
     switch (value) {
       case 1:
         return UP;

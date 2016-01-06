@@ -12,7 +12,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.jcabi.aspects.Loggable;
 import com.qibaike.thriftnameserver.conf.Config;
-import com.qibaike.thriftnameserver.rpc.STATE;
+import com.qibaike.thriftnameserver.rpc.State;
 import com.qibaike.thriftnameserver.rpc.TSNode;
 
 public class SNodeManager implements SNodeManagerMBean {
@@ -38,7 +38,7 @@ public class SNodeManager implements SNodeManagerMBean {
 				Map<Long, TSNode> map = this.serviceMap.get(serviceName);
 				for (Map.Entry<Long, TSNode> entry : map.entrySet()) {
 					TSNode tsnode = entry.getValue();
-					if (tsnode.getState() == STATE.UP) {
+					if (tsnode.getState() == State.UP) {
 						list.add(tsnode);
 					}
 				}
@@ -59,7 +59,7 @@ public class SNodeManager implements SNodeManagerMBean {
 			for (Map<Long, TSNode> map : this.serviceMap.values()) {
 				Collection<TSNode> collection = map.values();
 				for (TSNode tsnode : collection) {
-					if (tsnode.getState() == STATE.Tombstone) {
+					if (tsnode.getState() == State.Tombstone) {
 						// 墓碑不同步,等待墓碑存活时间会被清除
 					} else {
 						list.add(tsnode);
@@ -88,7 +88,7 @@ public class SNodeManager implements SNodeManagerMBean {
 		tsnode.setPort(port);
 		tsnode.setPingFrequency(pingFrequency);
 		tsnode.setId(id);
-		tsnode.setState(STATE.Joining);
+		tsnode.setState(State.Joining);
 		tsnode.setTimestamp(System.currentTimeMillis());
 		this.addOrLeaving(tsnode);
 		return tsnode.toString();
@@ -119,7 +119,7 @@ public class SNodeManager implements SNodeManagerMBean {
 	 */
 	private void leavingToServiceMap(String serviceName, long id, long timestamp) {
 		TSNode tsnode = this.serviceMap.get(serviceName).get(id);
-		tsnode.setState(STATE.Leaving);
+		tsnode.setState(State.Leaving);
 		tsnode.setTimestamp(timestamp);
 	}
 
@@ -139,8 +139,8 @@ public class SNodeManager implements SNodeManagerMBean {
 					String serviceName = tsnode.getServiceName();
 					long id = tsnode.getId();
 					TSNode dst = this.serviceMap.get(serviceName).get(id);
-					if (tsnode.getState() == STATE.Leaving && dst.getState() != STATE.Leaving
-							&& dst.getState() != STATE.Tombstone) { // leaving
+					if (tsnode.getState() == State.Leaving && dst.getState() != State.Leaving
+							&& dst.getState() != State.Tombstone) { // leaving
 						long timestamp = tsnode.getTimestamp();
 						this.leavingToServiceMap(serviceName, id, timestamp);
 					}
@@ -240,7 +240,7 @@ public class SNodeManager implements SNodeManagerMBean {
 					switch (tsnode.getState()) {
 					case Leaving:
 						if (tmp > Config.serviceRemoveSeconds) {
-							tsnode.setState(STATE.Tombstone);
+							tsnode.setState(State.Tombstone);
 							tsnode.setTimestamp(System.currentTimeMillis());
 						}
 						break;

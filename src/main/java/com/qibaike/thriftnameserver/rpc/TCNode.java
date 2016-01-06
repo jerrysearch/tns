@@ -55,9 +55,9 @@ public class TCNode implements org.apache.thrift.TBase<TCNode, TCNode._Fields>, 
   public long id; // required
   /**
    * 
-   * @see STATE
+   * @see State
    */
-  public STATE state; // required
+  public State state; // required
   public long timestamp; // required
 
   /** The set of fields this struct contains, along with convenience methods for finding and manipulating them. */
@@ -67,7 +67,7 @@ public class TCNode implements org.apache.thrift.TBase<TCNode, TCNode._Fields>, 
     ID((short)3, "id"),
     /**
      * 
-     * @see STATE
+     * @see State
      */
     STATE((short)4, "state"),
     TIMESTAMP((short)5, "timestamp");
@@ -149,7 +149,7 @@ public class TCNode implements org.apache.thrift.TBase<TCNode, TCNode._Fields>, 
     tmpMap.put(_Fields.ID, new org.apache.thrift.meta_data.FieldMetaData("id", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64)));
     tmpMap.put(_Fields.STATE, new org.apache.thrift.meta_data.FieldMetaData("state", org.apache.thrift.TFieldRequirementType.DEFAULT, 
-        new org.apache.thrift.meta_data.EnumMetaData(org.apache.thrift.protocol.TType.ENUM, STATE.class)));
+        new org.apache.thrift.meta_data.EnumMetaData(org.apache.thrift.protocol.TType.ENUM, State.class)));
     tmpMap.put(_Fields.TIMESTAMP, new org.apache.thrift.meta_data.FieldMetaData("timestamp", org.apache.thrift.TFieldRequirementType.DEFAULT, 
         new org.apache.thrift.meta_data.FieldValueMetaData(org.apache.thrift.protocol.TType.I64)));
     metaDataMap = Collections.unmodifiableMap(tmpMap);
@@ -163,7 +163,7 @@ public class TCNode implements org.apache.thrift.TBase<TCNode, TCNode._Fields>, 
     String host,
     int port,
     long id,
-    STATE state,
+    State state,
     long timestamp)
   {
     this();
@@ -281,17 +281,17 @@ public class TCNode implements org.apache.thrift.TBase<TCNode, TCNode._Fields>, 
 
   /**
    * 
-   * @see STATE
+   * @see State
    */
-  public STATE getState() {
+  public State getState() {
     return this.state;
   }
 
   /**
    * 
-   * @see STATE
+   * @see State
    */
-  public TCNode setState(STATE state) {
+  public TCNode setState(State state) {
     this.state = state;
     return this;
   }
@@ -364,7 +364,7 @@ public class TCNode implements org.apache.thrift.TBase<TCNode, TCNode._Fields>, 
       if (value == null) {
         unsetState();
       } else {
-        setState((STATE)value);
+        setState((State)value);
       }
       break;
 
@@ -690,7 +690,7 @@ public class TCNode implements org.apache.thrift.TBase<TCNode, TCNode._Fields>, 
             break;
           case 4: // STATE
             if (schemeField.type == org.apache.thrift.protocol.TType.I32) {
-              struct.state = com.qibaike.thriftnameserver.rpc.STATE.findByValue(iprot.readI32());
+              struct.state = com.qibaike.thriftnameserver.rpc.State.findByValue(iprot.readI32());
               struct.setStateIsSet(true);
             } else { 
               org.apache.thrift.protocol.TProtocolUtil.skip(iprot, schemeField.type);
@@ -806,7 +806,7 @@ public class TCNode implements org.apache.thrift.TBase<TCNode, TCNode._Fields>, 
         struct.setIdIsSet(true);
       }
       if (incoming.get(3)) {
-        struct.state = com.qibaike.thriftnameserver.rpc.STATE.findByValue(iprot.readI32());
+        struct.state = com.qibaike.thriftnameserver.rpc.State.findByValue(iprot.readI32());
         struct.setStateIsSet(true);
       }
       if (incoming.get(4)) {

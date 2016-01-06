@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.qibaike.thriftnameserver.command.push.ThriftPushSNodeListCommand;
-import com.qibaike.thriftnameserver.rpc.STATE;
+import com.qibaike.thriftnameserver.rpc.State;
 import com.qibaike.thriftnameserver.rpc.TCNode;
 import com.qibaike.thriftnameserver.rpc.TSNode;
 import com.qibaike.thriftnameserver.service.SNodeManager;
@@ -29,11 +29,11 @@ public class PushServiceTask implements Runnable {
 			return;
 		}
 		ThriftPushSNodeListCommand command = new ThriftPushSNodeListCommand(tcnode, list);
-		STATE state = command.push();
+		State state = command.push();
 		/**
 		 * 更新节点tcnode状态
 		 */
-		if(state == STATE.DOWN){
+		if (state == State.DOWN) {
 			log.error("node [{}] state changed to DOWN !", tcnode.toString());
 		}
 		tcnode.setState(state);

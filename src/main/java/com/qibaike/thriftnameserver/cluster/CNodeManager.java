@@ -13,7 +13,7 @@ import org.apache.thrift.transport.TSocket;
 import com.jcabi.aspects.Loggable;
 import com.qibaike.thriftnameserver.conf.Config;
 import com.qibaike.thriftnameserver.rpc.Cluster;
-import com.qibaike.thriftnameserver.rpc.STATE;
+import com.qibaike.thriftnameserver.rpc.State;
 import com.qibaike.thriftnameserver.rpc.TCNode;
 import com.qibaike.thriftnameserver.rpc.clusterConstants;
 
@@ -30,7 +30,7 @@ public class CNodeManager implements CNodeManagerMBean {
 		this.me.setHost(Config.HOSTNAME);
 		this.me.setPort(clusterConstants.PORT);
 		this.me.setId(Config.TNSID);
-		this.me.setState(STATE.UP);
+		this.me.setState(State.UP);
 		this.me.setTimestamp(System.currentTimeMillis());
 		/**
 		 * 将自己放到列表中
@@ -62,7 +62,7 @@ public class CNodeManager implements CNodeManagerMBean {
 			this.readLock.lock();
 			Collection<TCNode> collection = this.cMap.values();
 			for (TCNode tcnode : collection) {
-				if (tcnode.getState() == STATE.UP) {
+				if (tcnode.getState() == State.UP) {
 					list.add(tcnode);
 				}
 			}
@@ -174,7 +174,7 @@ public class CNodeManager implements CNodeManagerMBean {
 				long id = tcnode.getId();
 				if (this.cMap.containsKey(id)) {
 					TCNode tmp = this.cMap.get(id);
-					if (tmp.getState() == STATE.Tombstone) { // 墓碑是不可恢复的，一个完整周期后，墓碑会传播到所有节点
+					if (tmp.getState() == State.Tombstone) { // 墓碑是不可恢复的，一个完整周期后，墓碑会传播到所有节点
 						continue;
 					}
 					switch (tcnode.getState()) {
@@ -206,10 +206,10 @@ public class CNodeManager implements CNodeManagerMBean {
 			this.writeLock.lock();
 			if (this.cMap.containsKey(id)) {
 				TCNode tcnode = this.cMap.get(id);
-				if (tcnode.getState() != STATE.DOWN) {
+				if (tcnode.getState() != State.DOWN) {
 					return "SORRY ! you can just Tombstone node which status is down !";
 				}
-				tcnode.setState(STATE.Tombstone);
+				tcnode.setState(State.Tombstone);
 				tcnode.setTimestamp(System.currentTimeMillis());
 				return "OK !";
 			} else {

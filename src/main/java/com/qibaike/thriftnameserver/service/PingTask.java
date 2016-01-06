@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.qibaike.thriftnameserver.command.ping.ThriftPingCommand;
-import com.qibaike.thriftnameserver.rpc.STATE;
+import com.qibaike.thriftnameserver.rpc.State;
 import com.qibaike.thriftnameserver.rpc.TSNode;
 
 public class PingTask implements Runnable {
@@ -32,15 +32,15 @@ public class PingTask implements Runnable {
 			ThriftPingCommand command = new ThriftPingCommand(this.tsnode);
 			int vNodes = command.ping();
 			if (vNodes < 1) {
-				if (tsnode.getState() != STATE.DOWN) {
+				if (tsnode.getState() != State.DOWN) {
 					log.error("node [{}] state changed to DOWN ! ", tsnode.getState());
 				}
-				this.tsnode.setState(STATE.DOWN);
+				this.tsnode.setState(State.DOWN);
 			} else {
-				if (tsnode.getState() != STATE.UP) {
+				if (tsnode.getState() != State.UP) {
 					log.warn("node [{}] state changed to UP ! ", tsnode.getState());
 				}
-				this.tsnode.setState(STATE.UP);
+				this.tsnode.setState(State.UP);
 			}
 			vNodes = Math.min(vNodes, 20); // 最大虚拟节点个数20,太大会增加客户端所有的成本
 			this.tsnode.setVNodes(vNodes);
