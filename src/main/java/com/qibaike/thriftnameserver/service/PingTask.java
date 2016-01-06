@@ -33,12 +33,12 @@ public class PingTask implements Runnable {
 			int vNodes = command.ping();
 			if (vNodes < 1) {
 				if (tsnode.getState() != State.DOWN) {
-					log.error("node [{}] state changed to DOWN ! ", tsnode.getState());
+					log.error("node [{}] state changed to DOWN ! ", tsnode.toString());
 				}
 				this.tsnode.setState(State.DOWN);
 			} else {
 				if (tsnode.getState() != State.UP) {
-					log.warn("node [{}] state changed to UP ! ", tsnode.getState());
+					log.warn("node [{}] state changed to UP ! ", tsnode.toString());
 				}
 				this.tsnode.setState(State.UP);
 			}
