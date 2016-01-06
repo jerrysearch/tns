@@ -32,8 +32,14 @@ public class PingTask implements Runnable {
 			ThriftPingCommand command = new ThriftPingCommand(this.tsnode);
 			int vNodes = command.ping();
 			if (vNodes < 1) {
+				if (tsnode.getState() != STATE.DOWN) {
+					log.error("node [{}] state changed to DOWN ! ", tsnode.getState());
+				}
 				this.tsnode.setState(STATE.DOWN);
 			} else {
+				if (tsnode.getState() != STATE.UP) {
+					log.warn("node [{}] state changed to UP ! ", tsnode.getState());
+				}
 				this.tsnode.setState(STATE.UP);
 			}
 			vNodes = Math.min(vNodes, 20); // 最大虚拟节点个数20,太大会增加客户端所有的成本
