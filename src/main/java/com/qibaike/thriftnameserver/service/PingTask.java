@@ -5,6 +5,7 @@ import java.util.concurrent.ScheduledFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jcabi.aspects.Loggable;
 import com.qibaike.thriftnameserver.command.ping.ThriftPingCommand;
 import com.qibaike.thriftnameserver.rpc.State;
 import com.qibaike.thriftnameserver.rpc.TSNode;
@@ -48,9 +49,12 @@ public class PingTask implements Runnable {
 			break;
 		case Leaving:
 		case Tombstone: // 死亡节点，本实例不会再ping，直接移除
-			boolean isCancel = this.future.cancel(true);
-			log.warn("calcel -> [{}] : {}", this.tsnode.toString(), Boolean.valueOf(isCancel)
-					.toString());
+			this.cancelTask(this.tsnode);
 		}
+	}
+
+	@Loggable(value = Loggable.WARN)
+	private boolean cancelTask(TSNode tsnode) {
+		return this.future.cancel(true);
 	}
 }
