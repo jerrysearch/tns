@@ -34,7 +34,7 @@ public class ThriftPushCNodeListCommand extends BaseThriftPushCommand<State, TCN
 				transport.close();
 			}
 		}
-		return State.UP;
+		return tcnode.getState();
 	}
 
 	private static final Logger log = LoggerFactory.getLogger(ThriftPushCNodeListCommand.class);

@@ -101,8 +101,10 @@ public class CNodeManager implements CNodeManagerMBean {
 		 * 跳过不健康的节点
 		 */
 		switch (tcnode.getState()) {
+		case Joining:
 		case UP:
 			return tcnode;
+		case Leaving:
 		case Tombstone:
 		case DOWN: // 一次失败即为down
 			return this.getOne(key);
