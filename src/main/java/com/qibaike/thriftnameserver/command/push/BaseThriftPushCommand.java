@@ -29,7 +29,7 @@ public abstract class BaseThriftPushCommand<T, K> extends HystrixCommand<T> {
 	private static final HystrixCommandProperties.Setter commandProperties = HystrixCommandProperties
 			.Setter().withExecutionTimeoutInMilliseconds(5000).withFallbackEnabled(true);
 	private static final HystrixThreadPoolProperties.Setter threadPoolProperties = HystrixThreadPoolProperties
-			.Setter().withCoreSize(4).withMaxQueueSize(10);
+			.Setter().withCoreSize(1).withMaxQueueSize(2);
 	public static final HystrixCommand.Setter setter = HystrixCommand.Setter.withGroupKey(groupKey)
 			.andCommandKey(commandKey).andThreadPoolKey(threadPoolKey)
 			.andCommandPropertiesDefaults(commandProperties)
