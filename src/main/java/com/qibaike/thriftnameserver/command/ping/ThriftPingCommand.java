@@ -72,7 +72,7 @@ public class ThriftPingCommand extends HystrixCommand<Integer> {
 
 	@Override
 	protected Integer getFallback() {
-		log.error("Fallback --> {}", this.tsnode.toString());
+		log.warn("Fallback --> {}", this.tsnode.toString());
 		return -1;
 	}
 }
