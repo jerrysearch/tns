@@ -26,6 +26,7 @@ if($command eq "meet"){
 	print "clusterStatus\n";
 	print "serviceStatus\n";
 	print "offLine <serviceName> <Id>\n";
+	print "onLine <serviceName> <host> <port> <pingFrequency>\n";
 	print "loadService <file>\n";
 	exit;
 }
