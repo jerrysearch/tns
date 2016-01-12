@@ -17,6 +17,8 @@ if($command eq "meet"){
 	serviceStatus();
 }elsif ($command eq "offLine"){
 	offLine(@ARGV);
+}elsif ($command eq "onLine"){
+	onLine(@ARGV);
 }elsif ($command eq "loadService"){
 	loadService(@ARGV);
 }else{
