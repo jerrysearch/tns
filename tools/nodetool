@@ -3,7 +3,7 @@
 # $jar stands for path of jmxterm jar file
 
 
-# complete -f -W "meet clusterStatus serviceStatus offLine loadService" nodetool
+# complete -f -W "meet clusterStatus serviceStatus offLine onLine loadService" nodetool
 
 use strict;
 
@@ -101,6 +101,22 @@ sub offLine {
 	my $serviceName = shift @_;
 	my $id = shift @_;
     print JMX "run offLine $serviceName $id\n";
+    bye();
+}
+
+sub onLine {
+	if(@_ != 4) {
+		print "<serviceName> <host> <port> <pingFrequency>\n";
+		return;
+	}
+	my $pid = getPid();
+    openJMX($pid);
+    connectSNodeManager();
+	my $serviceName = shift @_;
+	my $host = shift @_;
+	my $port = shift @_;
+	my $pingFrequency = shift @_;
+    print JMX "run onLine $serviceName $host $port $pingFrequency\n";
     bye();
 }
 
