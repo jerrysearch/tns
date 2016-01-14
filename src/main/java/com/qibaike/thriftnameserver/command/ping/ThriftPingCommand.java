@@ -67,13 +67,12 @@ public class ThriftPingCommand extends HystrixCommand<Integer> {
 	}
 
 	@Override
-	@Loggable(value = Loggable.WARN, logThis = true)
 	protected Integer getFallback() {
-		return -1;
+		return this.getFallback(this.tsnode);
 	}
 
-	@Override
-	public String toString() {
-		return "[tsnode=" + tsnode + "]";
+	@Loggable(value = Loggable.WARN)
+	protected Integer getFallback(TSNode tsnode) {
+		return -1;
 	}
 }

@@ -5,9 +5,8 @@ import java.util.List;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import com.jcabi.aspects.Loggable;
 import com.qibaike.thriftnameserver.rpc.Cluster;
 import com.qibaike.thriftnameserver.rpc.State;
 import com.qibaike.thriftnameserver.rpc.TCNode;
@@ -38,11 +37,13 @@ public class ThriftPushSNodeListCommand extends BaseThriftPushCommand<State, TSN
 		return State.UP;
 	}
 
-	private static final Logger log = LoggerFactory.getLogger(ThriftPushSNodeListCommand.class);
-
 	@Override
 	protected State getFallback() {
-		log.warn("Fallback --> {}", this.tcnode.toString());
+		return this.getFallback(this.tcnode);
+	}
+
+	@Loggable(value = Loggable.WARN)
+	protected State getFallback(TCNode tcnode) {
 		return State.DOWN;
 	}
 
