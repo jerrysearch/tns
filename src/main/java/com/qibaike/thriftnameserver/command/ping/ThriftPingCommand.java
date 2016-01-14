@@ -3,8 +3,6 @@ package com.qibaike.thriftnameserver.command.ping;
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.jcabi.aspects.Loggable;
 import com.netflix.hystrix.HystrixCommand;
@@ -68,11 +66,14 @@ public class ThriftPingCommand extends HystrixCommand<Integer> {
 		return vNodes;
 	}
 
-	private static final Logger log = LoggerFactory.getLogger(ThriftPingCommand.class);
+	@Override
+	@Loggable(value = Loggable.WARN, logThis = true)
+	protected Integer getFallback() {
+		return -1;
+	}
 
 	@Override
-	protected Integer getFallback() {
-		log.warn("Fallback --> {}", this.tsnode.toString());
-		return -1;
+	public String toString() {
+		return "[tsnode=" + tsnode + "]";
 	}
 }
