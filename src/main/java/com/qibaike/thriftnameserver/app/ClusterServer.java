@@ -16,7 +16,8 @@ public class ClusterServer {
 
 		Runnable task_3 = new CheckAndRemoveServiceTombstoneTask();
 
-		ScheduledExecutorService pool = Executors.newScheduledThreadPool(2);
+		/** 顺序执行 */
+		ScheduledExecutorService pool = Executors.newSingleThreadScheduledExecutor();
 		pool.scheduleWithFixedDelay(task_1, 1, 5, TimeUnit.SECONDS);
 		pool.scheduleWithFixedDelay(task_2, 3, 5, TimeUnit.SECONDS);
 
