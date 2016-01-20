@@ -29,6 +29,8 @@ public class PingTask implements Runnable {
 		switch (tsnode.getState()) {
 		case UP:
 		case Joining:
+		case DOWN_1:
+		case DOWN_2:
 		case DOWN: // down的节点仍执行ping，万一恢复了呢
 			ThriftPingCommand command = new ThriftPingCommand(this.tsnode);
 			int vNodes = command.ping();

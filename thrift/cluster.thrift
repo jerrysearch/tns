@@ -25,7 +25,10 @@ enum State {
  DOWN = 2,
  Tombstone = 3,
  Joining = 4,
- Leaving = 5
+ Leaving = 5,
+ 
+ DOWN_1 = 6,
+ DOWN_2 = 7
 }
 
 struct TCNode {

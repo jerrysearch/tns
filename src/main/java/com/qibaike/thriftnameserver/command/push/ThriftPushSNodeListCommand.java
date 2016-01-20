@@ -44,7 +44,14 @@ public class ThriftPushSNodeListCommand extends BaseThriftPushCommand<State, TSN
 
 	@Loggable(value = Loggable.WARN)
 	protected State getFallback(TCNode tcnode) {
-		return State.DOWN;
+		switch (tcnode.getState()) {
+		case DOWN_1:
+			return State.DOWN_2;
+		case DOWN_2:
+			return State.DOWN;
+		default:
+			return State.DOWN_1;
+		}
 	}
 
 	@Override

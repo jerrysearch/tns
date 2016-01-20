@@ -16,7 +16,9 @@ public enum State implements org.apache.thrift.TEnum {
   DOWN(2),
   Tombstone(3),
   Joining(4),
-  Leaving(5);
+  Leaving(5),
+  DOWN_1(6),
+  DOWN_2(7);
 
   private final int value;
 
@@ -47,6 +49,10 @@ public enum State implements org.apache.thrift.TEnum {
         return Joining;
       case 5:
         return Leaving;
+      case 6:
+        return DOWN_1;
+      case 7:
+        return DOWN_2;
       default:
         return null;
     }

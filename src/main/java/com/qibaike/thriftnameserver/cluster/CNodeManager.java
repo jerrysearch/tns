@@ -103,6 +103,8 @@ public class CNodeManager implements CNodeManagerMBean {
 		switch (tcnode.getState()) {
 		case Joining:
 		case UP:
+		case DOWN_1:
+		case DOWN_2:
 			return tcnode;
 		case Leaving:
 		case Tombstone:
@@ -182,6 +184,8 @@ public class CNodeManager implements CNodeManagerMBean {
 					switch (tcnode.getState()) {
 					case Joining:
 					case UP:
+					case DOWN_1:
+					case DOWN_2:
 					case DOWN:
 						if (tcnode.getTimestamp() > tmp.getTimestamp()) {
 							this.cMap.put(id, tcnode); // 更新
