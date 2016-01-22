@@ -30,7 +30,7 @@ public class CNodeManager implements CNodeManagerMBean {
 		this.me.setHost(Config.HOSTNAME);
 		this.me.setPort(clusterConstants.PORT);
 		this.me.setId(Config.TNSID);
-		this.me.setState(State.Joining);
+		this.me.setState(State.UP);
 		this.me.setTimestamp(System.currentTimeMillis());
 		/**
 		 * 将自己放到列表中
