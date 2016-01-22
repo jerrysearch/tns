@@ -33,7 +33,7 @@ public class ThriftPushCNodeListCommand extends BaseThriftPushCommand<State, TCN
 				transport.close();
 			}
 		}
-		return tcnode.getState();
+		return State.UP;
 	}
 
 	@Override
