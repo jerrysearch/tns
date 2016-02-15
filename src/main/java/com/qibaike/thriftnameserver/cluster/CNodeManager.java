@@ -93,7 +93,7 @@ public class CNodeManager implements CNodeManagerMBean {
 		/**
 		 * 选择到自己，终止
 		 */
-		if (key.longValue() == this.me.getId()) {
+		if (key == this.me.getId()) {
 			return null;
 		}
 		TCNode tcnode = this.cMap.get(key);
@@ -108,7 +108,7 @@ public class CNodeManager implements CNodeManagerMBean {
 			return tcnode;
 		case Leaving:
 		case Tombstone:
-		case DOWN: // 一次失败即为down
+		case DOWN:
 			return this.getOne(key);
 		default:
 			return null;
@@ -150,8 +150,9 @@ public class CNodeManager implements CNodeManagerMBean {
 
 	}
 
-	private final String format = "    %-20s%-20s%-20s%-20s\n";
-	private final String headLine = String.format(format, "STATE", "HOST", "ID", "TIMESTAMP");
+	private final String format = "    %-20s%-20s%-20s%-20s%-20s\n";
+	private final String headLine = String.format(format, "STATE", "HOST", "ID", "VERSION",
+			"TIMESTAMP");
 
 	@Override
 	public String clusterStatus() {
@@ -162,7 +163,7 @@ public class CNodeManager implements CNodeManagerMBean {
 			Collection<TCNode> collection = this.cMap.values();
 			for (TCNode tcnode : collection) {
 				String s = String.format(format, tcnode.getState().toString(), tcnode.getHost(),
-						tcnode.getId(), tcnode.getTimestamp());
+						tcnode.getId(), tcnode.getVersion(), tcnode.getTimestamp());
 				sb.append(s);
 			}
 			return sb.toString();
@@ -187,7 +188,7 @@ public class CNodeManager implements CNodeManagerMBean {
 					case DOWN_1:
 					case DOWN_2:
 					case DOWN:
-						if (tcnode.getTimestamp() > tmp.getTimestamp()) {
+						if (tcnode.getVersion() > tmp.getVersion()) {
 							this.cMap.put(id, tcnode); // 更新
 						}
 						break;

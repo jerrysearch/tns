@@ -36,7 +36,9 @@ struct TCNode {
   2: i32 port,
   3: i64 id,
   4: State state,
-  5: i64 timestamp
+  5: i64 timestamp,
+  
+  6: i64 version = 0
 }
 
 struct TSNode {
