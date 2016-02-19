@@ -24,18 +24,24 @@ public class CNodeManager implements CNodeManagerMBean {
 	private final Lock readLock = lock.readLock();
 	private final Lock writeLock = lock.writeLock();
 
-	private final TCNode me = new TCNode();
+	private final long myId = Config.TNSID;
 
 	private CNodeManager() {
-		this.me.setHost(Config.HOSTNAME);
-		this.me.setPort(clusterConstants.PORT);
-		this.me.setId(Config.TNSID);
-		this.me.setState(State.UP);
-		this.me.setTimestamp(System.currentTimeMillis());
+
+		TCNode me = new TCNode();
+		me.setHost(Config.HOSTNAME);
+		me.setPort(clusterConstants.PORT);
+		me.setId(myId);
+		me.setState(State.UP);
+		me.setTimestamp(System.currentTimeMillis());
 		/**
 		 * 将自己放到列表中
 		 */
-		this.cMap.put(this.me.getId(), this.me);
+		this.cMap.put(myId, me);
+	}
+
+	private TCNode getMe() {
+		return this.cMap.get(this.myId);
 	}
 
 	/**
@@ -46,7 +52,7 @@ public class CNodeManager implements CNodeManagerMBean {
 	public TCNode getOne() {
 		try {
 			this.readLock.lock();
-			return this.getOne(this.me.getId());
+			return this.getOne(this.myId);
 		} finally {
 			this.readLock.unlock();
 		}
@@ -93,7 +99,7 @@ public class CNodeManager implements CNodeManagerMBean {
 		/**
 		 * 选择到自己，终止
 		 */
-		if (key == this.me.getId()) {
+		if (key == this.myId) {
 			return null;
 		}
 		TCNode tcnode = this.cMap.get(key);
@@ -123,7 +129,7 @@ public class CNodeManager implements CNodeManagerMBean {
 		Cluster.Client client = new Cluster.Client(protocol);
 		try {
 			transport.open();
-			client.up(this.me);
+			client.up(this.getMe());
 			return "OK !";
 		} catch (Exception e) {
 			return String.format("%s, Exception : %s", "FAIL", e.getMessage());
@@ -209,22 +215,23 @@ public class CNodeManager implements CNodeManagerMBean {
 	@Override
 	@Loggable
 	public String tombstone(long id) {
-		try {
-			this.writeLock.lock();
-			if (this.cMap.containsKey(id)) {
-				TCNode tcnode = this.cMap.get(id);
-				if (tcnode.getState() != State.DOWN) {
-					return "SORRY ! you can just Tombstone node which status is down !";
-				}
-				tcnode.setState(State.Tombstone);
-				tcnode.setTimestamp(System.currentTimeMillis());
-				return "OK !";
-			} else {
-				return "FAIL !";
-			}
-		} finally {
-			this.writeLock.unlock();
-		}
+		return "UNALLOWED";
+		// try {
+		// this.writeLock.lock();
+		// if (this.cMap.containsKey(id)) {
+		// TCNode tcnode = this.cMap.get(id);
+		// if (tcnode.getState() != State.DOWN) {
+		// return "SORRY ! you can just Tombstone node which status is down !";
+		// }
+		// tcnode.setState(State.Tombstone);
+		// tcnode.setTimestamp(System.currentTimeMillis());
+		// return "OK !";
+		// } else {
+		// return "FAIL !";
+		// }
+		// } finally {o
+		// this.writeLock.unlock();
+		// }
 	}
 
 	private static class proxy {
