@@ -188,7 +188,7 @@ public class CNodeManager implements CNodeManagerMBean {
 					case DOWN_1:
 					case DOWN_2:
 					case DOWN:
-						if (tcnode.getVersion() > tmp.getVersion()) {
+						if (tcnode.getTimestamp() > tmp.getTimestamp()) {
 							this.cMap.put(id, tcnode); // 更新
 						}
 						break;
