@@ -32,6 +32,8 @@ public class ThriftPingCommand extends HystrixCommand<Integer> {
 			.withGroupKey(groupKey).andCommandKey(commandKey).andThreadPoolKey(threadPoolKey)
 			.andCommandPropertiesDefaults(commandProperties)
 			.andThreadPoolPropertiesDefaults(threadPoolProperties);
+	
+	private final int limit = 1;
 
 	private final TSNode tsnode;
 
@@ -41,7 +43,7 @@ public class ThriftPingCommand extends HystrixCommand<Integer> {
 	}
 
 	@Loggable
-	@Timeable(limit = 1, unit = TimeUnit.SECONDS)
+	@Timeable(limit = limit, unit = TimeUnit.MILLISECONDS)
 	public int ping(TSNode tsnode) {
 		return this.execute();
 	}
