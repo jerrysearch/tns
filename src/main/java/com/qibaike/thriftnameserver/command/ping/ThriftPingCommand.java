@@ -1,13 +1,10 @@
 package com.qibaike.thriftnameserver.command.ping;
 
-import java.util.concurrent.TimeUnit;
-
 import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.protocol.TProtocol;
 import org.apache.thrift.transport.TSocket;
 
 import com.jcabi.aspects.Loggable;
-import com.jcabi.aspects.Timeable;
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
 import com.netflix.hystrix.HystrixCommandKey;
@@ -32,8 +29,6 @@ public class ThriftPingCommand extends HystrixCommand<Integer> {
 			.withGroupKey(groupKey).andCommandKey(commandKey).andThreadPoolKey(threadPoolKey)
 			.andCommandPropertiesDefaults(commandProperties)
 			.andThreadPoolPropertiesDefaults(threadPoolProperties);
-	
-	private final int limit = 1;
 
 	private final TSNode tsnode;
 
@@ -43,7 +38,6 @@ public class ThriftPingCommand extends HystrixCommand<Integer> {
 	}
 
 	@Loggable
-	@Timeable(limit = limit, unit = TimeUnit.MILLISECONDS)
 	public int ping(TSNode tsnode) {
 		return this.execute();
 	}
