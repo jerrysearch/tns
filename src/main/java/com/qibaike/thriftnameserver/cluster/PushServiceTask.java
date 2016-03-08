@@ -37,6 +37,8 @@ public class PushServiceTask implements Runnable {
 			log.error("node [{}] state changed to DOWN !", tcnode.toString());
 		}
 		tcnode.setState(state);
+		long version = tcnode.getVersion();
+		tcnode.setVersion(version + 1);
 		tcnode.setTimestamp(System.currentTimeMillis());
 	}
 
