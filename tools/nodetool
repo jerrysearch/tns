@@ -6,6 +6,7 @@
 # complete -f -W "meet clusterStatus serviceStatus offLine onLine loadService" nodetool
 
 use strict;
+use File::Basename;
 
 my $command = shift @ARGV;
 
@@ -42,7 +43,8 @@ sub getPid {
 }
 
 sub openJMX {
-	open JMX, "| java -jar jmxterm-1.0-alpha-4-uber.jar -n";
+	my $dname = dirname(__FILE__);
+	open JMX, "| java -jar " . $dname . "/jmxterm-1.0-alpha-4-uber.jar -n";
 	my $pid = shift @_;
 	print JMX "open $pid\n";
 }
