@@ -9,15 +9,18 @@ import com.netflix.hystrix.HystrixCommandProperties;
 import com.netflix.hystrix.HystrixThreadPoolKey;
 import com.netflix.hystrix.HystrixThreadPoolProperties;
 import com.qibaike.thriftnameserver.rpc.TCNode;
+import com.qibaike.thriftnameserver.rpc.TSNode;
 
-public abstract class BaseThriftPushCommand<T, K> extends HystrixCommand<T> {
+public abstract class BaseThriftPushCommand<T> extends HystrixCommand<T> {
 	protected final TCNode tcnode;
-	protected final List<K> list;
+	protected final List<TCNode> cList;
+	protected final List<TSNode> sList;
 
-	protected BaseThriftPushCommand(TCNode tcnode, List<K> list) {
+	protected BaseThriftPushCommand(TCNode tcnode, List<TCNode> cList, List<TSNode> sList) {
 		super(setter);
 		this.tcnode = tcnode;
-		this.list = list;
+		this.cList = cList;
+		this.sList = sList;
 	}
 
 	private static final HystrixCommandGroupKey groupKey = HystrixCommandGroupKey.Factory

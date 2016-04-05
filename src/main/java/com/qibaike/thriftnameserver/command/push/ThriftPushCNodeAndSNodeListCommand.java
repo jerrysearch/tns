@@ -12,10 +12,10 @@ import com.qibaike.thriftnameserver.rpc.State;
 import com.qibaike.thriftnameserver.rpc.TCNode;
 import com.qibaike.thriftnameserver.rpc.TSNode;
 
-public class ThriftPushSNodeListCommand extends BaseThriftPushCommand<State, TSNode> {
+public class ThriftPushCNodeAndSNodeListCommand extends BaseThriftPushCommand<State> {
 
-	public ThriftPushSNodeListCommand(TCNode tcnode, List<TSNode> list) {
-		super(tcnode, list);
+	public ThriftPushCNodeAndSNodeListCommand(TCNode tcnode, List<TCNode> cList, List<TSNode> sList) {
+		super(tcnode, cList, sList);
 	}
 
 	@Override
@@ -28,7 +28,7 @@ public class ThriftPushSNodeListCommand extends BaseThriftPushCommand<State, TSN
 		Cluster.Client client = new Cluster.Client(protocol);
 		transport.open();
 		try {
-			client.pushServiceList(this.list);
+			client.pushClusterAndServiceList(cList, sList);
 		} finally {
 			if (transport.isOpen()) {
 				transport.close();
