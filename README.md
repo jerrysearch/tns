@@ -1,7 +1,8 @@
 # tns
----
 
 tns(thriftnameserver)为thrift提供分布式方案，通过tns实现thrift服务的发现、高可用、负载均衡、灰度发布、水平扩展等
+
+
 详细用法请参考 [WIKI](../../wiki)
 
 
