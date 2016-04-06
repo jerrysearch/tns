@@ -23,4 +23,6 @@ tns(thriftnameserver)为thrift提供分布式方案，通过tns实现thrift服�
 * 增加节点健康状况报告
 
 
+---
+
 ![tns交流群](https://static.oschina.net/uploads/img/201601/12170350_IOZ2.png)
