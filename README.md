@@ -8,14 +8,14 @@ tns(thriftnameserver)为thrift提供分布式方案，通过tns实现thrift服�
 
 ## 快速入门
 
-* [tutorials](./wiki/tutorials)
-* [cluster](./wiki/cluster)
-* [use tns in your project](./wiki/use-tns-in-your-project)
+* [tutorials](https://github.com/jerrysearch/tns/wiki/tutorials)
+* [cluster](https://github.com/jerrysearch/tns/wiki/cluster)
+* [use tns in your project](https://github.com/jerrysearch/tns/wiki/use-tns-in-your-project)
 
 ## 进阶
 
-* [why](./wiki/why)
-* [design principle](./wiki/design-principle)
+* [why](https://github.com/jerrysearch/tns/wiki/why)
+* [design principle](https://github.com/jerrysearch/tns/wiki/design-principle)
 
 
 ## 计划
