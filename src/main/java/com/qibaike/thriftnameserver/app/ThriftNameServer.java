@@ -17,8 +17,8 @@ public class ThriftNameServer {
 		TNSRpcServer tnsRpcServer = new TNSRpcServer();
 		tnsRpcServer.start(host, port);
 
-		SNodeManagerMBeanServer nodeManagerMBeanServer = new SNodeManagerMBeanServer();
-		nodeManagerMBeanServer.start();
+		SNodeManagerMBeanServer sNodeManagerMBeanServer = new SNodeManagerMBeanServer();
+		sNodeManagerMBeanServer.start();
 
 		CNodeManagerMBeanServer cNodeManagerMBeanServer = new CNodeManagerMBeanServer();
 		cNodeManagerMBeanServer.start();
