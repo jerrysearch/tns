@@ -16,7 +16,7 @@ tns(thriftnameserver)为thrift提供分布式方案，通过tns实现thrift服�
 
 * [why](https://github.com/jerrysearch/tns/wiki/why)
 * [design principle](https://github.com/jerrysearch/tns/wiki/design-principle)
-* [different-usage-patterns](https://github.com/jerrysearch/tns/wiki/different-usage-patterns)
+* [different usage patterns and gray release](https://github.com/jerrysearch/tns/wiki/different%20usage%20patterns%20and%20gray%20release)
 
 
 ## 计划
