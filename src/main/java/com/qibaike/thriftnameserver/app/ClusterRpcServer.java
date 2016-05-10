@@ -12,11 +12,11 @@ import org.apache.thrift.transport.TServerSocket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.qibaike.thriftnameserver.rpc.TNSRpc;
-import com.qibaike.thriftnameserver.rpc.TNSRpc.Iface;
-import com.qibaike.thriftnameserver.rpc.impl.TNSRpcImpl;
+import com.qibaike.thriftnameserver.rpc.Cluster;
+import com.qibaike.thriftnameserver.rpc.Cluster.Iface;
+import com.qibaike.thriftnameserver.rpc.impl.ClusterRpcImpl;
 
-public class TNSRpcServer {
+public class ClusterRpcServer {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	public void start(final String host, final int port) {
@@ -24,24 +24,24 @@ public class TNSRpcServer {
 			@Override
 			public void run() {
 				try {
-					TProcessor tprocessor = new TNSRpc.Processor<Iface>(new TNSRpcImpl());
+					TProcessor tprocessor = new Cluster.Processor<Iface>(new ClusterRpcImpl());
 					InetSocketAddress address = new InetSocketAddress(host, port);
 					TServerSocket transport = new TServerSocket(address);
 					TThreadPoolServer.Args ttArgs = new TThreadPoolServer.Args(transport);
 					ttArgs.processor(tprocessor);
 					ttArgs.protocolFactory(new TBinaryProtocol.Factory());
-					ExecutorService executorService = Executors.newFixedThreadPool(8);
+					ExecutorService executorService = Executors.newFixedThreadPool(2);
 					ttArgs.executorService(executorService);
 					TServer server = new TThreadPoolServer(ttArgs);
 					server.serve();
 				} catch (Exception e) {
-					log.error("tns rpc serve", e);
+					log.error("cluster rpc serve", e);
 				}
 			}
 		};
 
 		Thread t = new Thread(runnable);
-		t.setName("TNSRpcServer");
+		t.setName("ClusterRpcServer");
 		t.start();
 	}
 }
