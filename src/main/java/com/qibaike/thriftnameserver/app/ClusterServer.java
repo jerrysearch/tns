@@ -5,22 +5,18 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.qibaike.thriftnameserver.cluster.CheckAndRemoveServiceTombstoneTask;
-import com.qibaike.thriftnameserver.cluster.PushServiceTask;
-import com.qibaike.thriftnameserver.cluster.PushTnsTask;
+import com.qibaike.thriftnameserver.cluster.PushTnsAndServiceTask;
 
 public class ClusterServer {
 
 	public void start() {
-		Runnable task_1 = new PushServiceTask();
-		Runnable task_2 = new PushTnsTask();
+		Runnable task_1 = new PushTnsAndServiceTask();
 
-		Runnable task_3 = new CheckAndRemoveServiceTombstoneTask();
+		Runnable task_2 = new CheckAndRemoveServiceTombstoneTask();
 
-		/** 顺序执行 */
 		ScheduledExecutorService pool = Executors.newSingleThreadScheduledExecutor();
-		pool.scheduleWithFixedDelay(task_1, 1, 5, TimeUnit.SECONDS);
-		pool.scheduleWithFixedDelay(task_2, 3, 5, TimeUnit.SECONDS);
+		pool.scheduleWithFixedDelay(task_1, 5, 5, TimeUnit.SECONDS);
 
-		pool.scheduleWithFixedDelay(task_3, 10, 10, TimeUnit.MINUTES);
+		pool.scheduleWithFixedDelay(task_2, 10, 10, TimeUnit.MINUTES);
 	}
 }

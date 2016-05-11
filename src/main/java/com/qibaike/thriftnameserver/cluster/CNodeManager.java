@@ -32,7 +32,7 @@ public class CNodeManager implements CNodeManagerMBean {
 		me.setHost(Config.HOSTNAME);
 		me.setPort(clusterConstants.PORT);
 		me.setId(myId);
-		me.setState(State.UP);
+		me.setState(State.Joining);
 		me.setTimestamp(System.currentTimeMillis());
 		/**
 		 * 将自己放到列表中

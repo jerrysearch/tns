@@ -8,20 +8,20 @@ import org.apache.thrift.TException;
 import com.jcabi.aspects.Loggable;
 import com.qibaike.thriftnameserver.cluster.CNodeManager;
 import com.qibaike.thriftnameserver.rpc.TCNode;
-import com.qibaike.thriftnameserver.rpc.TSNode;
 import com.qibaike.thriftnameserver.rpc.TNSRpc.Iface;
+import com.qibaike.thriftnameserver.rpc.TSNode;
 import com.qibaike.thriftnameserver.service.SNodeManager;
 
 public class TNSRpcImpl implements Iface {
 
-	private final SNodeManager nodeManager = SNodeManager.getInstance();
+	private final SNodeManager sNodeManager = SNodeManager.getInstance();
 	private final CNodeManager cNodeManager = CNodeManager.getInstance();
 
 	@Override
 	@Loggable(skipResult = true)
 	public List<TSNode> serviceList(String clientId, String serviceName) throws TException {
 		List<TSNode> list = new LinkedList<TSNode>();
-		this.nodeManager.toUpServiceNodeList(serviceName, list);
+		this.sNodeManager.toUpServiceNodeList(serviceName, list);
 		return list;
 	}
 
@@ -40,12 +40,8 @@ public class TNSRpcImpl implements Iface {
 	}
 
 	@Override
-	public void pushServiceList(List<TSNode> sList) throws TException {
-		this.nodeManager.pushServiceList(sList);
-	}
-
-	@Override
-	public void pushClusterList(List<TCNode> cList) throws TException {
+	public void pushClusterAndServiceList(List<TCNode> cList, List<TSNode> sList) throws TException {
 		this.cNodeManager.pushClusterList(cList);
+		this.sNodeManager.pushServiceList(sList);
 	}
 }

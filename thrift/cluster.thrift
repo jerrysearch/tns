@@ -12,12 +12,17 @@ service Cluster {
 	/**
 	*	推送服务节点列表
 	*/
-	oneway void pushServiceList(1: list<TSNode> sList),
+	// oneway void pushServiceList(1: list<TSNode> sList),
 	
 	/**
 	*	推送tns节点列表
 	*/
-	oneway void pushClusterList(1: list<TCNode> cList)
+	// oneway void pushClusterList(1: list<TCNode> cList),
+	
+	/**
+	*	一次性推送tns、service节点列表
+	*/
+	oneway void pushClusterAndServiceList(1: list<TCNode> cList, 2: list<TSNode> sList)
 }
 
 enum State {
