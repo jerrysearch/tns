@@ -117,8 +117,7 @@ public class SNodeManager implements SNodeManagerMBean {
 	 * 
 	 * @param tsnode
 	 */
-	private void leavingToServiceMap(String serviceName, long id, long timestamp) {
-		TSNode tsnode = this.serviceMap.get(serviceName).get(id);
+	private void leavingToServiceMap(TSNode tsnode, long timestamp) {
 		tsnode.setState(State.Leaving);
 		tsnode.setTimestamp(timestamp);
 	}
@@ -142,7 +141,7 @@ public class SNodeManager implements SNodeManagerMBean {
 					if (tsnode.getState() == State.Leaving && dst.getState() != State.Leaving
 							&& dst.getState() != State.Tombstone) { // leaving
 						long timestamp = tsnode.getTimestamp();
-						this.leavingToServiceMap(serviceName, id, timestamp);
+						this.leavingToServiceMap(dst, timestamp);
 					}
 				}
 			}
@@ -207,7 +206,10 @@ public class SNodeManager implements SNodeManagerMBean {
 			this.writeLock.lock();
 			if (this.serviceMap.containsKey(serviceName)
 					&& this.serviceMap.get(serviceName).containsKey(id)) {
-				this.leavingToServiceMap(serviceName, id, System.currentTimeMillis());
+
+				TSNode tsnode = this.serviceMap.get(serviceName).get(id);
+				long timestamp = System.currentTimeMillis();
+				this.leavingToServiceMap(tsnode, timestamp);
 				return "OK !";
 			}
 			return "FAIL !";

@@ -32,16 +32,4 @@ public class TNSRpcImpl implements Iface {
 		this.cNodeManager.toUpClusterNodeList(list);
 		return list;
 	}
-
-	@Override
-	@Loggable
-	public void up(TCNode tcnode) throws TException {
-		this.cNodeManager.up(tcnode);
-	}
-
-	@Override
-	public void pushClusterAndServiceList(List<TCNode> cList, List<TSNode> sList) throws TException {
-		this.cNodeManager.pushClusterList(cList);
-		this.sNodeManager.pushServiceList(sList);
-	}
 }

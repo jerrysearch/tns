@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 import com.qibaike.thriftnameserver.cluster.CheckAndRemoveServiceTombstoneTask;
 import com.qibaike.thriftnameserver.cluster.PushTnsAndServiceTask;
 
-public class ClusterServer {
+public class ClusterScheduleServer {
 
 	public void start() {
 		Runnable task_1 = new PushTnsAndServiceTask();

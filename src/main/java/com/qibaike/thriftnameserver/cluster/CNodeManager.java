@@ -15,7 +15,7 @@ import com.qibaike.thriftnameserver.conf.Config;
 import com.qibaike.thriftnameserver.rpc.Cluster;
 import com.qibaike.thriftnameserver.rpc.State;
 import com.qibaike.thriftnameserver.rpc.TCNode;
-import com.qibaike.thriftnameserver.rpc.clusterConstants;
+import com.qibaike.thriftnameserver.rpc.structConstants;
 
 public class CNodeManager implements CNodeManagerMBean {
 
@@ -30,7 +30,7 @@ public class CNodeManager implements CNodeManagerMBean {
 
 		TCNode me = new TCNode();
 		me.setHost(Config.HOSTNAME);
-		me.setPort(clusterConstants.PORT);
+		me.setPort(structConstants.PORT);
 		me.setId(myId);
 		me.setState(State.Joining);
 		me.setTimestamp(System.currentTimeMillis());
@@ -124,7 +124,7 @@ public class CNodeManager implements CNodeManagerMBean {
 	@Override
 	@Loggable
 	public String meet(String host) {
-		TSocket transport = new TSocket(host, clusterConstants.PORT, 2000);
+		TSocket transport = new TSocket(host, structConstants.PORT, 2000);
 		TProtocol protocol = new TBinaryProtocol(transport);
 		Cluster.Client client = new Cluster.Client(protocol);
 		try {

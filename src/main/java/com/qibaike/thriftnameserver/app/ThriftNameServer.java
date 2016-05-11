@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.qibaike.thriftnameserver.conf.Config;
-import com.qibaike.thriftnameserver.rpc.clusterConstants;
+import com.qibaike.thriftnameserver.rpc.structConstants;
 
 public class ThriftNameServer {
 	public static void main(String[] args) {
@@ -13,17 +13,25 @@ public class ThriftNameServer {
 		log.info("ThriftNameServer start begin");
 		log.info("--------------------------------------");
 		String host = Config.HOSTNAME;
-		int port = clusterConstants.PORT;
-		TNSRpcServer tnsRpcServer = new TNSRpcServer();
-		tnsRpcServer.start(host, port);
+		/**
+		 * cluster rpc
+		 */
+		ClusterRpcServer clusterRpcServer = new ClusterRpcServer();
+		clusterRpcServer.start(host, structConstants.PORT);
 
-		SNodeManagerMBeanServer nodeManagerMBeanServer = new SNodeManagerMBeanServer();
-		nodeManagerMBeanServer.start();
+		/**
+		 * tns rpc
+		 */
+		TNSRpcServer tnsRpcServer = new TNSRpcServer();
+		tnsRpcServer.start(host, structConstants.PORT + 1);
+
+		SNodeManagerMBeanServer sNodeManagerMBeanServer = new SNodeManagerMBeanServer();
+		sNodeManagerMBeanServer.start();
 
 		CNodeManagerMBeanServer cNodeManagerMBeanServer = new CNodeManagerMBeanServer();
 		cNodeManagerMBeanServer.start();
 
-		ClusterServer pushServer = new ClusterServer();
+		ClusterScheduleServer pushServer = new ClusterScheduleServer();
 		pushServer.start();
 
 		log.info("--------------------------------------");
