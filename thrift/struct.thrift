@@ -1,5 +1,7 @@
 namespace java com.qibaike.thriftnameserver.rpc
 
+const i32 PORT = 8700
+
 enum State {
  UP = 1,
  DOWN = 2,

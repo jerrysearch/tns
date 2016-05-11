@@ -2,8 +2,6 @@ namespace java com.qibaike.thriftnameserver.rpc
 
 include "struct.thrift"
 
-const i32 PORT = 8700
-
 service Cluster {
 
 	/**

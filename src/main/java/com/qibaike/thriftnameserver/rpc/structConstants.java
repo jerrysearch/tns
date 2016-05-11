@@ -34,8 +34,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings({"cast", "rawtypes", "serial", "unchecked"})
-public class tnsrpcConstants {
+public class structConstants {
 
-  public static final int PORT = 8701;
+  public static final int PORT = 8700;
 
 }
