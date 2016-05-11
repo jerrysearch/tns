@@ -7,8 +7,28 @@
 	<version>2.2.0</version>
 	<packaging>jar</packaging>
 
-	<name>thriftpool</name>
-	<url>http://maven.apache.org</url>
+	<name>thriftnameserver</name>
+	<url>https://github.com/jerrysearch/tns/wiki</url>
+	<description>a distributed thrift tool.</description>
+	<licenses>
+		<license>
+			<name>The Apache License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+	<developers>
+		<developer>
+			<name>Jerry</name>
+			<email>search.jerry@gmail.com</email>
+			<organization>700Bike</organization>
+			<organizationUrl>http://www.700bike.com/</organizationUrl>
+		</developer>
+	</developers>
+	<scm>
+		<connection>scm:git:git@github.com:jerrysearch/tns.git</connection>
+		<developerConnection>scm:git:git@github.com:jerrysearch/tns.git</developerConnection>
+		<url>git@github.com:jerrysearch/tns.git</url>
+	</scm>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
