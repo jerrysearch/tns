@@ -1,6 +1,7 @@
 package com.qibaike.thriftnameserver.service;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -14,6 +15,7 @@ import com.jcabi.aspects.Loggable;
 import com.qibaike.thriftnameserver.conf.Config;
 import com.qibaike.thriftnameserver.rpc.State;
 import com.qibaike.thriftnameserver.rpc.TSNode;
+import com.qibaike.thriftnameserver.util.DateUtil;
 
 public class SNodeManager implements SNodeManagerMBean {
 	private final Map<String, Map<Long, TSNode>> serviceMap = new HashMap<String, Map<Long, TSNode>>();
@@ -161,9 +163,9 @@ public class SNodeManager implements SNodeManagerMBean {
 		this.addOrLeaving(list.toArray(new TSNode[list.size()]));
 	}
 
-	private final String format = "%-15s%-15s%-16s%-15s%-15s%-15s%-15s%-15s\n";
+	private final String format = "%-15s%-15s%-16s%-15s%-15s%-15s%-15s%-15s%-15s\n";
 	private final String headLine = String.format(format, "STATE", "SERVICENAME", "HOST", "PORT",
-			"ID", "VNODES", "PINGFREQUENCY", "TIMESTAMP");
+			"ID", "VNODES", "PINGFREQUENCY", "TIMESTAMP", "TIME");
 
 	@Override
 	public String serviceStatus() {
@@ -193,7 +195,8 @@ public class SNodeManager implements SNodeManagerMBean {
 		for (TSNode tsnode : tsnodeList) {
 			String s = String.format(this.format, tsnode.getState(), tsnode.getServiceName(),
 					tsnode.getHost(), tsnode.getPort(), tsnode.getId(), tsnode.getVNodes(),
-					tsnode.getPingFrequency(), tsnode.getTimestamp());
+					tsnode.getPingFrequency(), tsnode.getTimestamp(),
+					DateUtil.dateTimeFormat.format(new Date(tsnode.getTimestamp())));
 			sb.append(s);
 		}
 		return sb.toString();

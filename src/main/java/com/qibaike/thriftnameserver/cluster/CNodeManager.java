@@ -1,6 +1,7 @@
 package com.qibaike.thriftnameserver.cluster;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.TreeMap;
 import java.util.concurrent.locks.Lock;
@@ -16,6 +17,7 @@ import com.qibaike.thriftnameserver.rpc.Cluster;
 import com.qibaike.thriftnameserver.rpc.State;
 import com.qibaike.thriftnameserver.rpc.TCNode;
 import com.qibaike.thriftnameserver.rpc.structConstants;
+import com.qibaike.thriftnameserver.util.DateUtil;
 
 public class CNodeManager implements CNodeManagerMBean {
 
@@ -156,9 +158,9 @@ public class CNodeManager implements CNodeManagerMBean {
 
 	}
 
-	private final String format = "    %-20s%-20s%-20s%-20s%-20s\n";
+	private final String format = "    %-20s%-20s%-20s%-20s%-20s%-20s\n";
 	private final String headLine = String.format(format, "STATE", "HOST", "ID", "VERSION",
-			"TIMESTAMP");
+			"TIMESTAMP", "TIME");
 
 	@Override
 	public String clusterStatus() {
@@ -169,7 +171,8 @@ public class CNodeManager implements CNodeManagerMBean {
 			Collection<TCNode> collection = this.cMap.values();
 			for (TCNode tcnode : collection) {
 				String s = String.format(format, tcnode.getState().toString(), tcnode.getHost(),
-						tcnode.getId(), tcnode.getVersion(), tcnode.getTimestamp());
+						tcnode.getId(), tcnode.getVersion(), tcnode.getTimestamp(),
+						DateUtil.dateTimeFormat.format(new Date(tcnode.getTimestamp())));
 				sb.append(s);
 			}
 			return sb.toString();
