@@ -23,7 +23,7 @@
 * [Create cluster](https://github.com/jerrysearch/tns/wiki/cluster)
 * [use tns in your project](https://github.com/jerrysearch/tns/wiki/use-tns-in-your-project)
 
-## Development
+## Developer
 
 * jerry([@jerry](https://github.com/jerrysearch))
 
