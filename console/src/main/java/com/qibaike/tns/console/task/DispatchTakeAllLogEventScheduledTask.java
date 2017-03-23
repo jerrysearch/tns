@@ -17,17 +17,18 @@ public class DispatchTakeAllLogEventScheduledTask extends BaseClusterListTask im
 
 	private final ExecutorService executor = Executors.newFixedThreadPool(2);
 
-	private DispatchTakeAllLogEventScheduledTask(){};
-	
+	private DispatchTakeAllLogEventScheduledTask() {
+	};
+
 	@Override
 	public void run() {
 		try {
 			List<TCNode> list = super.getAll();
 			log.debug(Arrays.toString(list.toArray()));
 			for (TCNode tcNode : list) {
-//				if(tcNode.getState() != State.UP){
-//					continue;
-//				}
+				if (tcNode.getState() != State.UP) {
+					continue;
+				}
 				TakeAllLogEventTask task = new TakeAllLogEventTask(tcNode);
 				this.executor.submit(task);
 			}
@@ -36,12 +37,12 @@ public class DispatchTakeAllLogEventScheduledTask extends BaseClusterListTask im
 		}
 
 	}
-	
-	private static class proxy{
+
+	private static class proxy {
 		private static DispatchTakeAllLogEventScheduledTask task = new DispatchTakeAllLogEventScheduledTask();
 	}
-	
-	public static DispatchTakeAllLogEventScheduledTask getInstance(){
+
+	public static DispatchTakeAllLogEventScheduledTask getInstance() {
 		return proxy.task;
 	}
 
