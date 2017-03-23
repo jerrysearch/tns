@@ -49,10 +49,24 @@
 			</plugin>
 		</plugins>
 	</build>
-	<modules>
-		<module>server</module>
-		<module>client</module>
-		<module>console</module>
-		<module>protocol</module>
-	</modules>
+
+	<profiles>
+		<profile>
+			<id>ci</id>
+			<modules>
+				<module>server</module>
+				<module>client</module>
+				<module>protocol</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>all</id>
+			<modules>
+				<module>server</module>
+				<module>client</module>
+				<module>console</module>
+				<module>protocol</module>
+			</modules>
+		</profile>
+	</profiles>
 </project>
