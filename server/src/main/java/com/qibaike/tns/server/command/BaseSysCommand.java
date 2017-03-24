@@ -6,15 +6,19 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-public abstract class BaseSysCommand<V> implements Callable<V> {
-	private static final ThreadFactory threadFactory = null;
-	private static final ExecutorService executorService = Executors.newFixedThreadPool(4,
-			threadFactory);
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.qibaike.tns.server.util.DaemonThreadFactory;
+
+public abstract class BaseSysCommand<V> implements Callable<V> {
+	private static final ExecutorService executorService = Executors.newFixedThreadPool(4,
+			new DaemonThreadFactory("BaseSysCommand"));
+
+	protected final Logger log = LoggerFactory.getLogger(BaseSysCommand.class);
 	private final int executionTimeoutInMilliseconds;
 
 	public BaseSysCommand() {
@@ -28,13 +32,15 @@ public abstract class BaseSysCommand<V> implements Callable<V> {
 	public V execute() {
 		Future<V> future = BaseSysCommand.executorService.submit(this);
 		try {
-			V v = future.get(this.executionTimeoutInMilliseconds, TimeUnit.MICROSECONDS);
+			V v = future.get(this.executionTimeoutInMilliseconds, TimeUnit.MILLISECONDS);
 			return v;
 		} catch (ExecutionException | TimeoutException | CancellationException e) {
 			// 任务执行异常、超时、被取消
+			this.log.error("execute :", e);
 			return this.getFallback();
 		} catch (InterruptedException e) {
 			// 线程被中断
+			this.log.error("execute :", e);
 			return this.getFallback();
 		}
 	}

@@ -83,7 +83,7 @@ public class ThriftPingCommand extends BaseSysCommand<Integer> {
 		attributes.add("host=" + tsnode.getHost());
 		attributes.add("port=" + tsnode.getPort());
 		attributes.add("vNodes=" + vNodes);
-		attributes.add("consume(ms)=" + consume);
+		attributes.add("consume(ms)=" + String.format("%.2f", consume));
 		event.setAttributes(attributes);
 		event.setTimestamp(System.currentTimeMillis());
 		Summary.getInstance().appendLogEvent(event);

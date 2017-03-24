@@ -87,7 +87,7 @@ public class ThriftPushCNodeAndSNodeListCommand extends BaseSysCommand<State> {
 		List<String> attributes = new LinkedList<String>();
 		attributes.add("toCluster=" + tcnode.getHost());
 		attributes.add("state=" + state.toString());
-		attributes.add("consume(ms)=" + consume);
+		attributes.add("consume(ms)=" + String.format("%.2f", consume));
 		event.setAttributes(attributes);
 		event.setTimestamp(System.currentTimeMillis());
 		Summary.getInstance().appendLogEvent(event);

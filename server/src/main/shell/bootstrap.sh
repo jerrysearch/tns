@@ -19,7 +19,7 @@ MAIN_CLASS=com.qibaike.tns.server.app.ThriftNameServer
 LOG_FILE="$CONF_DIR/log4j.properties"
 
 #jvm config
-JAVA_OPTS="-javaagent:$AGENT_DIR/propertiesloadagent-0.0.1.jar=$CONF_DIR/core.properties -Xms1024M -Xmx1024M -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+UseParallelOldGC -XX:+UseAdaptiveSizePolicy -Dhostname=$HOSTNAME -Dlog4j.configuration=file:$LOG_FILE"
+JAVA_OPTS="-javaagent:$AGENT_DIR/propertiesloadagent-0.0.1.jar=$CONF_DIR/core.properties -Xms512M -Xmx512M -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+UseParallelOldGC -XX:+UseAdaptiveSizePolicy -Darchaius.dynamicProperty.disableDefaultConfig=true -Dhostname=$HOSTNAME -Dlog4j.configuration=file:$LOG_FILE"
 
 
 #java pid
