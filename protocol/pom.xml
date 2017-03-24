@@ -9,7 +9,7 @@
 		<version>3.0</version>
 	</parent>
 	<artifactId>tns-protocol</artifactId>
-	<name>tns-protocol ${project.version}</name>
+	<name>tns-protocol</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

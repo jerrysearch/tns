@@ -20,7 +20,7 @@ import com.qibaike.tns.server.summary.Summary;
 
 public class ThriftPushCNodeAndSNodeListCommand extends BaseSysCommand<State> {
 
-	private static final String CLUSTER_ID = String.valueOf(Config.TNSID);
+	private static final String CLUSTER_ID = Config.CLUSTER_ID;
 	protected final TCNode tcnode;
 	protected final List<TCNode> cList;
 	protected final List<TSNode> sList;
@@ -71,7 +71,7 @@ public class ThriftPushCNodeAndSNodeListCommand extends BaseSysCommand<State> {
 		long start = System.nanoTime();
 		State state = this.push(tcnode);
 		long end = System.nanoTime();
-		this.summaryClusterPush(tcnode, state, (end - start) * 0.001F);
+		this.summaryClusterPush(tcnode, state, (end - start) * 0.000001F);
 		return state;
 	}
 

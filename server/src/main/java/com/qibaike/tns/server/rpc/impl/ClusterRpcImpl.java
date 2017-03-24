@@ -25,12 +25,14 @@ public class ClusterRpcImpl implements Iface {
 		this.cNodeManager.up(tcnode);
 	}
 
+	@Loggable(skipArgs = true)
 	@Override
 	public void pushClusterAndServiceList(List<TCNode> cList, List<TSNode> sList) throws TException {
 		this.cNodeManager.pushClusterList(cList);
 		this.sNodeManager.pushServiceList(sList);
 	}
 
+	@Loggable(skipResult = true)
 	@Override
 	public List<TSNode> allServiceList(String clientId) throws TException {
 		List<TSNode> list = new LinkedList<TSNode>();
@@ -38,6 +40,7 @@ public class ClusterRpcImpl implements Iface {
 		return list;
 	}
 
+	@Loggable(skipResult = true)
 	@Override
 	public List<TCNode> clusterList(String clientId) throws TException {
 		List<TCNode> list = new LinkedList<TCNode>();
@@ -45,6 +48,7 @@ public class ClusterRpcImpl implements Iface {
 		return list;
 	}
 
+	@Loggable(skipResult = true)
 	@Override
 	public List<LogEvent> takeAllLogEvent(String clientId) throws TException {
 		return Summary.getInstance().takeAllLogEvent();

@@ -9,7 +9,7 @@
 		<version>3.0</version>
 	</parent>
 	<artifactId>tns-console</artifactId>
-	<name>console ${project.version}</name>
+	<name>console</name>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

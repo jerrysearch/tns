@@ -18,7 +18,7 @@ import com.qibaike.tns.server.summary.Summary;
 
 public class ThriftPingCommand extends BaseSysCommand<Integer> {
 
-	private static final String CLUSTER_ID = String.valueOf(Config.TNSID);
+	private static final String CLUSTER_ID = Config.CLUSTER_ID;
 	private final TSNode tsnode;
 
 	public ThriftPingCommand(TSNode tsnode) {
@@ -34,7 +34,7 @@ public class ThriftPingCommand extends BaseSysCommand<Integer> {
 		long start = System.nanoTime();
 		int vNodes = this.ping(this.tsnode);
 		long end = System.nanoTime();
-		this.summaryServicePing(tsnode, vNodes, (end - start) * 0.001F);
+		this.summaryServicePing(tsnode, vNodes, (end - start) * 0.000001F);
 		return vNodes;
 	}
 

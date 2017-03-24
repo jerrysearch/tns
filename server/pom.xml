@@ -9,7 +9,7 @@
 		<version>3.0</version>
 	</parent>
 	<artifactId>tns-server</artifactId>
-	<name>tns-server ${project.version}</name>
+	<name>tns-server</name>
 
 	<dependencies>
 		<dependency>
