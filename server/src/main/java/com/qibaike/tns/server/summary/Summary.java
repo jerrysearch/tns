@@ -2,7 +2,7 @@ package com.qibaike.tns.server.summary;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import com.qibaike.tns.protocol.rpc.event.LogEvent;
 
@@ -14,21 +14,24 @@ import com.qibaike.tns.protocol.rpc.event.LogEvent;
  */
 public class Summary {
 
-	private final ConcurrentLinkedQueue<LogEvent> queue = new ConcurrentLinkedQueue<LogEvent>();
+	/**
+	 * 初始容量100
+	 */
+	private final LinkedBlockingQueue<LogEvent> queue = new LinkedBlockingQueue<LogEvent>(100);
 
 	public void appendLogEvent(LogEvent event) {
-		this.queue.add(event);
+		boolean sucess = this.queue.offer(event);
+		if (sucess) {
+			return;
+		} else {
+			this.queue.poll();
+			this.queue.offer(event);
+		}
 	}
 
 	public List<LogEvent> takeAllLogEvent() {
 		List<LogEvent> list = new LinkedList<LogEvent>();
-		while (true) {
-			LogEvent event = this.queue.poll();
-			if (event == null) {
-				break;
-			}
-			list.add(event);
-		}
+		this.queue.drainTo(list);
 		return list;
 	}
 

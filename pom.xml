@@ -52,11 +52,24 @@
 
 	<profiles>
 		<profile>
-			<id>ci</id>
+			<id>console</id>
 			<modules>
-				<module>server</module>
-				<module>client</module>
 				<module>protocol</module>
+				<module>console</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>client</id>
+			<modules>
+				<module>protocol</module>
+				<module>client</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>server</id>
+			<modules>
+				<module>protocol</module>
+				<module>server</module>
 			</modules>
 		</profile>
 		<profile>
