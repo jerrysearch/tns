@@ -24,14 +24,21 @@ public class Summary {
 		if (sucess) {
 			return;
 		} else {
-			this.queue.poll();
+			this.queue.clear(); // 暴力清除
 			this.queue.offer(event);
 		}
 	}
 
 	public List<LogEvent> takeAllLogEvent() {
 		List<LogEvent> list = new LinkedList<LogEvent>();
-		this.queue.drainTo(list);
+		while (true) {
+			LogEvent event = this.queue.poll();
+			if (null == event) {
+				break;
+			} else {
+				list.add(event);
+			}
+		}
 		return list;
 	}
 
