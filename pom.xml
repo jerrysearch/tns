@@ -66,6 +66,13 @@
 			</modules>
 		</profile>
 		<profile>
+			<id>example</id>
+			<modules>
+				<module>example</module>
+				<module>client</module>
+			</modules>
+		</profile>
+		<profile>
 			<id>server</id>
 			<modules>
 				<module>protocol</module>
@@ -79,6 +86,7 @@
 				<module>client</module>
 				<module>console</module>
 				<module>protocol</module>
+				<module>example</module>
 			</modules>
 		</profile>
 	</profiles>
