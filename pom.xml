@@ -68,6 +68,7 @@
 		<profile>
 			<id>example</id>
 			<modules>
+				<module>protocol</module>
 				<module>example</module>
 				<module>client</module>
 			</modules>
