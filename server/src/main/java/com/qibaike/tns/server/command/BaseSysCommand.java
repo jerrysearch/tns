@@ -12,20 +12,23 @@ import java.util.concurrent.TimeoutException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.qibaike.tns.server.util.DaemonThreadFactory;
+import com.qibaike.tns.server.util.NamedThreadFactory;
 
 public abstract class BaseSysCommand<V> implements Callable<V> {
-	private static final ExecutorService executorService = Executors.newFixedThreadPool(4,
-			new DaemonThreadFactory("BaseSysCommand"));
+	/**
+	 * 执行command的线程池
+	 */
+	private static final ExecutorService executorService = Executors.newFixedThreadPool(2,
+			new NamedThreadFactory("BaseSysCommand", true));
 
 	protected final Logger log = LoggerFactory.getLogger(BaseSysCommand.class);
 	private final int executionTimeoutInMilliseconds;
 
-	public BaseSysCommand() {
-		this(3000); // 默认超时3000毫秒
+	protected BaseSysCommand() {
+		this(2000); // 默认超时2000毫秒
 	}
 
-	public BaseSysCommand(int executionTimeoutInMilliseconds) {
+	protected BaseSysCommand(int executionTimeoutInMilliseconds) {
 		this.executionTimeoutInMilliseconds = executionTimeoutInMilliseconds;
 	}
 

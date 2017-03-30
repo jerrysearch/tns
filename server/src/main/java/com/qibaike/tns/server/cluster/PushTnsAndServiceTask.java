@@ -19,8 +19,9 @@ public class PushTnsAndServiceTask implements Runnable {
 
 	@Override
 	public void run() {
-		TCNode tcnode = cNodeManager.getOne();
+		TCNode tcnode = cNodeManager.getNext();
 		if (null == tcnode) {
+			log.warn("can't get next node, and do nothing");
 			return;
 		}
 		List<TCNode> cList = new LinkedList<TCNode>();

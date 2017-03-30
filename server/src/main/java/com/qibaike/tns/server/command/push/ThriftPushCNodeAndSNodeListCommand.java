@@ -26,6 +26,7 @@ public class ThriftPushCNodeAndSNodeListCommand extends BaseSysCommand<State> {
 	protected final List<TSNode> sList;
 
 	public ThriftPushCNodeAndSNodeListCommand(TCNode tcnode, List<TCNode> cList, List<TSNode> sList) {
+		super();
 		this.tcnode = tcnode;
 		this.cList = cList;
 		this.sList = sList;
@@ -39,8 +40,8 @@ public class ThriftPushCNodeAndSNodeListCommand extends BaseSysCommand<State> {
 		TSocket transport = new TSocket(host, port, 1000);
 		TProtocol protocol = new TBinaryProtocol(transport);
 		Cluster.Client client = new Cluster.Client(protocol);
-		transport.open();
 		try {
+			transport.open();
 			client.pushClusterAndServiceList(cList, sList);
 		} finally {
 			if (transport.isOpen()) {

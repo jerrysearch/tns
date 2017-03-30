@@ -20,7 +20,7 @@ public class TNSRpcImpl implements Iface {
 
 	private final SNodeManager sNodeManager = SNodeManager.getInstance();
 	private final CNodeManager cNodeManager = CNodeManager.getInstance();
-	private final String clusterId = String.valueOf(Config.TNSID);
+	private final String clusterId = String.valueOf(Config.CLUSTER_ID);
 
 	/**
 	 * 请求service列表
@@ -28,9 +28,9 @@ public class TNSRpcImpl implements Iface {
 	@Override
 	@Loggable(skipResult = true)
 	public List<TSNode> serviceList(String clientId, String serviceName) throws TException {
-		this.serviceListLogEvent(clientId, serviceName);
 		List<TSNode> list = new LinkedList<TSNode>();
 		this.sNodeManager.toUpServiceNodeList(serviceName, list);
+		this.serviceListLogEvent(clientId, serviceName, list.size());
 		return list;
 	}
 
@@ -41,13 +41,14 @@ public class TNSRpcImpl implements Iface {
 	 * @param serviceName
 	 * @see LogEvent
 	 */
-	private void serviceListLogEvent(String clientId, String serviceName) {
+	private void serviceListLogEvent(String clientId, String serviceName, int upNodes) {
 		LogEvent event = new LogEvent();
 		event.setSource(clientId);
 		event.setOperation(Operation.SYNC_SERVICE);
 		List<String> attributes = new LinkedList<String>();
 		attributes.add("fromCluster=" + this.clusterId);
 		attributes.add("sName=" + serviceName);
+		attributes.add("upNodes=" + upNodes);
 		event.setAttributes(attributes);
 		event.setTimestamp(System.currentTimeMillis());
 		Summary.getInstance().appendLogEvent(event);
@@ -59,9 +60,9 @@ public class TNSRpcImpl implements Iface {
 	@Override
 	@Loggable(skipResult = true)
 	public List<TCNode> clusterList(String clientId) throws TException {
-		this.clusterListLogEvent(clientId);
 		List<TCNode> list = new LinkedList<TCNode>();
 		this.cNodeManager.toUpClusterNodeList(list);
+		this.clusterListLogEvent(clientId, list.size());
 		return list;
 	}
 
@@ -71,12 +72,13 @@ public class TNSRpcImpl implements Iface {
 	 * @param clientId
 	 * @see LogEvent
 	 */
-	private void clusterListLogEvent(String clientId) {
+	private void clusterListLogEvent(String clientId, int upNodes) {
 		LogEvent event = new LogEvent();
 		event.setSource(clientId);
 		event.setOperation(Operation.SYNC_CLUSTER);
 		List<String> attributes = new LinkedList<String>();
 		attributes.add("fromCluster=" + this.clusterId);
+		attributes.add("upNodes=" + upNodes);
 		event.setAttributes(attributes);
 		event.setTimestamp(System.currentTimeMillis());
 		Summary.getInstance().appendLogEvent(event);

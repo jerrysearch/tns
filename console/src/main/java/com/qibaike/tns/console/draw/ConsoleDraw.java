@@ -82,7 +82,7 @@ public class ConsoleDraw implements Runnable {
 
 	private void draw(String cTime, String eTime, String source, String operation, String attributes) {
 		AnsiConsole.systemInstall();
-		System.out.println(Ansi.ansi().fg(Color.RED).a(String.format("%   -12s", cTime))
+		System.out.println(Ansi.ansi().fg(Color.RED).a(String.format("%-12s", cTime))
 				.fg(Color.YELLOW).a(String.format("%-12s", eTime)).fg(Color.RED)
 				.a(String.format("%-25s", source)).fg(Color.GREEN)
 				.a(String.format("%-15s", operation)).fg(Color.BLUE).a(attributes).reset());

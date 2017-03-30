@@ -51,10 +51,10 @@ public class CNodeManager implements CNodeManagerMBean {
 	 * 
 	 * @return
 	 */
-	public TCNode getOne() {
+	public TCNode getNext() {
 		try {
 			this.readLock.lock();
-			return this.getOne(this.myId);
+			return this.getNext(this.myId);
 		} finally {
 			this.readLock.unlock();
 		}
@@ -93,7 +93,7 @@ public class CNodeManager implements CNodeManagerMBean {
 		}
 	}
 
-	private TCNode getOne(Long id) {
+	private TCNode getNext(long id) {
 		Long key = this.cMap.higherKey(id);
 		if (null == key) {
 			key = this.cMap.firstKey();
@@ -117,7 +117,7 @@ public class CNodeManager implements CNodeManagerMBean {
 		case Leaving:
 		case Tombstone:
 		case DOWN:
-			return this.getOne(key);
+			return this.getNext(key);
 		default:
 			return null;
 		}

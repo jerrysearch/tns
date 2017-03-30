@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.qibaike.tns.protocol.rpc.Cluster;
 import com.qibaike.tns.protocol.rpc.Cluster.Iface;
 import com.qibaike.tns.server.rpc.impl.ClusterRpcImpl;
+import com.qibaike.tns.server.util.NamedThreadFactory;
 
 public class ClusterRpcServer {
 	private final Logger log = LoggerFactory.getLogger(getClass());
@@ -30,7 +31,8 @@ public class ClusterRpcServer {
 					TThreadPoolServer.Args ttArgs = new TThreadPoolServer.Args(transport);
 					ttArgs.processor(tprocessor);
 					ttArgs.protocolFactory(new TBinaryProtocol.Factory());
-					ExecutorService executorService = Executors.newFixedThreadPool(2);
+					ExecutorService executorService = Executors.newFixedThreadPool(2,
+							new NamedThreadFactory("ClusterRpcServer", false));
 					ttArgs.executorService(executorService);
 					TServer server = new TThreadPoolServer(ttArgs);
 					server.serve();
@@ -41,7 +43,7 @@ public class ClusterRpcServer {
 		};
 
 		Thread t = new Thread(runnable);
-		t.setName("ClusterRpcServer");
+		t.setName("ClusterRpcServer_Main");
 		t.start();
 	}
 }

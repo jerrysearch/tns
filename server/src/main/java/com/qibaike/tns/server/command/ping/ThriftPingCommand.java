@@ -22,6 +22,7 @@ public class ThriftPingCommand extends BaseSysCommand<Integer> {
 	private final TSNode tsnode;
 
 	public ThriftPingCommand(TSNode tsnode) {
+		super();
 		this.tsnode = tsnode;
 	}
 
@@ -46,9 +47,9 @@ public class ThriftPingCommand extends BaseSysCommand<Integer> {
 		TSocket transport = new TSocket(host, port, 1000);
 		TProtocol protocol = new TBinaryProtocol(transport);
 		PoolAble.Client client = new PoolAble.Client(protocol);
-		transport.open();
 		int vNodes = -1;
 		try {
+			transport.open();
 			vNodes = client.ping();
 		} finally {
 			if (transport.isOpen()) {
@@ -82,8 +83,9 @@ public class ThriftPingCommand extends BaseSysCommand<Integer> {
 		attributes.add("sName=" + tsnode.getServiceName());
 		attributes.add("host=" + tsnode.getHost());
 		attributes.add("port=" + tsnode.getPort());
+		attributes.add("frequency=" + tsnode.getPingFrequency());
 		attributes.add("vNodes=" + vNodes);
-		attributes.add("consume(ms)=" + String.format("%.2f", consume));
+		attributes.add(String.format("consume(ms)=%.2f", consume));
 		event.setAttributes(attributes);
 		event.setTimestamp(System.currentTimeMillis());
 		Summary.getInstance().appendLogEvent(event);

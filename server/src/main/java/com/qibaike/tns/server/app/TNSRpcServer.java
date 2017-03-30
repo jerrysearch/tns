@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import com.qibaike.tns.protocol.rpc.TNSRpc;
 import com.qibaike.tns.protocol.rpc.TNSRpc.Iface;
 import com.qibaike.tns.server.rpc.impl.TNSRpcImpl;
+import com.qibaike.tns.server.util.NamedThreadFactory;
 
 public class TNSRpcServer {
 	private final Logger log = LoggerFactory.getLogger(getClass());
@@ -30,7 +31,8 @@ public class TNSRpcServer {
 					TThreadPoolServer.Args ttArgs = new TThreadPoolServer.Args(transport);
 					ttArgs.processor(tprocessor);
 					ttArgs.protocolFactory(new TBinaryProtocol.Factory());
-					ExecutorService executorService = Executors.newFixedThreadPool(8);
+					ExecutorService executorService = Executors.newFixedThreadPool(4,
+							new NamedThreadFactory("TNSRpcServer", false));
 					ttArgs.executorService(executorService);
 					TServer server = new TThreadPoolServer(ttArgs);
 					server.serve();
@@ -41,7 +43,7 @@ public class TNSRpcServer {
 		};
 
 		Thread t = new Thread(runnable);
-		t.setName("TNSRpcServer");
+		t.setName("TNSRpcServer_Main");
 		t.start();
 	}
 }
