@@ -1,18 +1,16 @@
-# tnsclient
+# tns client
 
-[![Build Status](https://api.travis-ci.org/jerrysearch/tnsclient.svg)](https://travis-ci.org/jerrysearch/tnsclient)
+```java
+//	初始化ClusterPool。可共享给ServicePool，一个jvm一个即可
+ClusterPool clusterPool = new ClusterPool("tns_1", "tns_2"...);
 
-tsnclient为thriftnameserver客户端
+//	初始化ServicePool。一个service一个
+ServicePool pool = new ServicePool(clusterPool, <serviceName>, <heartbeat>);
 
-```
-String clientId = "local_test";
-ClusterPool clusterPool = new ClusterPool(clientId, "tns_1", "tns_2"...);
-ThriftPool pool = new ThriftPool(clusterPool, clientId, <serviceName>, <heartbeat>);
+//	获取该pool下一个可用节点
 TSNode tnode = pool.getOne();
 
 
-/**
-* 移除一个坏掉的节点
-**/
+// 移除一个坏掉的节点
 pool.brokenNode(tsnode);
 ```
