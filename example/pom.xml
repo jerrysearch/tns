@@ -39,7 +39,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>com.qibaike.tns.example.ClientExample</mainClass>
+							<mainClass>com.github.jerrysearch.tns.example.ClientExample</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

@@ -58,7 +58,7 @@
 					</descriptorRefs>
 					<archive>
 						<manifest>
-							<mainClass>com.qibaike.tns.console.Console</mainClass>
+							<mainClass>com.github.jerrysearch.tns.console.Console</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
