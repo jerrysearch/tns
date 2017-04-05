@@ -3,32 +3,42 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.qibaike.tns</groupId>
+	<groupId>com.github.jerrysearch</groupId>
 	<artifactId>tns-all</artifactId>
-	<version>3.0</version>
+	<version>3.0.1</version>
 	<packaging>pom</packaging>
-
-	<name>tns</name>
-	<url>https://github.com/jerrysearch/tns/wiki</url>
+	<name>tns-all</name>
+	<url>https://github.com/jerrysearch/tns</url>
 	<description>a distributed thrift tool.</description>
+	
+	
 	<licenses>
 		<license>
 			<name>The Apache License, Version 2.0</name>
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 		</license>
 	</licenses>
+	
+	
 	<developers>
 		<developer>
-			<name>Jerry</name>
+			<id>jerry</id>
+			<name>jerry</name>
+			<roles>
+				<role>architect</role>
+				<role>committer</role>
+			</roles>
 			<email>search.jerry@gmail.com</email>
-			<organization>700Bike</organization>
-			<organizationUrl>http://www.700bike.com/</organizationUrl>
+			<url>https://github.com/jerrysearch</url>
+			<timezone>8</timezone>
 		</developer>
 	</developers>
+	
+	
 	<scm>
-		<connection>scm:git:git@github.com:jerrysearch/tns.git</connection>
-		<developerConnection>scm:git:git@github.com:jerrysearch/tns.git</developerConnection>
-		<url>git@github.com:jerrysearch/tns.git</url>
+		<url>https://github.com/jerrysearch/tns.git</url>
+		<connection>scm:git:https://github.com/jerrysearch/tns.git</connection>
+		<developerConnection>scm:git:https://github.com/jerrysearch/tns.git</developerConnection>
 	</scm>
 
 	<properties>

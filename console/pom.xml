@@ -4,9 +4,9 @@
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.qibaike.tns</groupId>
+		<groupId>com.github.jerrysearch</groupId>
 		<artifactId>tns-all</artifactId>
-		<version>3.0</version>
+		<version>3.0.1</version>
 	</parent>
 	<artifactId>tns-console</artifactId>
 	<name>tns-console</name>
@@ -30,9 +30,9 @@
 		</dependency>
 
 		<dependency>
-			<groupId>com.qibaike.tns</groupId>
+			<groupId>com.github.jerrysearch</groupId>
 			<artifactId>tns-protocol</artifactId>
-			<version>3.0</version>
+			<version>3.0.1</version>
 		</dependency>
 
 		<dependency>

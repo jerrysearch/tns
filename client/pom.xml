@@ -2,9 +2,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.qibaike.tns</groupId>
+		<groupId>com.github.jerrysearch</groupId>
 		<artifactId>tns-all</artifactId>
-		<version>3.0</version>
+		<version>3.0.1</version>
 	</parent>
 	<artifactId>tns-client</artifactId>
 	<name>tns-client</name>
@@ -21,9 +21,9 @@
 			<version>1.2.17</version>
 		</dependency>
 		<dependency>
-			<groupId>com.qibaike.tns</groupId>
+			<groupId>com.github.jerrysearch</groupId>
 			<artifactId>tns-protocol</artifactId>
-			<version>3.0</version>
+			<version>3.0.1</version>
 		</dependency>
 	</dependencies>
 </project>

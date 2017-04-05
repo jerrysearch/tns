@@ -1,4 +1,4 @@
-namespace java com.qibaike.tns.protocol.rpc
+namespace java com.github.jerrysearch.tns.protocol.rpc
 
 service PoolAble {
 

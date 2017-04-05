@@ -4,9 +4,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.qibaike.tns</groupId>
+		<groupId>com.github.jerrysearch</groupId>
 		<artifactId>tns-all</artifactId>
-		<version>3.0</version>
+		<version>3.0.1</version>
 	</parent>
 	<artifactId>tns-server</artifactId>
 	<name>tns-server</name>
@@ -35,9 +35,9 @@
 			<version>1.8.5</version>
 		</dependency>
 		<dependency>
-			<groupId>com.qibaike.tns</groupId>
+			<groupId>com.github.jerrysearch</groupId>
 			<artifactId>tns-protocol</artifactId>
-			<version>3.0</version>
+			<version>3.0.1</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.mail</groupId>

@@ -1,4 +1,4 @@
-namespace java com.qibaike.tns.protocol.rpc.event
+namespace java com.github.jerrysearch.tns.protocol.rpc.event
 
 	/**
 	* 操作
