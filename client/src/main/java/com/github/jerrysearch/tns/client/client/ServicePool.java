@@ -59,7 +59,6 @@ public class ServicePool extends ClientConfig {
 	/**
 	 * 
 	 * @param clusterPool
-	 * @param clientId
 	 * @param serviceName
 	 * @param heartbeat
 	 *            [10 , 60]
@@ -75,6 +74,12 @@ public class ServicePool extends ClientConfig {
 		this.registerService(clusterPool, serviceName, heartbeat);
 	}
 
+	/**
+	 * 
+	 * @param clusterPool
+	 * @param serviceName
+	 * @param heartbeat
+	 */
 	private void registerService(ClusterPool clusterPool, String serviceName, int heartbeat) {
 		String clientId = this.getClientId();
 		SysServiceListTask task = new SysServiceListTask(clusterPool, this, serviceName, clientId);
@@ -106,7 +111,7 @@ public class ServicePool extends ClientConfig {
 	 * 根据提供策略选择一个节点
 	 * 
 	 * @see TNodeSelector
-	 * @return
+	 * @return TSNode
 	 */
 	public TSNode getOne() {
 		TSNode tnode = null;

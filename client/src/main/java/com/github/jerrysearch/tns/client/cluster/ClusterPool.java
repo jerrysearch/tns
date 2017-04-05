@@ -39,6 +39,8 @@ public class ClusterPool extends ClientConfig {
 
 	/**
 	 * 用已知部分cluster节点来初始化
+	 * 
+	 * @param hosts
 	 */
 	private void init(String... hosts) {
 		for (String host : hosts) {
@@ -63,7 +65,7 @@ public class ClusterPool extends ClientConfig {
 	 * 根据提供策略选择一个节点
 	 * 
 	 * @see TNodeSelector
-	 * @return
+	 * @return TCNode
 	 */
 	public TCNode getOne() {
 		try {
