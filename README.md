@@ -16,7 +16,7 @@
 ## How can I develop with tns?
 
 * [Download the latest release package](https://github.com/jerrysearch/tns/releases)
-* [Create cluster](https://github.com/jerrysearch/tns/wiki/deploy-cluster)
+* [deploy cluster](https://github.com/jerrysearch/tns/wiki/deploy-cluster)
 * [use tns in your project](https://github.com/jerrysearch/tns/wiki/use-tns-in-your-project)
 
 ## Developer
