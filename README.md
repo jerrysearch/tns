@@ -18,6 +18,7 @@
 * [Download the latest release package](https://github.com/jerrysearch/tns/releases)
 * [Deploy cluster](https://github.com/jerrysearch/tns/wiki/deploy-cluster)
 * [Use tns in your project](https://github.com/jerrysearch/tns/wiki/use-tns-in-your-project)
+* [Monitor with console](https://github.com/jerrysearch/tns/wiki/monitor-with-console)
 
 ## Developer
 
