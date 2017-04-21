@@ -261,12 +261,11 @@ public class SNodeManager implements SNodeManagerMBean {
 					switch (tsnode.getState()) {
 					case Leaving:
 						if (tmp > Config.serviceStatusKeepSeconds) {
-							tsnode.setState(State.Tombstone_1);
-							tsnode.setTimestamp(System.currentTimeMillis());
-
 							this.log.info(
 									"checkAndRemove [ {} ] to [Tombstone_1] sucess, and waitSeconds is [ {} ]",
 									tsnode.toString(), tmp);
+							tsnode.setState(State.Tombstone_1);
+							tsnode.setTimestamp(System.currentTimeMillis());
 						} else {
 							this.log.info(
 									"checkAndRemove [ {} ], but waitSeconds [ {} ] is less than  [ {} ]",
@@ -275,12 +274,11 @@ public class SNodeManager implements SNodeManagerMBean {
 						break;
 					case Tombstone_1:
 						if (tmp > Config.serviceStatusKeepSeconds) {
-							tsnode.setState(State.Tombstone);
-							tsnode.setTimestamp(System.currentTimeMillis());
-
 							this.log.info(
 									"checkAndRemove [ {} ] to [Tombstone] sucess, and waitSeconds is [ {} ]",
 									tsnode.toString(), tmp);
+							tsnode.setState(State.Tombstone);
+							tsnode.setTimestamp(System.currentTimeMillis());
 						} else {
 							this.log.info(
 									"checkAndRemove [ {} ], but waitSeconds [ {} ] is less than  [ {} ]",
@@ -293,7 +291,6 @@ public class SNodeManager implements SNodeManagerMBean {
 							if (map.isEmpty()) {
 								iterator1.remove();
 							}
-
 							this.log.info("checkAndRemove [ {} ], and waitSeconds is [ {} ]",
 									tsnode.toString(), tmp);
 						} else {
