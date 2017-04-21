@@ -20,6 +20,6 @@ public class ClusterScheduleServer {
 						true));
 		pool.scheduleWithFixedDelay(task_1, 5, 5, TimeUnit.SECONDS);
 
-		pool.scheduleWithFixedDelay(task_2, 10, 10, TimeUnit.MINUTES);
+		pool.scheduleWithFixedDelay(task_2, 1, 1, TimeUnit.MINUTES);
 	}
 }

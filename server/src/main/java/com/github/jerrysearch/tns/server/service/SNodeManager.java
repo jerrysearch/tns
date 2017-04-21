@@ -61,7 +61,8 @@ public class SNodeManager implements SNodeManagerMBean {
 			for (Map<Long, TSNode> map : this.serviceMap.values()) {
 				Collection<TSNode> collection = map.values();
 				for (TSNode tsnode : collection) {
-					if (tsnode.getState() == State.Tombstone) {
+					if (tsnode.getState() == State.Tombstone_1
+							|| tsnode.getState() == State.Tombstone) {
 						// 墓碑不同步,等待墓碑存活时间会被清除
 					} else {
 						list.add(tsnode);
@@ -141,8 +142,16 @@ public class SNodeManager implements SNodeManagerMBean {
 					long id = tsnode.getId();
 					TSNode dst = this.serviceMap.get(serviceName).get(id);
 					if (tsnode.getState() == State.Leaving && dst.getState() != State.Leaving
+							&& dst.getState() != State.Tombstone_1
 							&& dst.getState() != State.Tombstone) { // leaving
-						long timestamp = tsnode.getTimestamp();
+						/**
+						 * 这里用当前系统时间，而不能用节点被leaving的时间，因为节点操作的机器时间可能比较快，
+						 * 导致，在检查remove时，实际时间并未等到@link
+						 * Config.serviceRemoveSeconds, 导致立即被标记为@link
+						 * State.Tombstone，可能无法将leaving时间传递给下一个节点
+						 */
+						// long timestamp = tsnode.getTimestamp();
+						long timestamp = System.currentTimeMillis();
 						this.leavingToServiceMap(dst, timestamp);
 					}
 				}
@@ -244,13 +253,19 @@ public class SNodeManager implements SNodeManagerMBean {
 							TimeUnit.MILLISECONDS);
 					switch (tsnode.getState()) {
 					case Leaving:
-						if (tmp > Config.serviceRemoveSeconds) {
+						if (tmp > Config.serviceStatusKeepSeconds) {
+							tsnode.setState(State.Tombstone_1);
+							tsnode.setTimestamp(System.currentTimeMillis());
+						}
+						break;
+					case Tombstone_1:
+						if (tmp > Config.serviceStatusKeepSeconds) {
 							tsnode.setState(State.Tombstone);
 							tsnode.setTimestamp(System.currentTimeMillis());
 						}
 						break;
 					case Tombstone:
-						if (tmp > Config.serviceRemoveSeconds) {
+						if (tmp > Config.serviceStatusKeepSeconds) {
 							iterator2.remove();
 							if (map.isEmpty()) {
 								iterator1.remove();

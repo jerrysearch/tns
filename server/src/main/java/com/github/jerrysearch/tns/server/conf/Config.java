@@ -9,7 +9,7 @@ public class Config {
 
 	public static final Long TNSID = (long) (HOSTNAME + structConstants.PORT).hashCode();
 
-	public static final Long serviceRemoveSeconds = 60L;
+	public static final Long serviceStatusKeepSeconds = 17L;
 
 	public static final String CLUSTER_ID = ManagementFactory.getRuntimeMXBean().getName();
 }

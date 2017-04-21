@@ -50,6 +50,7 @@ public class PingTask implements Runnable {
 			this.tsnode.setTimestamp(System.currentTimeMillis());
 			break;
 		case Leaving:
+		case Tombstone_1:
 		case Tombstone: // 死亡节点，本实例不会再ping，直接移除
 			this.cancelTask(this.tsnode);
 		}

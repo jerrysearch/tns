@@ -188,7 +188,7 @@ public class CNodeManager implements CNodeManagerMBean {
 				long id = tcnode.getId();
 				if (this.cMap.containsKey(id)) {
 					TCNode tmp = this.cMap.get(id);
-					if (tmp.getState() == State.Tombstone) { // 墓碑是不可恢复的，一个完整周期后，墓碑会传播到所有节点
+					if (tmp.getState() == State.Tombstone || tmp.getState() == State.Tombstone_1) { // 墓碑是不可恢复的，一个完整周期后，墓碑会传播到所有节点
 						continue;
 					}
 					switch (tcnode.getState()) {
@@ -202,6 +202,7 @@ public class CNodeManager implements CNodeManagerMBean {
 						}
 						break;
 					case Leaving:
+					case Tombstone_1:
 					case Tombstone:
 						this.cMap.put(id, tcnode); // 更新
 						break;
