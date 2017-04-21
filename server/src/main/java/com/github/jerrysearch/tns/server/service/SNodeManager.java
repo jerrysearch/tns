@@ -11,6 +11,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.github.jerrysearch.tns.protocol.rpc.State;
 import com.github.jerrysearch.tns.protocol.rpc.TSNode;
 import com.github.jerrysearch.tns.server.conf.Config;
@@ -23,6 +26,7 @@ public class SNodeManager implements SNodeManagerMBean {
 	private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 	private final Lock readLock = lock.readLock();
 	private final Lock writeLock = lock.writeLock();
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private SNodeManager() {
 	}
@@ -113,6 +117,8 @@ public class SNodeManager implements SNodeManagerMBean {
 			map.put(id, tsnode);
 			this.serviceMap.put(serviceName, map);
 		}
+
+		this.log.info("add [ {} ], sucess", tsnode.toString());
 	}
 
 	/**
@@ -121,6 +127,7 @@ public class SNodeManager implements SNodeManagerMBean {
 	 * @param tsnode
 	 */
 	private void leavingToServiceMap(TSNode tsnode, long timestamp) {
+		this.log.info("Leaving [ {} ] with timestamp : {}", tsnode.toString(), timestamp);
 		tsnode.setState(State.Leaving);
 		tsnode.setTimestamp(timestamp);
 	}
@@ -256,12 +263,28 @@ public class SNodeManager implements SNodeManagerMBean {
 						if (tmp > Config.serviceStatusKeepSeconds) {
 							tsnode.setState(State.Tombstone_1);
 							tsnode.setTimestamp(System.currentTimeMillis());
+
+							this.log.info(
+									"checkAndRemove [ {} ] to [Tombstone_1] sucess, and waitSeconds is [ {} ]",
+									tsnode.toString(), tmp);
+						} else {
+							this.log.info(
+									"checkAndRemove [ {} ], but waitSeconds [ {} ] is less than  [ {} ]",
+									tsnode, tmp, Config.serviceStatusKeepSeconds);
 						}
 						break;
 					case Tombstone_1:
 						if (tmp > Config.serviceStatusKeepSeconds) {
 							tsnode.setState(State.Tombstone);
 							tsnode.setTimestamp(System.currentTimeMillis());
+
+							this.log.info(
+									"checkAndRemove [ {} ] to [Tombstone] sucess, and waitSeconds is [ {} ]",
+									tsnode.toString(), tmp);
+						} else {
+							this.log.info(
+									"checkAndRemove [ {} ], but waitSeconds [ {} ] is less than  [ {} ]",
+									tsnode, tmp, Config.serviceStatusKeepSeconds);
 						}
 						break;
 					case Tombstone:
@@ -270,6 +293,13 @@ public class SNodeManager implements SNodeManagerMBean {
 							if (map.isEmpty()) {
 								iterator1.remove();
 							}
+
+							this.log.info("checkAndRemove [ {} ], and waitSeconds is [ {} ]",
+									tsnode.toString(), tmp);
+						} else {
+							this.log.info(
+									"checkAndRemove [ {} ], but waitSeconds [ {} ] is less than  [ {} ]",
+									tsnode, tmp, Config.serviceStatusKeepSeconds);
 						}
 						break;
 					default:
