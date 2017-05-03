@@ -82,27 +82,27 @@ sub meet {
 }
 
 sub clusterStatus {
-		my $pid = getPid();
-        openJMX($pid);
-        connectCNodeManager();
-        print JMX "run clusterStatus\n";
-        bye();
+	my $pid = getPid();
+    openJMX($pid);
+    connectCNodeManager();
+    print JMX "run clusterStatus\n";
+    bye();
 }
 
 sub serviceStatus {
-		my $pid = getPid();
-        openJMX($pid);
-        connectSNodeManager();
-        print JMX "run serviceStatus\n";
-        bye();
+	my $pid = getPid();
+    openJMX($pid);
+    connectSNodeManager();
+    print JMX "run serviceStatus\n";
+    bye();
 }
 
 sub serviceList {
-		my $pid = getPid();
-        openJMX($pid);
-        connectSNodeManager();
-        print JMX "run serviceList\n";
-        bye();
+	my $pid = getPid();
+    openJMX($pid);
+    connectSNodeManager();
+    print JMX "run serviceList\n";
+    bye();
 }
 
 sub offLine {

@@ -354,7 +354,8 @@ public class SNodeManager implements SNodeManagerMBean {
 		try {
 			this.readLock.lock();
 			StringBuilder sb = new StringBuilder();
-			sb.append("#serviceName host port pingFrequency").append(this.end);
+			sb.append("# ").append(DateUtil.dateTimeFormat.format(new Date())).append(this.end);
+			sb.append("# serviceName host port pingFrequency").append(this.end);
 			sb.append(this.end);
 			Set<String> set = this.serviceMap.keySet();
 			for (String serviceName : set) {
@@ -362,7 +363,7 @@ public class SNodeManager implements SNodeManagerMBean {
 				if (null == services || services.isEmpty()) {
 
 				} else {
-					sb.append("#").append(serviceName).append(this.end);
+					sb.append("# ").append(serviceName).append(this.end);
 					Collection<TSNode> list = services.values();
 					for (TSNode tsnode : list) {
 						sb.append(tsnode.getServiceName()).append(this.tab)
