@@ -6,6 +6,8 @@ public interface SNodeManagerMBean {
 	String offLine(String serviceName, long id);
 
 	String serviceStatus();
+	
+	String serviceList();
 
 	/**
 	 * help 信息

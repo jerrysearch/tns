@@ -347,4 +347,35 @@ public class SNodeManager implements SNodeManagerMBean {
 		sb.append(tab).append("id : uniquely identifies of node , see serviceStatus");
 		return sb.toString();
 	}
+
+	@Override
+	@Loggable(skipResult = true)
+	public String serviceList() {
+		try {
+			this.readLock.lock();
+			StringBuilder sb = new StringBuilder();
+			sb.append("#serviceName host port pingFrequency").append(this.end);
+			sb.append(this.end);
+			Set<String> set = this.serviceMap.keySet();
+			for (String serviceName : set) {
+				Map<Long, TSNode> services = this.serviceMap.get(serviceName);
+				if (null == services || services.isEmpty()) {
+
+				} else {
+					sb.append("#").append(serviceName).append(this.end);
+					Collection<TSNode> list = services.values();
+					for (TSNode tsnode : list) {
+						sb.append(tsnode.getServiceName()).append(this.tab)
+								.append(tsnode.getHost()).append(this.tab).append(tsnode.getPort())
+								.append(this.tab).append(tsnode.getPingFrequency())
+								.append(this.end);
+					}
+					sb.append(this.end);
+				}
+			}
+			return sb.toString();
+		} finally {
+			this.readLock.unlock();
+		}
+	}
 }
