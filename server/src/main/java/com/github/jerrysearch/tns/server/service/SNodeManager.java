@@ -240,6 +240,7 @@ public class SNodeManager implements SNodeManagerMBean {
 	/**
 	 * 检查下线的节点，并移除墓碑
 	 */
+	@Loggable
 	public void CheckAndRemoveTombstone() {
 		try {
 			this.writeLock.lock();

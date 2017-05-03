@@ -11,6 +11,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+@Deprecated
 public class SingleScheduledExecutorService implements ScheduledExecutorService {
 	ScheduledExecutorService pool = Executors
 			.newSingleThreadScheduledExecutor(new NamedThreadFactory("MainScheduleThread", false));

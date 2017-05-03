@@ -9,12 +9,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.jerrysearch.tns.protocol.rpc.TSNode;
+import com.github.jerrysearch.tns.server.util.NamedThreadFactory;
 
 public class PingTaskManager {
 	/**
-	 * 全部ping任务调度线程
+	 * 全局ping任务调度线程
 	 */
-	private final ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(2);
+	private final ScheduledThreadPoolExecutor pool = new ScheduledThreadPoolExecutor(2,
+			new NamedThreadFactory("PingTaskManager", true));
 	private final Logger log = LoggerFactory.getLogger(PingTaskManager.class);
 
 	private PingTaskManager() {

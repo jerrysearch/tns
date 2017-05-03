@@ -115,6 +115,7 @@ public class CNodeManager implements CNodeManagerMBean {
 		case DOWN_2:
 			return tcnode;
 		case Leaving:
+		case Tombstone_1:
 		case Tombstone:
 		case DOWN:
 			return this.getNext(key);
