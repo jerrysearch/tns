@@ -1,4 +1,4 @@
-package com.github.jerrysearch.tns.feedback;
+package com.github.jerrysearch.tns.feedback.aspectj;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,4 +11,5 @@ public @interface Feedback {
 	/**
 	 * just mark
 	 */
+	String description() default "";
 }

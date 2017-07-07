@@ -1,11 +1,12 @@
 package com.github.jerrysearch.tns.feedback;
 
+import com.github.jerrysearch.tns.feedback.aspectj.Feedback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class Hello {
 
-	Logger log = LoggerFactory.getLogger(Hello.class);
+	private Logger log = LoggerFactory.getLogger(Hello.class);
 
 	public static void main(String[] args) throws Exception {
 
@@ -14,8 +15,14 @@ public class Hello {
 		hello.log.info("return is = {}", i);
 	}
 
+	/**
+	 * @param time 时间
+	 * @param tmp	变量
+	 * @return 变量
+	 *
+	 */
 	@Feedback
-	public int sayHello(long time, int tmp) {
+	private int sayHello(long time, int tmp) {
 		log.info("time = {}, tmp = {}", time, tmp);
 		return 0;
 	}

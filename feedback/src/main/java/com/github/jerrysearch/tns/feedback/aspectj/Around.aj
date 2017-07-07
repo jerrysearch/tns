@@ -1,4 +1,4 @@
-package com.github.jerrysearch.tns.feedback;
+package com.github.jerrysearch.tns.feedback.aspectj;
 
 import java.util.Arrays;
 
@@ -6,7 +6,7 @@ import org.aspectj.lang.reflect.CodeSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public aspect Around percflow(feedback()) {
+public aspect Around {
 
 	private final Logger log = LoggerFactory.getLogger(Around.class);
 
@@ -15,14 +15,12 @@ public aspect Around percflow(feedback()) {
 	 */
 	// pointcut greeting() : execution(public int sayHello(long, int));
 
-	public pointcut feedback() : @annotation(Feedback);
-
-	public pointcut atExecution() : execution(* *(..));
+	public pointcut atExecution() : execution(@Feedback * *(..));
 
 	/**
 	 * 通知 advice
 	 */
-	int around() : feedback() && atExecution() {
+	int around() : atExecution() {
 
 		log.info("Around begin !");
 		Thread t = Thread.currentThread();
@@ -50,7 +48,7 @@ public aspect Around percflow(feedback()) {
 		log.info("codeSignature = {}", codeSignature.toLongString());
 		log.info("thisJoinPointStaticPart.getSourceLocation() = {}", thisJoinPointStaticPart.getSourceLocation());
 
-		log.info("thisJoinPointStaticPart.getSourceLocation() = {}", thisJoinPointStaticPart.getSignature());
+		log.info("thisJoinPointStaticPart.getSignature() = {}", thisJoinPointStaticPart.getSignature());
 		long begin = System.currentTimeMillis();
 		int i = proceed() + 1;
 		long end = System.currentTimeMillis();

@@ -4,3 +4,11 @@ target/
 .classpath
 .settings/
 .project
+.idea/
+client/tns-client.iml
+console/tns-console.iml
+example/tns-example.iml
+feedback/tns-feedback.iml
+protocol/tns-protocol.iml
+server/tns-server.iml
+tns.iml
