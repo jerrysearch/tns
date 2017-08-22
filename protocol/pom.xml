@@ -10,9 +10,7 @@
 	</parent>
 	<artifactId>tns-protocol</artifactId>
 	<name>tns-protocol</name>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.thrift</groupId>

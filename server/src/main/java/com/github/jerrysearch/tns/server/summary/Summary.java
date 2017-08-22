@@ -20,8 +20,8 @@ public class Summary {
 	private final LinkedBlockingQueue<LogEvent> queue = new LinkedBlockingQueue<LogEvent>(100);
 
 	public void appendLogEvent(LogEvent event) {
-		boolean sucess = this.queue.offer(event);
-		if (sucess) {
+		boolean success = this.queue.offer(event);
+		if (success) {
 			return;
 		} else {
 			this.queue.clear(); // 暴力清除
@@ -43,9 +43,9 @@ public class Summary {
 	}
 
 	private Summary() {
-	};
+	}
 
-	private static class proxy {
+    private static class proxy {
 		private static Summary summary = new Summary();
 	}
 

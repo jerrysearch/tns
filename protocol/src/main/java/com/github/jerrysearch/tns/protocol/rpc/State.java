@@ -23,7 +23,7 @@ public enum State implements org.apache.thrift.TEnum {
 
   private final int value;
 
-  private State(int value) {
+  State(int value) {
     this.value = value;
   }
 

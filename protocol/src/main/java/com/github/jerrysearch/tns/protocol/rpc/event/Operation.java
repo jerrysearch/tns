@@ -24,7 +24,7 @@ public enum Operation implements org.apache.thrift.TEnum {
 
   private final int value;
 
-  private Operation(int value) {
+  Operation(int value) {
     this.value = value;
   }
 

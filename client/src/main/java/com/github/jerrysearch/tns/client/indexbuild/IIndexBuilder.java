@@ -12,5 +12,5 @@ import java.util.List;
  */
 public interface IIndexBuilder<T> {
 
-	public Collection<T> build(List<T> list);
+	Collection<T> build(List<T> list);
 }

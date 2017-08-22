@@ -7,15 +7,15 @@ public interface CNodeManagerMBean {
 	 * @param host
 	 * @return
 	 */
-	public String meet(String host);
+    String meet(String host);
 	/**
 	 * 集群状态
 	 * @return
 	 */
-	public String clusterStatus();
+    String clusterStatus();
 	/**
 	 * 埋葬某个节点
 	 * @return
 	 */
-	public String tombstone(long id);
+    String tombstone(long id);
 }

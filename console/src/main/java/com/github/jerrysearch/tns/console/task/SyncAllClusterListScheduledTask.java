@@ -20,13 +20,13 @@ public class SyncAllClusterListScheduledTask extends BaseClusterListTask impleme
 	private static final String clientId = ManagementFactory.getRuntimeMXBean().getName();
 
 	private SyncAllClusterListScheduledTask() {
-	};
+	}
 
-	@Override
+    @Override
 	public void run() {
 		TSocket transport = null;
 		try {
-			TCNode tcNode = super.selectOne();
+			TCNode tcNode = selectOne();
 			if (tcNode == null) {
 				return;
 			}
@@ -38,7 +38,7 @@ public class SyncAllClusterListScheduledTask extends BaseClusterListTask impleme
 			transport.open();
 			List<TCNode> list = client.clusterList(clientId);
 			log.debug(Arrays.toString(list.toArray()));
-			super.updateAll(list);
+			updateAll(list);
 		} catch (Exception e) {
 			log.error("", e);
 		} finally {

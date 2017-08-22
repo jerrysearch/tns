@@ -11,5 +11,5 @@ import java.util.List;
  */
 public interface TNodeSelector<T> {
 
-	public T selectOne(List<T> list);
+	T selectOne(List<T> list);
 }

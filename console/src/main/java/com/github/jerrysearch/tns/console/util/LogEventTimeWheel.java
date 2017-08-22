@@ -12,9 +12,9 @@ import com.github.jerrysearch.tns.protocol.rpc.event.LogEvent;
 public class LogEventTimeWheel {
 
 	private LogEventTimeWheel() {
-	};
+	}
 
-	private final Logger log = LoggerFactory.getLogger(LogEventTimeWheel.class);
+    private final Logger log = LoggerFactory.getLogger(LogEventTimeWheel.class);
 	private final PriorityQueue<LogEvent> queue = new PriorityQueue<LogEvent>(1000,
 			new LogEventComparator());
 
