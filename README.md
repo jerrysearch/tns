@@ -5,7 +5,7 @@
 [![GitHub release](https://img.shields.io/badge/release-download-orange.svg)](https://github.com/jerrysearch/tns/releases)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-**tns (thrift nameserver) provides distributed solutions for thrift, support find services, high availability, load balancing, the gray release, horizontal scaling, and so on.**
+**tns (thrift nameserver) provides distributed solutions for thrift, support service discovery, high availability, load balancing, the gray release, horizontal scaling, and so on.**
 
 ## For more information
 
