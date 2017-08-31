@@ -1,16 +1,12 @@
 package com.github.jerrysearch.tns.feedback.aspectj;
 
 import org.aspectj.lang.reflect.CodeSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 
-public aspect Around {
-
-    private final Logger log = LoggerFactory.getLogger(Around.class);
+public aspect Around extends AbstractAspectj {
 
     /*
      * 切入点 pointcut
@@ -58,13 +54,13 @@ public aspect Around {
         long begin = System.currentTimeMillis();
         ExecutorService executorService = proceed();
 
-        if(executorService instanceof ThreadPoolExecutor){
+        if (executorService instanceof ThreadPoolExecutor) {
             ThreadPoolExecutor threadPoolExecutor = ThreadPoolExecutor.class.cast(executorService);
             log.info("===============================");
             log.info("Queue is : {}", threadPoolExecutor.getQueue().getClass().getSimpleName());
             log.info("TaskCount is : {}", threadPoolExecutor.getTaskCount());
             log.info("===============================");
-        }else{
+        } else {
             log.info("the executorService is not instanceof ThreadPoolExecutor and it type is : {}", executorService.getClass().getName());
         }
         long end = System.currentTimeMillis();

@@ -4,13 +4,13 @@ import java.lang.management.ManagementFactory;
 
 /**
  * 客户端配置
- * @author jerry
  *
+ * @author jerry
  */
 public class ClientConfig {
-	private final String clientId = ManagementFactory.getRuntimeMXBean().getName();
+    private final String clientId = ManagementFactory.getRuntimeMXBean().getName();
 
-	public String getClientId() {
-		return clientId;
-	}
+    public String getClientId() {
+        return clientId;
+    }
 }

@@ -1,7 +1,8 @@
-package com.github.jerrysearch.tns.server.app;
+package com.github.jerrysearch.tns.server.app.server;
 
 import com.github.jerrysearch.tns.protocol.rpc.TNSRpc;
 import com.github.jerrysearch.tns.protocol.rpc.TNSRpc.Iface;
+import com.github.jerrysearch.tns.server.app.server.AbstractServer;
 import com.github.jerrysearch.tns.server.rpc.impl.TNSRpcImpl;
 import com.github.jerrysearch.tns.server.util.NamedThreadFactory;
 import org.apache.thrift.TProcessor;
@@ -9,17 +10,23 @@ import org.apache.thrift.protocol.TBinaryProtocol;
 import org.apache.thrift.server.TServer;
 import org.apache.thrift.server.TThreadPoolServer;
 import org.apache.thrift.transport.TServerSocket;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class TNSRpcServer {
-    private final Logger log = LoggerFactory.getLogger(getClass());
+public class TNSRpcServer extends AbstractServer {
 
-    public void start(final String host, final int port) {
+    private final String host;
+    private final int port;
+
+    public TNSRpcServer(String host, int port) {
+        this.host = host;
+        this.port = port;
+    }
+
+    @Override
+    public void start() {
         Runnable runnable = () -> {
             try {
                 TProcessor tprocessor = new TNSRpc.Processor<Iface>(new TNSRpcImpl());
@@ -37,9 +44,13 @@ public class TNSRpcServer {
                 log.error("tns rpc serve", e);
             }
         };
-
         Thread t = new Thread(runnable);
         t.setName("service_rpc_acceptor");
         t.start();
+    }
+
+    @Override
+    public void shutdown() {
+
     }
 }

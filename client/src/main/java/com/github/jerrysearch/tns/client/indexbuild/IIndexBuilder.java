@@ -5,12 +5,11 @@ import java.util.List;
 
 /**
  * 节点索引构建器
- * 
- * @author jerry
  *
  * @param <T>
+ * @author jerry
  */
 public interface IIndexBuilder<T> {
 
-	Collection<T> build(List<T> list);
+    Collection<T> build(List<T> list);
 }
