@@ -1,2 +1,5 @@
 language: java
-script: mvn -P all clean package
+script: mvn clean package
+
+jdk:
+  - oraclejdk8
